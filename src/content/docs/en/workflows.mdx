@@ -1,0 +1,490 @@
+---
+title: Workflows
+description: How to build a workflow in the editor, set up triggers and approvals, run it, and read the run history, statuses and errors.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/workflows/(list)/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/workflows/(list)/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/workflows/(list)/history/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/workflows/(list)/workflows-page.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/workflows/[workflowId]/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/workflows/[workflowId]/workflow-editor.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/workflows/runs/[runId]/page.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/billing/feature-lock-state.tsx
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/components/billing/feature-gates.ts
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/workflows/workflows-tabs.tsx
+  - palitra-frontend/components/workflows/workflows-tabs.en.messages.json
+  - palitra-frontend/components/workflows/workflow-table.tsx
+  - palitra-frontend/components/workflows/workflow-table.en.messages.json
+  - palitra-frontend/components/workflows/recent-runs-table.tsx
+  - palitra-frontend/components/workflows/recent-runs-table.en.messages.json
+  - palitra-frontend/components/workflows/workflow-run-status-badge.tsx
+  - palitra-frontend/components/workflows/workflow-run-status-badge.en.messages.json
+  - palitra-frontend/components/workflow-editor/NodePalette.tsx
+  - palitra-frontend/components/workflow-editor/NodePalette.en.messages.json
+  - palitra-frontend/components/workflow-editor/ConfigDialog.tsx
+  - palitra-frontend/components/workflow-editor/ConfigDialogSettingsTab.tsx
+  - palitra-frontend/components/workflow-editor/ConfigDialog.en.messages.json
+  - palitra-frontend/components/workflow-editor/node-status-badge.en.messages.json
+  - palitra-frontend/components/workflow-editor/config-panels/io-panel.tsx
+  - palitra-frontend/components/workflow-editor/config-panels/io-panel.en.messages.json
+  - palitra-frontend/components/workflow-editor/config-panels/listen-panel.tsx
+  - palitra-frontend/components/workflow-editor/config-panels/listen-panel.en.messages.json
+  - palitra-frontend/components/workflow-editor/config-panels/mock-editor.en.messages.json
+  - palitra-frontend/components/workflow-editor/config-forms/ScheduleTriggerForm.tsx
+  - palitra-frontend/components/workflow-editor/config-forms/EventTriggerForm.tsx
+  - palitra-frontend/components/workflow-editor/config-forms/WebhookTriggerForm.tsx
+  - palitra-frontend/components/workflow-editor/config-forms/SubWorkflowTriggerForm.tsx
+  - palitra-frontend/components/workflow-editor/config-forms/ApprovalForm.tsx
+  - palitra-frontend/components/workflow-editor/config-forms/NotificationForm.tsx
+  - palitra-frontend/components/workflow-editor/config-forms/ConnectorActionForm.tsx
+  - palitra-frontend/components/workflow-editor/config-forms/config-forms.en.messages.json
+  - palitra-frontend/components/workflow-editor/logs-panel/LogsPanel.tsx
+  - palitra-frontend/components/workflow-editor/logs-panel/logs-panel.en.messages.json
+  - palitra-frontend/components/workflow-editor/logs-panel/logs-node-list.en.messages.json
+  - palitra-frontend/components/workflow-run/RunPage.tsx
+  - palitra-frontend/components/workflow-run/RunFeed.tsx
+  - palitra-frontend/components/workflow-run/ApprovalActionCard.tsx
+  - palitra-frontend/components/workflow-run/run-page.en.messages.json
+  - palitra-frontend/components/workflow-run/run-summary.en.messages.json
+  - palitra-frontend/components/workflow-run/run-detail-tabs.en.messages.json
+  - palitra-frontend/components/workflow-run/run-feed.en.messages.json
+  - palitra-frontend/components/workflow-run/run-output-inspector.en.messages.json
+  - palitra-frontend/components/workflow-run/workflow-run-approval-action-card.en.messages.json
+  - palitra-frontend/components/notifications/notification-popover.en.messages.json
+  - palitra-frontend/components/notifications/CompactApprovalCard.tsx
+  - palitra-frontend/hooks/use-workflow-hotkeys.ts
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/lib/billing/use-license-gate.ts
+  - palitra-frontend/lib/workflow/run-status.ts
+  - palitra-frontend/lib/workflow/node-registry.ts
+  - palitra-frontend/lib/workflow/trigger-display.ts
+  - palitra-frontend/lib/workflow/save-error.ts
+  - palitra-frontend/lib/workflow/reserved-paths.ts
+  - palitra-frontend/lib/query/workflows.ts
+  - palitra-backend/src/modules/workflow_engine/application/services/workflow_service.py
+  - palitra-backend/src/modules/workflow_engine/application/services/manual_run_service.py
+  - palitra-backend/src/modules/workflow_engine/application/services/run_service.py
+  - palitra-backend/src/modules/workflow_engine/application/services/trigger_dispatch_service.py
+  - palitra-backend/src/modules/workflow_engine/api/workflows_router.py
+  - palitra-backend/src/modules/workflow_engine/api/approval_router.py
+  - palitra-backend/src/modules/workflow_engine/domain/errors.py
+  - palitra-backend/src/modules/workflow_engine/domain/models/event_trigger_types.py
+  - palitra-backend/src/modules/workflow_engine/domain/services/timeout_policy.py
+  - palitra-backend/src/modules/workflow_engine/infrastructure/langgraph/executor.py
+  - palitra-backend/src/modules/workflow_engine/infrastructure/langgraph/node_executors/approval_executor.py
+  - palitra-backend/src/modules/workflow_engine/infrastructure/langgraph/node_executors/connector_action_executor.py
+  - palitra-backend/src/modules/billing/domain/models/feature_matrix.py
+  - palitra-backend/src/modules/billing/domain/services/entitlement_computer.py
+  - palitra-backend/src/modules/workflow_engine/infrastructure/repositories/workflow_repository.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+A workflow is a process Palitra runs on its own: on a project event, when a webhook is called,
+or at the click of a button. You build it in a visual editor out of steps
+(nodes): a trigger starts the workflow, followed by steps that read and transform data, call the
+agent, act in ad accounts, send notifications and wait for approvals. Every run is kept in the
+history, so you can see which steps ran, what they returned and where an error happened.
+
+Every project member sees the section. Project managers, and the organization's owner and
+admins, can create, edit, run, enable and delete workflows. Other members open workflows
+read-only: the editor shows the graph and the step settings but doesn't let them change
+anything.
+
+Workflows aren't available on every plan. If your organization's plan doesn't include them,
+you see "Workflows aren't included in your plan" and an "Upgrade plan" button instead of the list.
+The number of runs per month is also capped by the plan; see
+[Errors and what to do](#errors-and-what-to-do).
+
+## Open the section
+
+1. Pick the project in the project list at the top of the sidebar.
+2. Click "Workflows".
+
+The section has two tabs: "Workflows", the project's workflows, and "Run history", the latest
+runs of all the project's workflows.
+
+<Screenshot
+  id="workflows-list"
+  alt="The Workflows section with the project's workflow list and the Run history tab"
+/>
+
+## The workflow list
+
+The table has four columns:
+
+- "Name" is the workflow's name. Click it to open the editor.
+- "Triggers" shows the workflow's trigger icons. Hover an icon to see its label: "Scheduled",
+  "Event-triggered", "Webhook", "On-demand" or "Called by another workflow". A workflow without
+  a trigger shows "No trigger".
+- "Last run" is how long ago the workflow last ran, or "Never run".
+- "Actions" opens the workflow's actions menu.
+
+The colored dot before the name shows the workflow's state:
+
+| Color  | Meaning                                                                                 |
+| ------ | --------------------------------------------------------------------------------------- |
+| Red    | The last run failed.                                                                    |
+| Yellow | The last run is awaiting approval.                                                      |
+| Green  | The workflow is enabled, has a trigger other than "Manual", and its last run went fine. |
+| Gray   | Anything else: the workflow is disabled, runs only manually, or has never run.          |
+
+The "Actions" menu has:
+
+- "Enable" or "Disable", only for workflows that have a trigger other than "Manual". See
+  [Enable and disable](#enable-and-disable).
+- "Configure" opens the editor.
+- "Run now" starts the workflow right away. It appears only when the workflow has exactly one
+  trigger; run a workflow with several triggers from the editor.
+- "Delete" deletes the workflow.
+
+A project without workflows shows "No workflows yet" instead of the table.
+
+## Create a workflow
+
+1. Click "New Workflow".
+2. An empty editor opens with the name "New workflow". Click the name at the top and type your
+   own.
+3. Add a trigger: drag it from the "Nodes" panel on the left onto the canvas. Until there is a
+   trigger, the panel offers only triggers and sticky notes; the other nodes say "Add a trigger
+   node first".
+4. Add the next steps and connect them: drag from the dot at the bottom of one step to the dot
+   at the top of the next.
+5. Configure each step: double-click it.
+6. Click "Save".
+
+A new workflow appears in the list only after its first save. If you leave the editor without
+saving, nothing is created.
+
+<Screenshot
+  id="workflows-editor"
+  alt="The workflow editor: the Nodes panel on the left, steps on the canvas, and the Save and Run buttons"
+/>
+
+## The editor: steps and canvas
+
+There are several ways to add a step:
+
+- drag a node from the "Nodes" panel, or double-click it to place it in the middle of the
+  canvas;
+- press `Tab`, or right-click an empty spot of the canvas and choose "Add Node", to search for
+  a node;
+- `Shift+S` or "Add sticky note" adds a sticky note. Notes are captions on the canvas and can't
+  be connected to steps.
+
+The "Nodes" panel groups the nodes:
+
+| Group                 | Nodes                                                                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| "Triggers"            | "Schedule", "Manual", "Event", "Webhook", "Another Workflow"                                                                        |
+| "AI"                  | "Skill", "Agent Call", "Image Generation"                                                                                           |
+| "Connectors"          | "Data Source", "Connector Action", "Write Data"                                                                                     |
+| "Data Transformation" | "Set", "Filter", "Limit", "Remove Duplicates", "Split Out", "Aggregate", "Summarize", "Rename Keys", "Sort", "Merge", "Date & Time" |
+| "Flow"                | "Condition", "Switch", "Compare", "Loop", "Delay", "Sub-Workflow", "Stop & Error"                                                   |
+| "Core"                | "HTTP Request", "Script", "Export File"                                                                                             |
+| "Human Review"        | "Notification", "Approval"                                                                                                          |
+| "Documentation"       | "Sticky note"                                                                                                                       |
+
+Right-click a step for its menu: "Execute Step", "Execute from here", "Configure", "Rename",
+"Deactivate" (or "Activate"), "Copy", "Duplicate", "Tidy up workflow" and "Delete". The
+`Delete` and `Backspace` keys delete the selected steps.
+
+A deactivated step stays on the graph, but a run skips it and passes its input on unchanged. On
+the canvas it fades, along with any steps reachable only through it. Take care with "Approval":
+a deactivated approval doesn't pause the run and lets the actions through as if they had been
+approved.
+
+Keyboard shortcuts (for people who can edit the workflow):
+
+| Keys            | Action                  |
+| --------------- | ----------------------- |
+| `Ctrl+C` / `⌘C` | Copy the selected steps |
+| `Ctrl+V` / `⌘V` | Paste                   |
+| `Ctrl+D` / `⌘D` | Duplicate               |
+| `Ctrl+A` / `⌘A` | Select all              |
+| `Shift+Alt+T`   | Tidy up workflow        |
+| `Tab`           | Add a node              |
+| `Shift+S`       | Add a sticky note       |
+
+## Configure a step
+
+Double-click a step to open its settings. Rename it in the "Label" field. The settings have two
+tabs.
+
+**"Parameters"** is what the step does, such as which table to read or which message to send.
+The fields depend on the node type. Many fields can be "Fixed" (a plain value) or "Expression",
+which fills the value from earlier steps' data. An expression goes inside double curly braces
+`{{ }}` and must reference `$json`, `$node`, `$now`, `$runId`, `$items` or `$trigger`.
+
+**"Settings"** is how the step behaves:
+
+- "Notes" holds a comment about the step.
+- "On Error" sets what happens when the step fails: "Stop Workflow", "Continue" or "Continue
+  Using Error Output".
+- "Retry on Fail" retries a failed step. "Max Retries" defaults to 3 and "Wait Between Retries
+  (ms)" to 5000.
+
+Next to the parameters are the "Input" and "Output" panels: the data the step got from the
+previous step and what it returned. To test a step without running the whole workflow, click
+"Execute step". If the previous steps have no data yet, Palitra offers "Execute previous nodes"
+or entering mock data by hand ("or set mock data"). Mock data is JSON.
+
+<Screenshot
+  id="workflows-node-config"
+  alt="A step's settings dialog with the Parameters and Settings tabs and the Input and Output panels"
+/>
+
+Members who can't edit the workflow see this dialog read-only.
+
+## Triggers
+
+The trigger is the workflow's first step and decides when the workflow runs. A workflow can't
+be saved without one. A workflow may have several triggers, but each run starts from one of
+them.
+
+| Trigger            | Runs the workflow                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
+| "Manual"           | When you click "Run". It has no settings. A workflow can have only one.                           |
+| "Schedule"         | Set with an interval or a cron expression; see [Schedule](#schedule).                             |
+| "Event"            | When the chosen event happens in the project.                                                     |
+| "Webhook"          | When an outside system calls the webhook's address.                                               |
+| "Another Workflow" | When another workflow calls this one through a "Sub-Workflow" step. A workflow can have only one. |
+
+"Event" and "Webhook" triggers fire only while the workflow is enabled. A manual run
+works on a disabled workflow too.
+
+### Schedule
+
+Set one or more rules ("+ Add rule"). In each rule choose the "Trigger Interval" ("Seconds",
+"Minutes", "Hours", "Days", "Weeks", "Months") and enter a number in "Every". For any other
+schedule choose "Custom (Cron)" and enter a "Cron Expression", such as
+`0 9 * * 1-5`.
+
+### Event
+
+Choose the "Event Type":
+
+- "Workflow finished"
+- "Anomaly detected (KPI)"
+- "Connector sync completed"
+- "Connector health changed"
+- "Media plan updated"
+
+The "Filter Expression" narrows the condition, for example `$event.metric == spend`. Without a
+filter the workflow runs on every event of the chosen type. The event's fields show in the
+trigger's "Output" panel; reference them as `$event.<field>`.
+
+### Webhook
+
+- "HTTP Method": `GET`, `POST`, `PUT` or `DELETE`.
+- "Path" is part of the webhook's address. The paths `config`, `rotate`, `status`, `events` and
+  `test` are reserved. The path must not match another workflow's webhook path.
+- "Authentication": "None", "Basic Auth" (username and password) or "Header Auth" (header name
+  and value).
+- "Response Code" is the HTTP code the caller gets.
+- "Respond": "Immediately" or "When Last Node Finishes".
+
+The production webhook URL only receives events while the workflow is enabled. To test the
+webhook before enabling it, click "Listen for test event": Palitra shows a test address ("Copy
+URL") and a "Time left: …" timer. Send a request to that address; you see "Event captured" and
+the request's data lands in the "Output" panel. If no request arrives in time, you see "No events
+received — try again".
+
+### Another Workflow
+
+Choose the "Input Mode": "Define Fields" to list input fields with their types (names in
+`snake_case`, such as `campaign_id`), or "Passthrough" to accept any object. Then, in the other
+workflow, add a "Sub-Workflow" step, choose this workflow in the "Workflow" field and fill in
+its inputs.
+
+## Approvals and notifications
+
+An **"Approval"** step pauses the run until a person decides. The run gets the "Awaiting
+approval" status and the workflow's dot in the list turns yellow. You decide on the
+[run page](#the-run-page), in the editor's logs panel when the run was started there, or in the
+in-app "Notifications" panel. Project managers, and the organization's owner and admins, can
+decide.
+
+Each proposed action has buttons:
+
+- "Approve" runs the action as proposed;
+- "Edit" lets you change the action's arguments in "Edited arguments (JSON)", then "Approve
+  edited";
+- "Reject" skips it.
+
+You can add feedback to the decision. If even one action is rejected, the steps after the
+approval don't run, not even for the approved actions. An action may show a "win rate" and,
+below it, a "Guardrail Warning".
+
+"On Timeout" sets what happens when nobody decides: "Reject All", "Approve All" or "Fail
+Workflow".
+
+A **"Notification"** step sends a message. Choose the "Channel Type" (Telegram, Slack or
+Email) and the "Destination", and write the "Message". For Telegram and Slack the destination is
+one of the channels connected to the project.
+
+## Ad account actions: dry run and live
+
+A "Connector Action" step runs an action of a connected connector, such as changing a bid in an
+ad account. In "Mode" choose:
+
+- "Dry run", the default. Actions that change something aren't applied; read actions still
+  return real data.
+- "Live": changes are applied in the account.
+
+An "Approval" step before live actions lets a person check them before they run.
+
+## Save a workflow
+
+Click "Save". The button is active only when there are unsaved changes and the workflow has a
+name. If you leave the page with unsaved changes, Palitra asks "You have unsaved changes. Leave
+without saving?"; choose "Leave without saving" or "Cancel".
+
+Palitra checks the graph before saving. If something is wrong, you get a message and the
+offending step or connection is highlighted on the canvas. Common messages:
+
+- "Add a trigger node before saving — every workflow needs one."
+- "The workflow has an unexpected cycle — a step connects back to an earlier one." Remove the
+  connection that leads back. Use a "Loop" node to repeat steps.
+- "The Loop node needs a connection from its body back into the loop." and "Connect the Loop
+  node's "Done" output to the next step." Finish the "Loop" connections.
+- "Sticky notes can't be connected — remove the edge on the note."
+- "A connection points to a node that no longer exists — delete it and reconnect."
+- "Reserved webhook path": change the webhook's "Path".
+- "Choose a supported event type for the Event trigger."
+- Messages about "Another Workflow" and sub-workflows, such as "This would create a sub-workflow
+  cycle — a workflow can't call itself directly or indirectly."
+
+If the message is the general "Couldn't save workflow", check the expressions in the steps'
+parameters and that the webhook path is unique.
+
+## Enable and disable
+
+A new workflow is saved disabled. For "Event" and "Webhook" triggers to start firing:
+
+1. Open the "Workflows" tab.
+2. Open the "Actions" menu on the workflow's row.
+3. Choose "Enable".
+
+"Disable" in the same menu stops automatic runs. A workflow whose only trigger is "Manual"
+doesn't have these items. If the switch fails, you see "Couldn't update workflow".
+
+## Run a workflow
+
+**From the list.** In the "Actions" menu choose "Run now". You see "Run started". The item is
+there only when the workflow has one trigger.
+
+**From the editor.**
+
+1. Click "Run". If the workflow has several triggers, pick the one to start from under "Run
+   from trigger".
+2. Palitra saves the workflow first, then starts it and shows "Workflow run started".
+3. The logs panel opens at the bottom with the steps as they run, their status and duration.
+   Click a step to see its result.
+4. To open the full run page, click "View run".
+
+Until the canvas has a trigger, the editor shows "Add a trigger node before running this
+workflow." next to the name. "Clear execution" in the logs panel removes the last run's results
+from the canvas.
+
+**Debug runs.** "Execute from here" in a step's menu (or the button in its settings) runs the
+workflow from that step, using the earlier steps' data from previous runs. Such a run isn't
+kept in the history, doesn't use the monthly run limit, and its connector actions don't apply
+changes. "Execute Step" tests a single step.
+
+Every regular run, whether by button, event or webhook, counts toward the plan's
+monthly run limit.
+
+## Run history
+
+The "Run history" tab lists the latest 20 runs of all the project's workflows, with "Date",
+"Time", "Workflow" and "Status" columns. Click a row to open the run page.
+
+Runs of a deleted workflow stay in the history marked "(deleted workflow)" and still open.
+
+<Screenshot
+  id="workflows-history"
+  alt="The Run history tab with Date, Time, Workflow and Status columns"
+/>
+
+## The run page
+
+At the top are the title "Run: date — workflow name", the trigger that started the run
+("Triggered by …") and the run's status. Below are "Duration", "Steps", "Started" and
+"Finished". While the run is in progress the page updates on its own.
+
+If the run failed, a "This run failed" block above the steps gives the reason.
+
+On the left, the "Timeline" lists the run's steps in order with their status and duration. On
+the right are two tabs:
+
+- "Output" shows the result of the step selected in the timeline. On open, the first failed
+  step is selected, or the last step if none failed. A failed step shows a "Step failed" block.
+- "Notifications" lists the run's messages and approvals. If the run is waiting for a decision,
+  the page opens on this tab. A run with no notifications says "This run produced no
+  notifications".
+
+For a deleted workflow, undecided actions aren't shown: they can no longer be decided.
+
+<Screenshot
+  id="workflows-run"
+  alt="A run page: the step timeline on the left and the Output and Notifications tabs on the right"
+/>
+
+## Statuses
+
+Run status:
+
+| Status              | Meaning                                                                  |
+| ------------------- | ------------------------------------------------------------------------ |
+| "Running"           | The run is in progress.                                                  |
+| "Awaiting approval" | The run stopped at an "Approval" step and is waiting for a decision.     |
+| "Approved"          | Every action of the approval has been decided and the run is continuing. |
+| "Completed"         | The run finished without errors.                                         |
+| "Failed"            | The run stopped on an error.                                             |
+| "Cancelled"         | The run was cancelled.                                                   |
+
+Step status in the timeline and the logs panel: "Pending", "Running", "Success", "Failed" or
+"Skipped". "Skipped" marks steps the run didn't reach, such as a condition branch that wasn't
+taken.
+
+## Errors and what to do
+
+- "You've reached your monthly run limit. Upgrade your plan or wait until it resets." You've
+  used this month's runs. The limit renews once a month, on your subscription's start day; to
+  run more, upgrade the plan. Debug runs ("Execute from here") don't use the limit.
+- "Couldn't run workflow": the run didn't start. Try again.
+- "Couldn't run this step" and "This node isn't configured yet — fill in its required fields
+  before running": open the step's settings and fill in the required fields.
+- "A step hit a temporary error — refreshing this run." appears on the run page; Palitra
+  reloads the run's current state itself.
+- "Couldn't load workflow", "Couldn't load run history", "Couldn't load this run": click
+  "Retry".
+- "Couldn't delete workflow": try again later.
+
+On a BYOC installation, the "New Workflow" button and the list's "Run now" item are unavailable
+while the Palitra license is read-only or suspended.
+
+## Delete a workflow
+
+1. On the "Workflows" tab, open the "Actions" menu on the workflow's row.
+2. Choose "Delete".
+3. In the "Delete “name”?" dialog, click "Delete".
+
+The dialog warns: "This permanently deletes the workflow and its run history. Scheduled and
+event triggers stop immediately. This action cannot be undone." When it's done, you see
+"Workflow deleted".
+
+## Related articles
+
+- [Chat with the agent](/chat/)
+- [Connectors](/connectors/overview/)
+- [Skills](/skills/)
+- [Action log](/action-log/)
+- [Project notifications](/project-settings/notifications/)
+- [Plans and billing](/organization/billing/)
+- [For project managers](/getting-started/manager/)

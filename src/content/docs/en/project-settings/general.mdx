@@ -1,0 +1,109 @@
+---
+title: General
+description: The project's name, description, currency and timezone, and how to archive and restore a project.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/general/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.en.messages.json
+  - palitra-frontend/components/project-settings/project-general-form.tsx
+  - palitra-frontend/components/project-settings/project-general-form.en.messages.json
+  - palitra-frontend/components/project-settings/project-archive-dialog.tsx
+  - palitra-frontend/components/project-settings/project-archive-dialog.en.messages.json
+  - palitra-frontend/components/layout/project-switcher.tsx
+  - palitra-frontend/components/layout/project-switcher.en.messages.json
+  - palitra-frontend/components/org-settings/org-projects-table.tsx
+  - palitra-frontend/components/org-settings/org-projects-table.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/org/settings/projects/page.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/org-settings.en.messages.json
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/lib/auth/use-can-mutate-project.ts
+  - palitra-backend/src/modules/identity/application/services/project_service.py
+  - palitra-backend/src/modules/data_layer/application/services/reconciliation_service.py
+  - palitra-backend/src/core/config.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "General" tab is the first tab of project settings. It holds the project's name, description,
+currency and timezone, and its "Danger zone" lets you archive the project.
+
+Every project member sees the tab. Project managers, and the organization's owner and admins,
+can change the fields and archive the project. Everyone else sees the fields read-only, with the
+note "You have read-only access to this project".
+
+## Open the tab
+
+1. Pick the project in the project list at the top of the sidebar.
+2. Click the gear icon next to the project name ("Project settings").
+3. "General" opens first. If you are on another tab, go to "General".
+
+<Screenshot
+  id="project-settings-general"
+  alt="The General tab with the Project profile section and the Danger zone"
+/>
+
+## Edit the project profile
+
+The "Project profile" section has four fields:
+
+| Field          | What it holds                                                                  |
+| -------------- | ------------------------------------------------------------------------------ |
+| "Project name" | The project's name in the project list and in organization settings. Required. |
+| "Description"  | A short description of the project. Optional.                                  |
+| "Currency"     | The project's currency, picked from a searchable list.                         |
+| "Timezone"     | The project's timezone, picked from a searchable list.                         |
+
+1. Change the fields you need.
+2. Click "Save changes". The button is active only while the form has unsaved changes.
+
+Palitra confirms with "Saved".
+
+If the name is empty, the field shows "This field is required". If saving fails, Palitra shows
+"Could not save changes". This happens, for example, when another project in the organization
+already has that name: project names are unique within an organization.
+
+## Archive a project
+
+Archiving takes the project out of the workspace without deleting it right away. Only people who
+can change the project see the "Danger zone".
+
+1. In the "Danger zone", click "Archive project".
+2. In "Archive this project?", click "Archive project".
+
+Palitra confirms with "Project archived" and switches you to another active project. If no
+active project is left, you land in Chats.
+
+<Screenshot
+  id="project-settings-general-archive"
+  alt="The Archive this project? confirmation dialog"
+/>
+
+What happens to an archived project:
+
+- it disappears from the project list in the sidebar and becomes read-only;
+- on the "Projects" tab of organization settings its status is "Archived";
+- the project's data tables are kept for a limited time: by default Palitra deletes them 30 days
+  after the project was archived.
+
+If archiving fails, you see "Could not archive project".
+
+## Restore a project
+
+You can't restore a project from project settings: an archived project is not in the project
+list. Restoring happens in organization settings, and only the organization's owner or an admin
+can do it.
+
+1. Open "Organization settings" → "Projects".
+2. On the row of the project with the "Archived" status, click "Restore".
+
+The project returns to the project list and Palitra confirms with "Project restored". See
+[Organization projects](/organization/projects/) for details.
+
+## Related articles
+
+- [Instructions & context](/project-settings/instructions/)
+- [Project members](/project-settings/members/)
+- [Organization projects](/organization/projects/)
+- [For project managers](/getting-started/manager/)

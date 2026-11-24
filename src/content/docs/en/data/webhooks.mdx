@@ -1,0 +1,215 @@
+---
+title: Webhooks and API
+description: How to receive events from a CRM, call tracking and other systems through the webhook and the Batch API — the key, addresses, request format, testing and statuses.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/webhooks/page.tsx
+  - palitra-frontend/components/data-pipeline/ingest/system-webhook-view.tsx
+  - palitra-frontend/components/data-pipeline/ingest/system-webhook-view.en.messages.json
+  - palitra-frontend/components/data-pipeline/ingest/webhook-events-table.tsx
+  - palitra-frontend/components/data-pipeline/ingest/copy-field.tsx
+  - palitra-frontend/components/data-pipeline/overview/data-sources-grid.tsx
+  - palitra-frontend/components/data-pipeline/overview/data-sources-grid.en.messages.json
+  - palitra-frontend/components/billing/feature-lock-state.tsx
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/components/billing/feature-gates.ts
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-backend/src/modules/data_layer/api/webhook_config_router.py
+  - palitra-backend/src/modules/data_layer/api/webhook_rotation_router.py
+  - palitra-backend/src/modules/data_layer/api/webhook_test_router.py
+  - palitra-backend/src/modules/data_layer/api/webhook_status_router.py
+  - palitra-backend/src/modules/data_layer/api/webhook_debug_router.py
+  - palitra-backend/src/modules/data_layer/api/ingest/webhook_router.py
+  - palitra-backend/src/modules/data_layer/api/ingest/batch_router.py
+  - palitra-backend/src/modules/data_layer/application/services/webhook_test_service.py
+  - palitra-backend/src/modules/data_layer/infrastructure/redis/webhook_stats_reader.py
+  - palitra-backend/src/modules/data_layer/domain/models/webhook_debug_entry.py
+  - palitra-backend/src/modules/identity/api/dependencies.py
+  - palitra-backend/src/connectors/_base/ingest_event.py
+  - palitra-backend/src/connectors/_base/ingest_payload.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "Webhooks & API" screen lets you receive events from systems that have no dedicated Palitra
+connector: a CRM, call tracking, an online store, your own services. The external system POSTs
+events to the project's address, and Palitra writes them into the project's data.
+
+There are two ways:
+
+- "Webhook" — one event per request, handy for sending each event as it happens.
+- "Batch API" — up to 10,000 events per request, handy for bulk exports.
+
+Both use the project's single ingest API key.
+
+Webhook ingestion is available on the Pro plan. On a plan without it, the screen shows "Webhook
+ingestion isn't included in your plan" and an "Upgrade plan" button.
+
+Project managers, and the organization's owner and admins, can set up webhooks. For other project
+members the screen doesn't load: they see "Failed to load webhook configuration".
+
+## Open the screen
+
+1. Pick the project in the sidebar and go to "Data" — the "Data Pipeline" page opens.
+2. In "Data Sources", find the "Webhooks" card and click "Set up" (if there is no key yet) or
+   "Manage".
+
+The "Webhooks" card shows the ingestion status and the number of events today, the time of the
+last event or the number of failures in the last 24 hours.
+
+## Generate the API key
+
+Until a key exists, the screen shows a "No ingest key yet" block.
+
+1. Click "Generate API key".
+2. You see "API key generated. Copy it now — it won't be shown again."
+3. In the "Ingest API key (Authorization: Bearer)" field, click the copy icon and store the key
+   somewhere safe, such as the external system's settings.
+
+The full key is shown only right after it is generated. Once you leave the screen, the field
+keeps only the start of the key followed by an ellipsis. If the key is lost, generate a new one
+(see below).
+
+<Screenshot
+  id="data-webhooks-empty"
+  alt="The Webhooks & API screen before a key exists: the No ingest key yet block and the Generate API key button"
+/>
+
+## Set up the external system: webhook
+
+On the "Webhook" tab, in the "Webhook Endpoint" block:
+
+1. Copy the "Webhook URL" with the button next to the field.
+2. In the external system, set this address, the `POST` method and these headers:
+   - `Authorization: Bearer <your key>`;
+   - `Content-Type: application/json`.
+3. Set the request body to one event in JSON.
+
+The example from the "Payload Example" block:
+
+```json
+{
+  "event_name": "purchase",
+  "timestamp": "2026-05-21T10:00:00Z",
+  "user_id": "user_482",
+  "value": 12500.0,
+  "currency": "RUB",
+  "transaction_id": "ORD-4821"
+}
+```
+
+<Screenshot
+  id="data-webhooks-endpoint"
+  alt="The Webhook tab: the webhook URL, the ingest API key, and the Regenerate key and Send test event buttons"
+/>
+
+### Event fields
+
+Only one field is required: `event_name`, the event name (up to 128 characters). The rest are
+optional:
+
+| Field                       | What it is                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `timestamp`                 | The event time in ISO 8601.                                                         |
+| `user_id`                   | The user's ID in your system.                                                       |
+| `palitra_id`, `session_id`  | The visitor and session IDs from the [Palitra Tag](/data/pixel/), if you have them. |
+| `value`, `currency`         | An amount (0 or more) and a three-letter currency code, such as `RUB`.              |
+| `transaction_id`, `lead_id` | An order or lead number.                                                            |
+| `items`                     | The products in the event.                                                          |
+| `properties`                | Any additional parameters.                                                          |
+
+Palitra rejects fields that are neither in this list nor in the example: a request with an
+unknown field is refused. Put extra data inside `properties`.
+
+For Palitra to count an event as a conversion, mark it as one in the [events](/data/events/)
+registry.
+
+## Set up the external system: Batch API
+
+On the "Batch API" tab, in the "Batch API Endpoint" block:
+
+1. Copy the "API endpoint".
+2. Send `POST` requests to it with the same `Authorization` and `Content-Type` headers.
+3. Put the events in an `events` array — up to 10,000 records per request.
+
+```json
+{
+  "events": [
+    {
+      "event_name": "purchase",
+      "timestamp": "2026-05-21T10:00:00Z",
+      "user_id": "user_482",
+      "value": 12500
+    },
+    { "event_name": "form_submit", "timestamp": "2026-05-21T10:01:00Z", "user_id": "user_1093" }
+  ]
+}
+```
+
+A batch is accepted whole or not at all: if a single record is invalid, Palitra rejects the
+entire request.
+
+## Send a test event
+
+On the "Webhook" tab, click "Send test event". Palitra runs a `test_event` through the whole
+processing path and reports the result:
+
+- "Test event delivered." — ingestion works.
+- "Test event failed." — try again later.
+
+## Review recent events
+
+The "Recent Events" block on the "Webhook" tab shows recently received events, from both the
+webhook and the Batch API. Its columns are "Event", "Time", "User", "Revenue" and "Status". Click
+"Refresh" to load new rows.
+
+| Event status | Meaning                                           |
+| ------------ | ------------------------------------------------- |
+| "Received"   | The event was accepted and waits to be processed. |
+| "Processed"  | The event was processed.                          |
+| "Failed"     | Processing the event failed.                      |
+
+With no events yet, the block says "No webhook events yet.".
+
+## Ingestion status
+
+The status in the top right corner of the screen refreshes by itself every 30 seconds.
+
+| Status          | Meaning                                                                 |
+| --------------- | ----------------------------------------------------------------------- |
+| "Receiving"     | The last event arrived within the past 15 minutes.                      |
+| "Failing"       | Events arrive, but more than half of those in the last 24 hours failed. |
+| "Idle"          | Events arrived before, but none in the past 15 minutes.                 |
+| "Not receiving" | No events yet.                                                          |
+
+With "Failing", look in "Recent Events" for events with the "Failed" status and check their
+format against the field table above.
+
+## Regenerate the key
+
+Do this if the key is lost or may have leaked.
+
+1. On the "Webhook" tab, click "Regenerate key".
+2. You see "Ingest key regenerated. Copy it now — it won't be shown again." Copy the new key from
+   the field.
+3. Replace the key in every external system that sends events to the project.
+
+The old key stops working at once. Connector webhooks use the same project key — update it there
+too. The date of the change is shown above the buttons: "Last rotated: …".
+
+## Errors
+
+- "Failed to generate key. Please try again." or "Failed to regenerate key. Please try again." —
+  try again. If the error persists, check that you have the project manager role or higher.
+- "Failed to load webhook configuration" — click "Retry". Members without manager rights see this
+  error too.
+- "Could not load status" next to the status — click "Retry".
+
+## Related articles
+
+- [Data overview](/data/overview/)
+- [Events](/data/events/)
+- [Palitra Tag](/data/pixel/)
+- [CSV upload](/data/uploads/)
+- [Plan and billing](/organization/billing/)
