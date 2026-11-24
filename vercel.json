@@ -18,6 +18,7 @@
           "value": { "re": "^ru\\b|[,;]\\s*ru\\b" }
         }
       ],
+      "missing": [{ "type": "query", "key": "lang" }],
       "destination": "https://docs.ru.palitra.io/",
       "permanent": false
     }
