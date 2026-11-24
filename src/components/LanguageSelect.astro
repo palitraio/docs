@@ -2,14 +2,16 @@
 import { LOCALES, otherLocale, resolveLocale } from "@/locales.mjs";
 
 const other = LOCALES[otherLocale(resolveLocale(process.env.SITE_LOCALE))];
-const target = new URL(Astro.url.pathname, other.origin);
-if (target.pathname === "/" && other.lang === "en") target.searchParams.set("lang", "en");
-const href = target.href;
+const href = new URL(Astro.url.pathname, other.origin).href;
 ---
 
-<a class="language-switch" href={href} hreflang={other.lang} lang={other.lang} data-language-switch>
-  {other.label}
-</a>
+{
+  other.published && (
+    <a class="language-switch" href={href} hreflang={other.lang} lang={other.lang} data-language-switch>
+      {other.label}
+    </a>
+  )
+}
 
 <style>
   .language-switch {

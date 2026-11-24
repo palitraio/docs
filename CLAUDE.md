@@ -35,6 +35,12 @@ docs.ru.palitra.io) and English (`en/`, docs.palitra.io), each built with `SITE_
   siblings are absent); `pnpm build` runs it first.
 - Internal links are locale-free (`/getting-started/manager/`): never write `/en/` or `/ru/`.
 
+## Publishing a locale
+
+`published` per locale in `src/locales.mjs` controls the language switch and the `hreflang`
+alternates. English is `false` until docs.palitra.io answers 200: the Russian build then links
+nowhere to it. Flip `en.published` to `true` to restore the switch and alternates.
+
 ## Stability
 
 - Slugs and heading anchors are stable: others link to them. When one must change, add a

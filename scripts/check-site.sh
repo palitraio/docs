@@ -34,6 +34,16 @@ if grep -rqE 'href="/(en|ru)/' dist --include='*.html'; then
   fail "a locale-prefixed link survived the build"
 fi
 
+other_published=$(node --input-type=module -e '
+import { LOCALES, otherLocale } from "./src/locales.mjs";
+console.log(LOCALES[otherLocale(process.argv[1])].published);
+' "$locale")
+if [ "$other_published" = false ]; then
+  if grep -rq "$other_domain" dist; then
+    fail "dist/ mentions $other_domain although that locale is unpublished"
+  fi
+fi
+
 # Astro minifies each page to one line, so count occurrences rather than filter lines. Each
 # link to the other domain must sit in an hreflang alternate or in the language switch.
 while IFS= read -r page; do

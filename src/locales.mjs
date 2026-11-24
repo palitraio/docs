@@ -1,9 +1,14 @@
+/**
+ * Per-locale site settings. `published` is true once the locale's domain answers: only then do
+ * the other locale's builds show the language switch and hreflang alternates for it.
+ */
 export const LOCALES = {
   en: {
     lang: "en",
     label: "English",
     origin: "https://docs.palitra.io",
     title: "Palitra Docs",
+    published: false,
     sidebar: { gettingStarted: "Getting started", connectors: "Connectors" },
   },
   ru: {
@@ -11,6 +16,7 @@ export const LOCALES = {
     label: "Русский",
     origin: "https://docs.ru.palitra.io",
     title: "Палитра · Документация",
+    published: true,
     sidebar: { gettingStarted: "Начало работы", connectors: "Коннекторы" },
   },
 };
