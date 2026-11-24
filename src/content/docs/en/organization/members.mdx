@@ -64,7 +64,7 @@ The members table has the columns "Member", "Email", "Role", "Joined" and "Actio
 3. Choose the "Organization role": "Admin" or "Member".
 4. If you chose "Member", the "Project access" block appears. Tick the projects and pick a role
    for each: "Manager", "Viewer" or "Guest". The block is shown only when the organization has
-   at least one active project. Admins don't need project access granted.
+   at least one active project. For the "Admin" role the block isn't shown.
 5. Click "Send invitation".
 
 You see "Invitation sent", and the invitation appears in the pending invitations list. The
@@ -122,9 +122,12 @@ Only the owner can change roles.
 You can't change your own role. The only way to make someone else the owner is to transfer
 ownership.
 
+If a role claim is set in the single sign-on settings, the member's role is taken from the role
+mapping again at their next SSO sign-in. See [Single Sign-On](/organization/sso/).
+
 ## Transfer ownership
 
-An organization has one owner. To hand this role to another member:
+To make another member the owner:
 
 1. Open the actions menu in the future owner's row and choose "Transfer ownership".
 2. Read the warning: the member "becomes the owner and you become an admin. You lose access to
@@ -141,7 +144,7 @@ You see "Member removed".
 
 ## Leave the organization
 
-Members and admins see "Leave organization" in their own row. Once you confirm, you lose access
+Admins see "Leave organization" in their own row. Once you confirm, you lose access
 to all projects in this organization; you can be re-invited later.
 
 The owner doesn't have this item: to leave, first transfer ownership to another member.

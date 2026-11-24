@@ -41,6 +41,9 @@ sources:
   - palitra-backend/src/modules/billing/application/services/subscription_service.py
   - palitra-backend/src/modules/billing/domain/services/license_entitlements.py
   - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/components/billing/addon-card.tsx
+  - palitra-frontend/components/billing/limit-exceeded-modal.tsx
+  - palitra-backend/src/modules/billing/domain/ports/project_count_port.py
 ---
 
 import Screenshot from "@/components/Screenshot.astro";
@@ -60,9 +63,9 @@ The owner and admins see the tab, with different rights:
 | Provider keys, spending limit and custom models in "AI model keys" | yes | yes |
 | AI billing mode and utility model | yes | no |
 
-Admins see the "Change plan" and "Manage add-ons" buttons, but the dialogs they open show this
-instead of the controls: "Only the organization owner can change the plan or payment method.
-Find the owner on the Members tab."
+Admins see the "Change plan" and "Manage add-ons" buttons but can't pick a plan or an add-on.
+The "Change plan" dialog tells them: "Only the organization owner can change the plan or payment
+method. Find the owner on the Members tab."
 
 ## Open the tab
 
@@ -132,8 +135,8 @@ Only the owner can change the plan.
 
 1. Click "Change plan". The "Change plan" dialog opens.
 2. Pick the billing interval: "Monthly" or "Annual". The annual option shows its discount.
-3. Pick a plan. The current one is marked "Current". Plans priced "Custom" have a "Contact
-   sales" link instead.
+3. Pick a plan. The current one is marked "Current". Plans that aren't self-serve show a
+   "Contact sales" link instead of a price.
 4. Palitra calculates the cost and shows an "Upgrade to …" or "Downgrade to …" dialog saying what
    will happen: "You'll be charged … now.", "You'll receive a … credit toward future invoices."
    or "Nothing is charged now. This change takes effect on …".
@@ -148,7 +151,8 @@ What can get in the way:
 - "Add a payment method first" — changing plans needs a card on file. See
   [Payment method](#payment-method).
 - "Reduce usage before downgrading" — the new plan has lower limits. Palitra lists what to do,
-  for example "Reduce projects from … to …" or "Remove the … add-on". Archive extra projects or
+  for example "Reduce projects from … to …" or "Remove the … add-on". Archived projects don't
+  count toward the limit: archive extra projects (see [Projects](/organization/projects/)) or
   turn off add-ons and try again.
 - "You're already on this plan." — you picked the current plan.
 - "Enterprise plans aren't self-serve — contact sales at" — for Enterprise, write to sales.
@@ -168,13 +172,14 @@ asks: "Add a payment method to resume your subscription."
 ## Add-ons
 
 Add-ons extend your plan: they add projects or workflow runs, or turn on features such as single
-sign-on. Which add-ons you see and their prices depend on your plan.
+sign-on.
 
 1. Click "Manage add-ons". The "Add-ons" dialog opens.
 2. On the add-on you need:
-   - for a recurring add-on, flip the switch or set the quantity with "Decrease quantity" and
-     "Increase quantity";
-   - for a one-time add-on, click "Purchase".
+   - if the add-on can be bought several times over, set the quantity with "Decrease quantity"
+     and "Increase quantity" and click "Purchase";
+   - if it's a monthly subscription, flip the switch ("On" / "Off");
+   - if it's a one-time purchase, click "Purchase".
 3. Palitra shows the cost, for example "This add-on adds …/mo to your bill.". Click "Confirm".
 
 An active add-on is marked "Active". If an add-on isn't available on your plan, it reads
@@ -233,8 +238,8 @@ the organization accesses and pays for AI models.
   stored encrypted. You can't delete the last key in this mode.
 - "Custom models" — models with an OpenAI-compatible API (for example vLLM or Ollama). Click
   "Add model".
-- "Utility model" — the model for background tasks: SQL generation, chat titles, context
-  compaction. Only the owner can change it.
+- "Utility model" — with your own keys: the model for background tasks such as SQL generation,
+  chat titles and context compaction. Only the owner can change it.
 
 <Screenshot id="organization-billing-ai-keys" alt="The AI model keys dialog with the billing mode choice" />
 

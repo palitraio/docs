@@ -20,6 +20,9 @@ sources:
   - palitra-frontend/components/billing/addon-catalog.en.messages.json
   - palitra-frontend/components/layout/project-switcher.en.messages.json
   - palitra-backend/src/modules/identity/api/projects.py
+  - palitra-frontend/components/billing/usage-card.en.messages.json
+  - palitra-frontend/lib/stores/project-store.ts
+  - palitra-backend/src/modules/billing/domain/ports/project_count_port.py
 ---
 
 import Screenshot from "@/components/Screenshot.astro";
@@ -79,7 +82,7 @@ There are two ways to get more projects:
 - add the "Extra Projects Pack" add-on, if your plan offers it.
 
 Both are done on the "Billing" tab — see [Billing](/organization/billing/). Current usage is on
-the "Projects" card there.
+the "Projects used" card there. Archived projects don't count toward the limit.
 
 ## Archive a project
 

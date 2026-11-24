@@ -20,6 +20,9 @@ sources:
   - palitra-frontend/components/billing/addon-catalog.ru.messages.json
   - palitra-frontend/components/layout/project-switcher.ru.messages.json
   - palitra-backend/src/modules/identity/api/projects.py
+  - palitra-frontend/components/billing/usage-card.ru.messages.json
+  - palitra-frontend/lib/stores/project-store.ts
+  - palitra-backend/src/modules/billing/domain/ports/project_count_port.py
 ---
 
 import Screenshot from "@/components/Screenshot.astro";
@@ -78,7 +81,7 @@ import Screenshot from "@/components/Screenshot.astro";
 - подключить дополнение «Пакет дополнительных проектов», если оно доступно на вашем тарифе.
 
 Оба делаются на вкладке «Биллинг» — см. [Биллинг](/organization/billing/). Текущее
-использование там же, на карточке «Проекты».
+использование там же, на карточке «Проекты». Архивные проекты в лимит не входят.
 
 ## Архивировать проект
 
