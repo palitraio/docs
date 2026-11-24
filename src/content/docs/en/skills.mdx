@@ -1,0 +1,311 @@
+---
+title: Skills
+description: What agent skills are, how built-in skills differ from your own, and how to create, import, enable and call a skill in chat.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/skills/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/skills/skills-page.en.messages.json
+  - palitra-frontend/components/skills/resolve-skill-list.ts
+  - palitra-frontend/components/skills/skill-list-section.en.messages.json
+  - palitra-frontend/components/skills/skill-list-row.tsx
+  - palitra-frontend/components/skills/skill-list-row.en.messages.json
+  - palitra-frontend/components/skills/skills-list.en.messages.json
+  - palitra-frontend/components/skills/use-skill-permissions.ts
+  - palitra-frontend/components/skills/skill-detail.tsx
+  - palitra-frontend/components/skills/skill-detail.en.messages.json
+  - palitra-frontend/components/skills/skill-detail-header.tsx
+  - palitra-frontend/components/skills/skill-detail-header.en.messages.json
+  - palitra-frontend/components/skills/use-skill-lifecycle.ts
+  - palitra-frontend/components/skills/skill-form-dialog.tsx
+  - palitra-frontend/components/skills/skill-form-dialog.en.messages.json
+  - palitra-frontend/components/skills/skill-name-validation.ts
+  - palitra-frontend/components/skills/skill-arguments-editor.tsx
+  - palitra-frontend/components/skills/skill-arguments-editor.en.messages.json
+  - palitra-frontend/components/skills/skill-arguments-view.en.messages.json
+  - palitra-frontend/components/skills/skill-network-fields.tsx
+  - palitra-frontend/components/skills/skill-network-fields.en.messages.json
+  - palitra-frontend/components/skills/skill-network-hosts.ts
+  - palitra-frontend/components/skills/skill-network-view.en.messages.json
+  - palitra-frontend/components/skills/skill-files-section.tsx
+  - palitra-frontend/components/skills/skill-files-section.en.messages.json
+  - palitra-frontend/components/skills/skill-file-upload-dialog.tsx
+  - palitra-frontend/components/skills/skill-file-limits.ts
+  - palitra-frontend/components/skills/skill-file-preview-dialog.tsx
+  - palitra-frontend/components/skills/skill-file-preview-dialog.en.messages.json
+  - palitra-frontend/components/skills/import-skill-dialog.tsx
+  - palitra-frontend/components/skills/import-skill-dialog.en.messages.json
+  - palitra-frontend/components/skills/promote-skill-dialog.tsx
+  - palitra-frontend/components/skills/promote-skill-dialog.en.messages.json
+  - palitra-frontend/components/skills/try-in-chat-dialog.tsx
+  - palitra-frontend/components/skills/try-in-chat-dialog.en.messages.json
+  - palitra-frontend/components/billing/feature-lock.tsx
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/chat/command-reference.en.messages.json
+  - palitra-frontend/components/chat/chat-composer.en.messages.json
+  - palitra-frontend/components/chat/chat-agent.en.messages.json
+  - palitra-backend/src/modules/skills/api/skills_router.py
+  - palitra-backend/src/modules/skills/application/services/skill_service.py
+  - palitra-backend/src/modules/skills/application/services/skill_resolution_service.py
+  - palitra-backend/src/modules/skills/domain/services/package_validation.py
+  - palitra-backend/src/modules/skills/infrastructure/starter_skills/seeding.py
+  - palitra-backend/src/modules/chat/infrastructure/langgraph/use_skill_tool.py
+  - palitra-backend/src/modules/chat/infrastructure/langgraph/prompts.py
+  - palitra-backend/src/modules/billing/domain/models/feature_matrix.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+A skill is a ready-made, step-by-step procedure the agent follows for one kind of task: finding
+anomalies, building a weekly report, checking budget pacing. It says which data to look at and how
+to analyse it, and can carry files such as templates, references and scripts. A skill grants the
+agent no new permissions: the agent works with the same tools and data as in any chat.
+
+"Skills" lists every skill available in the project. Every project member can open it. Not
+everyone can create or change skills — see "Who can do what" below.
+
+## Open the section
+
+1. Pick the project in the project list in the sidebar.
+2. Click "Skills" in the sidebar, or press ⌘ S on a Mac (Ctrl S on Windows and Linux).
+
+The skill list with "Search skills..." is on the left, the selected skill's card on the right.
+The first skill in the list is selected when the section opens.
+
+<Screenshot id="skills-list" alt="The Skills section: built-in, organization and project skills, and the selected skill's card" />
+
+## Built-in, organization and project skills
+
+The list has three groups:
+
+| Group | Label on the card | Where it applies |
+| --- | --- | --- |
+| "Built-in skills" | "SYSTEM" | Ship with Palitra and exist in every project. They can't be changed. |
+| "Organization skills" | "ORG" | Shared by every project in the organization. |
+| "Project skills" | "PROJECT" | This project only. |
+
+When skills in different groups share a name, the agent uses the project skill first, then the
+organization skill, then the built-in one. A skill hidden by an enabled skill of the same name in
+a higher group is marked "(overridden)". A disabled skill is marked "(disabled)" — the agent
+doesn't use it.
+
+Built-in skills:
+
+| Skill | What it does |
+| --- | --- |
+| `anomaly-detection` | Finds unusual jumps in spend, clicks, CTR, CPC, conversions and CPA and explains their likely causes. |
+| `report-weekly` | Builds a weekly cross-channel summary with charts and a downloadable report. |
+| `budget-pacing` | Compares actual spend with the active media plan and flags channels spending faster or slower than planned. |
+| `optimize-campaigns` | Reviews campaign performance and proposes bid and budget changes. |
+| `optimize-keywords` | Reviews keywords and recommends bid, match-type and negative-keyword changes. |
+| `analyze-search-queries` | Mines search queries for new keywords and negatives. |
+| `audit-ad-quality` | Checks ads for broken links, missing extensions, spelling errors and landing-page mismatch. |
+| `event-setup` | Sets up the project's event registry and the connectors' event mapping: studies the data, proposes a plan and applies it once you agree. |
+| `skill-creator` | Creates or changes a skill right in chat. |
+
+## How the agent uses skills in chat
+
+The agent knows the names and descriptions of every enabled skill in the project. When your
+request matches one, the agent loads it and follows its instructions. While it answers, this shows
+as a "Loading skill" → "Loaded skill" step.
+
+You can also call a skill explicitly:
+
+1. Type `/` in the chat input.
+2. Pick the skill under "Skills".
+3. After the name, add the argument values in order, separated by spaces, such as
+   `/optimize-campaigns yandex_direct last_7_days`, and send the message.
+
+Arguments you leave out, the agent tries to settle from the conversation. The `/help` command
+opens "Commands & shortcuts" with the list of skills and commands.
+
+Skills are also used in [workflows](/workflows/).
+
+## Try a skill in chat
+
+1. Pick the skill in the list.
+2. On the skill's card, click "…" → "Try in chat".
+3. Fill in the arguments. Optional ones are marked "(optional)"; fields start with their default
+   values. If the skill has no arguments, the dialog says "This skill requires no arguments.".
+4. Click "Start chat".
+
+A new chat opens with the skill call, with your arguments, as its first message.
+
+<Screenshot id="skills-try-in-chat" alt="The Try in chat dialog with the skill's argument fields and the Start chat button" />
+
+## What the skill card shows
+
+- The skill's name and group label: "SYSTEM", "ORG" or "PROJECT".
+- The "Enable skill" switch and the "…" actions menu.
+- "Last updated" and "Description". Imported skills may also show "License", "Compatibility" and
+  an expandable "Details" block.
+- "Arguments" — the skill's parameters, marked "required" or "optional", with their "default:"
+  value.
+- "Internet access" — "On" or "Off", with the allowed sites or "Any site".
+- "Prompt" — the skill's instructions.
+- "Resources" — attached files, grouped into "Scripts", "References" and "Assets". Click a file
+  to open "File preview".
+
+<Screenshot id="skills-detail" alt="A skill's card with the Enable skill switch, arguments, prompt and resources" />
+
+## Enable or disable a skill
+
+Click the "Enable skill" switch on the card. A disabled skill stays in the list marked
+"(disabled)", but the agent doesn't load it and `/` doesn't offer it.
+
+A built-in skill is enabled or disabled for the whole organization at once, in every project. The
+organization's owner and admins can do this.
+
+## Create a skill
+
+Custom skills are available on the Pro plan and above. On other plans "Create skill" and "Import
+package" are inactive; clicking them shows "Custom skills aren't included in your plan" with an
+"Upgrade plan" link.
+
+1. Click "Create skill".
+2. In "Create skill", choose the "Scope": "Project" or "Organization". Only the organization's
+   owner and admins can choose "Organization". The scope can't be changed later.
+3. Enter the "Skill name", such as `weekly-status-report`: lowercase Latin letters and digits,
+   separated by single hyphens, up to 64 characters. Otherwise you see "Use lowercase letters and
+   digits, separated by single hyphens (max 64 chars).".
+4. Fill in the "Description". The agent decides whether the skill fits a request from it, so say
+   what the skill does and when to use it.
+5. Add "Arguments" if needed (see below) and set "Internet access".
+6. Write the "Instructions" in Markdown. The field opens with a template in a comment: replace it
+   with your own text — the comment itself doesn't count as instructions. The buttons above the
+   field switch between the editor and the preview. Empty instructions can't be saved:
+   "Instructions are required.".
+7. Under "Resources" on the right, you can attach files right away with "Upload".
+8. Click "Create".
+
+<Screenshot id="skills-form" alt="The Create skill dialog with scope, name, description, arguments and the instructions editor" />
+
+### Arguments
+
+Arguments make a skill configurable: for example, `platform` and `period`.
+
+1. Under "Arguments", click "Add".
+2. Enter the "Argument name": lowercase Latin letters, digits and underscores, starting with a
+   letter.
+3. Add a "Description" — it tells the agent and you what to pass here.
+4. Use the "required" / "optional" button to set whether the argument is needed. An optional one
+   can have a "Default value".
+5. Drag arguments to reorder them — values after `/name` are passed in this order.
+
+In the instructions, insert one argument's value with `{{args.platform}}`, or all of them with
+`{{args}}`. "Available placeholders:" under the editor lists them.
+
+### Internet access
+
+A skill works without internet access by default. If it needs an outside site or library:
+
+1. Turn on "Internet access".
+2. In "Only these sites (optional)", list the allowed domains. Empty means any site.
+   `example.com` matches that host only; `*.example.com` matches every subdomain, not
+   `example.com` itself. IP addresses aren't supported; up to 64 sites.
+3. Tick "Allow installing libraries (PyPI, npm)" if the skill's scripts need packages.
+
+Palitra warns: "A skill with internet access can send project data out. Each run is limited in
+how much it can send." Turn access on only for skills that really need it.
+
+## Attach files to a skill
+
+1. Under "Resources", click "Upload".
+2. Choose the "Kind": "Scripts", "References" or "Assets".
+3. Click "Choose files". For a single file you can set a "Path", such as `templates/report.md`.
+4. Optionally add a "Description" of what the file is for.
+5. Click "Upload".
+
+Limits:
+
+- "Scripts" accept `.py`, `.sh`, `.js`. "References" and "Assets" accept `.md`, `.txt`, `.pdf`,
+  `.xlsx`, `.csv`, `.docx`, `.png`, `.jpg`, `.jpeg`, `.webp`, `.yaml`, `.yml`, `.json`. Any other
+  type gives "This file type is not allowed for the selected kind.".
+- Up to 50 files per skill: "This skill already has the maximum of 50 files.".
+- Up to 100 MB for all files together: "These files would exceed the 100 MB total size limit.".
+
+A file's "…" menu has "Download", "Overwrite" and "Remove". Text files open in an editor right in
+"File preview" — click "Save" after editing. Built-in skills' files can only be viewed and
+downloaded.
+
+## Edit, duplicate and delete a skill
+
+All actions are in the skill card's "…" menu:
+
+- "Edit" opens "Edit skill" with the same fields as when creating, except the scope. Click
+  "Save".
+- "Duplicate" creates a copy of the skill in the project. You see "Skill duplicated".
+- "Delete", once confirmed in "Delete skill", removes the skill and its files for good. A skill
+  used by an active workflow can't be deleted: "This skill is used by an active workflow and
+  can't be deleted.".
+
+A built-in skill can't be edited or deleted. To adapt one, ask the agent in chat to copy it (see
+below), or create your own skill with the same name — it overrides the built-in one.
+
+## Create or change a skill through chat
+
+Ask the agent in [chat](/chat/) to create, improve or copy a skill — it uses the built-in
+`skill-creator` skill and drafts the skill from the conversation. The agent won't turn on
+internet access for a skill: only a person can do that, in "Edit skill".
+
+## Promote a skill to the organization
+
+A project skill can be shared with the whole organization.
+
+1. In a project skill's "…" menu, choose "Promote to organization".
+2. Confirm with "Promote".
+
+The files are copied to the organization skill and the project skill is deleted. This can't be
+undone. If the organization already has a skill with that name, you see "An organization skill
+with this name already exists. Rename the skill before promoting.".
+
+The item is shown to someone who is both a project manager and the organization's owner or
+admin.
+
+## Import and export a package
+
+A skill can be moved between organizations or Palitra installations as a `.zip` package.
+
+**Export.** In a skill's "…" menu, choose "Export package" — a `<skill name>.zip` file downloads.
+Built-in skills can't be exported.
+
+**Import.**
+
+1. Click "Import package".
+2. In "Import skill package", click "Click to select a .zip file" and pick the package.
+3. Choose the "Scope": "Project" or "Organization".
+4. Click "Import".
+
+A package is a single folder named after the skill, containing `SKILL.md`. Its header
+(frontmatter) must have a `name` matching the folder name and a `description`. The package's
+other files become the skill's resources. A package holds up to 50 files and 100 MB.
+
+If the package doesn't fit, you see "This package is not valid or is incompatible. Please check
+the file and try again.".
+
+## Who can do what
+
+| Action | Who |
+| --- | --- |
+| View skills, "Try in chat" | Every project member |
+| Export a package | Every project member (not for built-in skills) |
+| Create, change, enable and delete project skills, "Duplicate" | Project managers, the organization's owner and admins |
+| Create, change, enable and delete organization skills | The organization's owner and admins |
+| Enable and disable built-in skills | The organization's owner and admins |
+| "Promote to organization" | A project manager who is also the organization's owner or admin |
+
+## If something doesn't load
+
+- "Couldn't load skills" or "Couldn't load skill" — click "Retry".
+- "No skills match your search." — nothing matches the search; it looks at names and
+  descriptions.
+- "No project skills yet" — the project has no skills of its own yet; built-in skills still
+  work.
+
+## Related articles
+
+- [Chat](/chat/)
+- [Workflows](/workflows/)
+- [Project instructions](/project-settings/instructions/)
+- [Billing](/organization/billing/)

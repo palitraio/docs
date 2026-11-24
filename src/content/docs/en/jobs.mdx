@@ -1,0 +1,238 @@
+---
+title: Jobs
+description: A project's background jobs — connector syncs, uploads, recomputes and background calls from chat. Statuses, errors, retrying, cancelling and clearing.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/jobs/page.tsx
+  - palitra-frontend/components/jobs/jobs-page.tsx
+  - palitra-frontend/components/jobs/jobs-page.en.messages.json
+  - palitra-frontend/components/jobs/jobs-table.tsx
+  - palitra-frontend/components/jobs/jobs-table.en.messages.json
+  - palitra-frontend/components/jobs/job-status-badge.tsx
+  - palitra-frontend/components/jobs/job-status-badge.en.messages.json
+  - palitra-frontend/components/jobs/job-status-filter.tsx
+  - palitra-frontend/components/jobs/job-status-filter.en.messages.json
+  - palitra-frontend/components/jobs/job-actions-menu.tsx
+  - palitra-frontend/components/jobs/job-actions-menu.en.messages.json
+  - palitra-frontend/components/jobs/focused-job-card.tsx
+  - palitra-frontend/components/jobs/focused-job-card.en.messages.json
+  - palitra-frontend/components/jobs/clear-finished-jobs-dialog.tsx
+  - palitra-frontend/components/jobs/clear-finished-jobs-dialog.en.messages.json
+  - palitra-frontend/components/jobs/job-progress-cell.tsx
+  - palitra-frontend/components/jobs/job-duration-cell.tsx
+  - palitra-frontend/components/jobs/job-duration-cell.en.messages.json
+  - palitra-frontend/lib/jobs/job-state.ts
+  - palitra-frontend/lib/jobs/job-errors.en.messages.json
+  - palitra-frontend/lib/types/job.ts
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/lib/routes.ts
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/hooks/use-nav-hotkeys.ts
+  - palitra-frontend/components/chat/JobCardLive.tsx
+  - palitra-frontend/components/chat/JobStatusCard.tsx
+  - palitra-frontend/components/chat/chat-agent.en.messages.json
+  - palitra-backend/src/modules/jobs/domain/models/job.py
+  - palitra-backend/src/modules/jobs/api/jobs_router.py
+  - palitra-backend/src/modules/jobs/application/services/job_retry_service.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+"Jobs" shows the work Palitra does in the background: connector syncs, CSV processing, webhook
+intake, attribution recomputes, dashboard refreshes and the background tool calls the agent starts
+from chat. It tells you what is running, what finished and why a job failed — and lets you retry
+a failed job.
+
+Every project member sees the job list. Project managers, and the organization's owner and
+admins, can retry, cancel and delete jobs; other members see no actions in the table.
+
+## Open the section
+
+1. Pick the project in the project list in the sidebar.
+2. Click "Jobs" in the sidebar, or press ⌘ J on a Mac (Ctrl J on Windows and Linux).
+
+When the agent starts a background job in chat, its message shows a card with the job's status.
+Click the card to open "Jobs" with that job shown above the list (see "Open a job from chat"
+below).
+
+<Screenshot id="jobs-list" alt="The Jobs section with the table of background jobs, the status filter and the Clear finished button" />
+
+## What the table shows
+
+Jobs are listed newest first. The columns:
+
+| Column | Contents |
+| --- | --- |
+| "Type" | The kind of job, as a system name such as `etl_sync` (see the table below). |
+| "Connector" | The connector the job belongs to, or "—". |
+| "Status" | The current status; a failed job has an icon with the reason next to it. |
+| "Progress" | A bar and a percentage, when the job reports them. |
+| "Started" | When the job started, such as "5 minutes ago"; hover for the exact time. |
+| "Duration" | How long the job ran; for a running job it keeps counting. |
+| "Retries" | How many times the job was retried, such as "×2". |
+| "Actions" | The "…" menu with the job's actions. |
+
+Statuses update on their own; there's no need to reload the page. Below the table are the page
+number and the "Previous" and "Next" buttons.
+
+Job types you may see in the "Type" column:
+
+| Type | What it is |
+| --- | --- |
+| `etl_sync` | A connector sync: loading data from an ad account or an analytics service. |
+| `csv_ingestion` | Processing an uploaded CSV file. |
+| `webhook_batch_ingest` | Taking in a batch of data that arrived through a webhook. |
+| `attribution_recompute` | Recomputing attribution. |
+| `connector_reprocess` | Reprocessing a connector's already loaded data. |
+| `tool_run` | A background call of a connector tool that the agent started from chat. |
+| `artifact_refresh` | An on-demand refresh of a dashboard artifact. |
+| `reconciliation_sync` | A data reconciliation from older Palitra versions. No new ones are created. |
+| `workflow_…` | A step of a [workflow](/workflows/). |
+
+## Filter jobs by status
+
+1. Open the "Status" list above the table.
+2. Pick a status, such as "Failed". To see everything again, pick "All statuses".
+
+The filter resets when you switch to another project.
+
+## Job statuses
+
+| Status | Meaning |
+| --- | --- |
+| "Pending" | The job is queued and hasn't started yet. |
+| "Running" | The job is in progress. |
+| "Cancelling…" | A cancel was requested; the job stops at its next safe point. |
+| "Completed" | The job finished successfully. |
+| "Failed" | The job failed. The reason is in the tooltip of the icon next to the status. |
+| "Cancelled" | The job was cancelled. |
+| "Postponed" | The platform's API quota stopped the sync; it carries on later. |
+| "Outcome unknown" | A background tool call may have changed data on the platform, but its result wasn't stored. |
+
+**"Postponed".** The clock icon's tooltip says: "The platform's API quota ran out. The next sync
+runs from … and carries on from here." Nothing to do: the connector's next sync is a new job and
+picks up where this one stopped.
+
+**"Outcome unknown".** The tooltip says: "The call may have changed data on the platform. Check
+there before retrying." Open the ad account and make sure the change didn't go through before you
+run it again.
+
+## Find out why a job failed
+
+Hover over the red icon next to the "Failed" status. The tooltip has two lines: what happened and
+what to do. Common reasons:
+
+| What happened | What to do |
+| --- | --- |
+| "The connector's authorization has expired." | "Reconnect the credential in the connector settings." |
+| "The account has no access to the requested data." | "Ask an account owner to grant access, then retry." |
+| "The connector is disabled, so the sync did not start." | "Re-enable the connector before retrying." |
+| "Another sync of this connector was running, so this one did not start." | "Wait for that sync to finish." |
+| "The platform kept returning a temporary error, and the retries ran out." | "Retry the job." |
+| "The platform refused the request." | "This error cannot be retried — open a support ticket." |
+| "The connector's saved event mapping is no longer valid." | "Open the connector's event mapping and save it again." |
+| "The job ran past its time limit." | "Retry it, or narrow what it was asked to do." |
+| "The tool is blocked for this project." | "Allow it in the connector's tool permissions." |
+
+The error text may carry a detail such as "Platform code: …" or "Table: …". The full, untrimmed
+error text is shown on the job's card when you open it from chat.
+
+## Open a job from chat
+
+When the agent starts a background job, chat shows a card with the job type and status
+("Pending", "Running", "Completed" and so on). Click it:
+
+1. "Jobs" opens with this job's card above the list.
+2. The card shows the status, "Connector", "Started", "Finished" and, for a postponed sync,
+   "Resumes". For a failed job, the full error text follows.
+3. To go back to the plain list, click "Show all jobs".
+
+The card shows the job even when it isn't on the list's current page or doesn't match the
+selected filter. If the job was deleted, the card says "Job not found".
+
+<Screenshot id="jobs-focused-card" alt="A job's card above the list with the Connector, Started and Finished fields and the error text" />
+
+## Retry a job
+
+You can retry a job whose status is "Failed" or "Cancelled".
+
+1. On the job's row, click "…" in the "Actions" column.
+2. Choose "Retry".
+
+The job goes back to "Pending" and the "Retries" count goes up by one. The job is retried in
+place; no new row appears.
+
+<Screenshot id="jobs-actions-menu" alt="A job's actions menu with Retry, Cancel and Delete" />
+
+"Retry" is missing when the error is marked as non-retryable ("The platform refused the
+request."). For a workflow step it is replaced by "Retry in Workflow", which takes you to
+[Workflows](/workflows/): steps are retried from the workflow run. A job older than 30 days can't
+be retried.
+
+If the retry doesn't go through, Palitra tells you why:
+
+- "A sync is already running for this connector. Try again once it finishes."
+- "Only failed or cancelled jobs can be retried." — the job's status has already changed.
+- "Retry is unavailable because the task payload was not preserved."
+- "A write call can't be retried. Run it again from chat." — a background call that changes data
+  on the platform is only repeated by asking the agent again.
+- "Too many background calls are running. Try again later."
+- "Couldn’t reach the task broker. We’ll keep this job pending — try again if it doesn’t pick up
+  shortly." — the job stays "Pending".
+- "You don’t have permission to retry this job."
+
+## Cancel a job
+
+You can cancel a job that is "Pending" or "Running".
+
+1. On the job's row, click "…".
+2. Choose "Cancel".
+
+A queued job is cancelled at once and becomes "Cancelled". A running job first shows
+"Cancelling…" and stops at its next safe point.
+
+"Cancel" isn't offered for workflow steps (they are cancelled with the workflow run) or for a
+running background call that changes data on the platform: stopping it halfway isn't safe.
+
+## Delete a job
+
+Only a finished job can be deleted: "Completed", "Failed", "Cancelled" or "Postponed".
+
+1. On the job's row, click "…" and choose "Delete".
+2. In "Delete this job?", click "Delete". "Keep" closes the dialog.
+
+The job and its stored result are removed for good.
+
+## Clear finished jobs
+
+To delete many old jobs at once:
+
+1. Click "Clear finished" above the table.
+2. In "Clear finished jobs?", tick the "Statuses" to delete: "Completed", "Failed", "Cancelled",
+   "Postponed". All are ticked by default.
+3. Under "Finished", pick how old: "Any time", "More than a day ago", "More than 7 days ago" or
+   "More than 30 days ago".
+4. Click "Delete".
+
+Palitra reports how many jobs were deleted, such as "12 jobs deleted". Running and pending jobs
+are never deleted. Only people who can manage jobs see the "Clear finished" button.
+
+<Screenshot id="jobs-clear-finished" alt="The Clear finished jobs dialog with status and age options" />
+
+## If something doesn't load
+
+- "Live updates paused" — the live connection was lost, so statuses refresh periodically and may
+  lag. Click "Reconnect". If the message asks you to sign in again, reload the page or sign in.
+- "Couldn’t load jobs" — click "Retry".
+- "No jobs yet" — no background work has run in the project yet. Jobs appear once work starts,
+  for example a connector sync, a data upload or a background call from chat.
+
+## Related articles
+
+- [Chat](/chat/)
+- [Workflows](/workflows/)
+- [Connectors](/connectors/overview/)
+- [Data uploads](/data/uploads/)
+- [Webhooks](/data/webhooks/)
+- [Project members](/project-settings/members/)
