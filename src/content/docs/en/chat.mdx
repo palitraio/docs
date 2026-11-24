@@ -421,7 +421,8 @@ task list.
 3. Under "Frequency" pick "Hourly", "Daily", "Weekly", "Monthly" or "Custom (cron)". Daily,
    weekly (on Mondays) and monthly (on the 1st) runs happen at 9:00 in the project's time zone.
    For "Custom (cron)" enter a "Cron expression", for example `0 9 * * 1` — every Monday at
-   9:00 AM.
+   9:00 AM. If the expression doesn't parse, the field shows "Not a valid cron expression. Use
+   five fields, e.g. “0 9 \* \* 1”."
 4. Optionally open "More options":
    - "Chat title template" — placeholders `{{name}}` and `{{date}}`; leave it empty for the
      default title;

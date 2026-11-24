@@ -3,6 +3,7 @@ title: Projects
 description: The organization's project list — how to create a project, archive and restore it, and what to do at the plan's limit.
 editions: [saas, byoc]
 sources:
+  - palitra-backend/src/modules/identity/infrastructure/repositories/project_query.py
   - palitra-frontend/app/[locale]/(app)/org/settings/layout.tsx
   - palitra-frontend/app/[locale]/(app)/org/settings/projects/page.tsx
   - palitra-frontend/app/[locale]/(app)/org/settings/org-settings.en.messages.json
@@ -92,13 +93,15 @@ the "Projects used" card there. Archived projects don't count toward the limit.
 
 ## Archive a project
 
-Archiving closes access to a project without deleting it.
+Archiving closes access to a project without deleting it right away: its analytics data is
+deleted some time after archiving.
 
 1. Open the actions menu in the project's row and choose "Archive".
 2. In the "Archive …?" dialog, click "Archive".
 
 You see "Project archived", and the status changes to "Archived". Members lose access to the
-project until it is restored.
+project until it is restored. Under an archived project's status you see the date: "Analytics
+data is deleted after …". To keep the data, restore the project before that date.
 
 ## Restore a project
 
