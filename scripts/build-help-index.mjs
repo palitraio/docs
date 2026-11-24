@@ -1,4 +1,4 @@
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -9,7 +9,8 @@ import { LOCALES } from "../src/locales.mjs";
 
 const ARTICLE = /\.mdx?$/;
 const NOT_ARTICLES = new Set(["index", "404"]);
-const HEADING = /^(#{1,6})\s+(.+?)\s*#*\s*$/;
+const EDITIONS = ["saas", "byoc"];
+const HEADING = /^(#{1,6})\s+(.+?)(?:\s+#+)?\s*$/;
 const BLOCK_MARKER = /^\s*(#{1,6}|>|[-*+]|\d+\.)\s+/;
 const TABLE_RULE = /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/;
 const FENCE = /^\s*(```|~~~)/;
@@ -41,6 +42,7 @@ function stripInline(line) {
  */
 function toPlainText(lines) {
   const paragraphs = [];
+  const isCode = new Set();
   let continuing = false;
   let inFence = false;
   for (const line of lines) {
@@ -50,7 +52,9 @@ function toPlainText(lines) {
       continue;
     }
     if (inFence) {
+      isCode.add(paragraphs.length);
       paragraphs.push(line.trim());
+      continuing = false;
       continue;
     }
     if (/^\s*(import|export)\s.+$/.test(line) || /^\s*:::/.test(line)) {
@@ -71,7 +75,7 @@ function toPlainText(lines) {
       continuing = true;
     }
   }
-  return stripInline(paragraphs.join("\n"));
+  return paragraphs.map((text, i) => (isCode.has(i) ? text : stripInline(text))).join("\n");
 }
 
 /**
@@ -109,7 +113,8 @@ function listArticles(localeDir) {
     if (!entry.isFile() || !ARTICLE.test(entry.name)) continue;
     const path = relative(localeDir, join(entry.parentPath, entry.name)).split(sep).join("/");
     const stem = path.replace(ARTICLE, "");
-    if (!NOT_ARTICLES.has(stem)) found.push({ path, stem });
+    if (NOT_ARTICLES.has(stem)) continue;
+    found.push({ path, stem: stem.endsWith("/index") ? stem.slice(0, -"/index".length) : stem });
   }
   return found.sort((a, b) => a.stem.localeCompare(b.stem));
 }
@@ -122,6 +127,13 @@ function articleChunks(locale, origin, localeDir, { path, stem }) {
   }
   if (!Array.isArray(data.editions) || data.editions.length === 0) {
     throw new Error(`${where}: frontmatter "editions" is required for the help index`);
+  }
+  for (const edition of data.editions) {
+    if (!EDITIONS.includes(edition)) {
+      throw new Error(
+        `${where}: editions entry "${edition}" must be one of ${EDITIONS.join(", ")}`,
+      );
+    }
   }
   const articleUrl = `${origin}/${stem}/`;
   const chunks = [];
@@ -156,6 +168,11 @@ export function buildHelpIndex(contentDir, version, locales = LOCALES) {
   for (const [locale, { origin, published }] of Object.entries(locales)) {
     if (!published) continue;
     const localeDir = join(contentDir, locale);
+    if (!existsSync(localeDir)) {
+      throw new Error(
+        `published locale "${locale}" has no content directory ${localeDir}; add its articles or set published: false`,
+      );
+    }
     for (const article of listArticles(localeDir)) {
       chunks.push(...articleChunks(locale, origin, localeDir, article));
     }

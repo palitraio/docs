@@ -169,7 +169,9 @@ describe("buildHelpIndex", () => {
 describe("buildHelpIndex with a missing locale directory", () => {
   it("fails for a published locale without content", () => {
     const root = mkdtempSync(join(tmpdir(), "help-index-"));
-    expect(() => buildHelpIndex(root, "v1", LOCALES)).toThrow(/ENOENT/);
+    expect(() => buildHelpIndex(root, "v1", LOCALES)).toThrow(
+      /published locale "ru".*directory .*\/ru/,
+    );
   });
 });
 
@@ -193,5 +195,34 @@ describe("links wrapped across lines", () => {
       }),
     });
     expect(buildHelpIndex(root, "v1", LOCALES).chunks[0]?.text).toBe("см. Менеджеру проекта.");
+  });
+});
+
+describe("review fixes", () => {
+  it("keeps fenced code content verbatim", () => {
+    const code = "<div>x</div> `a` _b_ *c*";
+    const root = makeDocs({
+      "ru/faq.md": article({ body: `## A\n\n\`\`\`html\n${code}\n\`\`\`` }),
+    });
+    expect(buildHelpIndex(root, "v1", LOCALES).chunks[0]?.text).toBe(code);
+  });
+
+  it("keeps a trailing # that has no space before it in a heading", () => {
+    const root = makeDocs({ "ru/faq.md": article({ body: "## C#\n\nb\n\n## D ##\n\nc" }) });
+    expect(buildHelpIndex(root, "v1", LOCALES).chunks.map((c) => c.heading)).toEqual(["C#", "D"]);
+  });
+
+  it("maps a nested index page to its directory url", () => {
+    const root = makeDocs({ "ru/connectors/index.md": article({ body: "## A\n\nb" }) });
+    expect(buildHelpIndex(root, "v1", LOCALES).chunks[0]?.url).toBe(
+      "https://docs.ru.palitra.io/connectors/#a",
+    );
+  });
+
+  it("rejects an unknown edition and names the file", () => {
+    const root = makeDocs({
+      "ru/faq.md": article({ editions: "[saas, cloud]", body: "## A\n\nb" }),
+    });
+    expect(() => buildHelpIndex(root, "v1", LOCALES)).toThrow(/ru\/faq\.md.*"cloud"/);
   });
 });
