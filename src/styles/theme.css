@@ -182,3 +182,22 @@ starlight-lang-select select {
   font-weight: 500;
   padding-inline: 0.5rem;
 }
+
+/*
+ * Sidebar hierarchy as in the app shell: group labels stay semibold, single pages read as
+ * regular items rather than headings, and top-level spacing stays compact.
+ */
+.sidebar-content a.large {
+  color: var(--sl-color-gray-2);
+  font-size: var(--sl-text-sm);
+  font-weight: 500;
+}
+
+.sidebar-content summary .large {
+  font-size: var(--sl-text-sm);
+  font-weight: 600;
+}
+
+.sidebar-content .top-level > li + li {
+  margin-top: 0.25rem;
+}
