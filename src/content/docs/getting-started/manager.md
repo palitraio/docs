@@ -17,6 +17,8 @@ sources:
   - palitra-frontend/components/project-settings/project-add-member-dialog.ru.messages.json
   - palitra-frontend/components/layout/AppSidebar.tsx
   - palitra-frontend/components/project-settings/project-member-list.ru.messages.json
+  - palitra-frontend/app/[locale]/(app)/chat/page.tsx
+  - palitra-frontend/app/[locale]/(app)/chat/[chatId]/page.tsx
 ---
 
 Эта статья — для тех, кто ведёт проект: общается с агентом, подключает кабинеты и настраивает
@@ -69,7 +71,7 @@ sources:
 - «Разрешать всегда» — не спрашивать во всём проекте, включая фоновые задачи. Отменить это
   можно в настройках коннектора.
 
-В поле ввода можно выбрать «Режим подтверждения»:
+Если вы можете одобрять действия, в поле ввода можно выбрать «Режим подтверждения»:
 
 - «Спрашивать» — агент спрашивает перед каждым изменением в кабинетах;
 - «Авто» — агент сам выполняет изменения, которые соответствуют вашим просьбам. Про удаления он

@@ -14,12 +14,14 @@ sources:
   - palitra-frontend/components/layout/app-sidebar.en.messages.json
   - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.en.messages.json
   - palitra-backend/src/connectors/yandex/yandex_direct/manifest.yaml
+  - palitra-frontend/app/[locale]/(app)/chat/page.tsx
+  - palitra-frontend/app/[locale]/(app)/chat/[chatId]/page.tsx
 ---
 
 ## Can I skip steps in the setup wizard?
 
-Yes, except the required ones. The organization, payment and project steps have no "Skip"
-button. The other steps do — you can set up anything you skipped later. You can leave the
+Yes, the optional ones. They have a "Skip" button — you can set up anything you skipped later.
+The organization, payment and project steps have no such button. You can leave the
 payment step with "Set up later": the wizard opens the billing page.
 
 ## Why is there no "Attribution settings" step in the wizard?
@@ -29,10 +31,10 @@ to the "Connect your platforms" step and connect one.
 
 ## Will the agent change my campaigns without telling me?
 
-Not by default. Changes in Yandex.Direct need your approval, and deletion is off in the
-connector's guardrails. In the "Approval mode" menu of the chat input you can choose "Auto".
-The agent then carries out changes that match your requests on its own, but it still asks about
-deletions. See [For project managers](/en/getting-started/manager/).
+Not by default. Changes in Yandex.Direct need your approval, and deletion is off in the connector's
+guardrails. If you can approve actions, you can choose "Auto" in the "Approval mode" menu of the
+chat input. The agent then carries out changes that match your requests on its own, but it still
+asks about deletions. See [For project managers](/en/getting-started/manager/).
 
 ## How do I invite someone who already works in another organization?
 

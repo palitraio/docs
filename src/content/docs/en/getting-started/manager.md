@@ -17,6 +17,8 @@ sources:
   - palitra-frontend/components/project-settings/project-add-member-dialog.en.messages.json
   - palitra-frontend/components/layout/AppSidebar.tsx
   - palitra-frontend/components/project-settings/project-member-list.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/chat/page.tsx
+  - palitra-frontend/app/[locale]/(app)/chat/[chatId]/page.tsx
 ---
 
 This article is for people who run a project: they talk to the agent, connect ad accounts and
@@ -69,7 +71,7 @@ Some actions have two more buttons:
 - "Always allow" — stop asking in the whole project, including background tasks. You can revoke
   this in the connector settings.
 
-In the input box you can choose the "Approval mode":
+If you can approve actions, you can choose the "Approval mode" in the input box:
 
 - "Ask" — the agent asks before each change in your accounts;
 - "Auto" — the agent carries out changes that match your requests on its own. It always asks

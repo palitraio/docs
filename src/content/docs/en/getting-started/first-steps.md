@@ -30,9 +30,10 @@ sources:
 After you sign up, Palitra opens the setup wizard. It walks you through creating your
 organization and first project, connecting platforms, and inviting colleagues.
 
-The wizard header shows which step you are on, for example "Step 1 of 10". The number of steps
-changes: some steps appear only once everything they need is in place. Each step has "Back" and
-"Continue" buttons at the bottom. You can skip optional steps with "Skip".
+The wizard header shows which step you are on and how many steps there are. The total can grow
+as you go: some steps appear only once everything they need is in place. The steps have "Back"
+and "Continue" buttons at the bottom; on the last step, "Finish" replaces "Continue". You can
+skip optional steps with "Skip".
 
 ## Welcome
 
@@ -57,14 +58,17 @@ new one. Ask its administrator to send you an invitation.
 
 ## Payment method
 
-On the "Add a payment method" step:
+Once the organization is created, the wizard shows the "Add a payment method" step. Its
+"Continue" button becomes available only once a trial has started.
+
+In the cloud version of Palitra:
 
 1. Click "Add card" and enter your card details.
 2. When "Trial active — you're all set." appears, click "Continue".
 
 If you have a promo code, click "I have a promo code" and enter it.
 
-To deal with payment later, click "Set up later". The wizard closes and opens your
+In any version, you can leave this step with "Set up later". The wizard closes and opens your
 organization's billing page.
 
 ## Project
