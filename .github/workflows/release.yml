@@ -1,0 +1,96 @@
+# Publishes help-index.json, the article fragments the Palitra Chat help search loads, as a GitHub
+# release asset on every push to main, then opens a PR in palitra-backend that pins the new tag.
+name: Release help index
+
+on:
+  push:
+    branches: [main]
+
+# Two quick merges would otherwise race to open bump PRs against each other's tag.
+concurrency:
+  group: release-help-index
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Name the release
+        id: tag
+        run: echo "tag=docs-$(date -u +%Y.%m.%d)-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Build help-index.json
+        env:
+          HELP_INDEX_VERSION: ${{ steps.tag.outputs.tag }}
+        run: pnpm build:help-index
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          gh release create "$TAG" dist/help-index.json \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "$TAG" \
+            --notes "Help index built from $GITHUB_SHA."
+
+  # Needs the GitHub App described in README.md; skipped until HELP_BOT_CLIENT_ID is set.
+  bump-backend:
+    needs: release
+    if: vars.HELP_BOT_CLIENT_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
+        id: app-token
+        with:
+          client-id: ${{ vars.HELP_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.HELP_BOT_PRIVATE_KEY }}
+          owner: palitraio
+          repositories: palitra-backend
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Open the docs-version PR in palitra-backend
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          TAG: ${{ needs.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh auth setup-git
+          gh repo clone palitraio/palitra-backend backend -- --depth 1
+          cd backend
+          if [ "$(cat assets/help/docs-version)" = "$TAG" ]; then
+            echo "assets/help/docs-version already at $TAG"
+            exit 0
+          fi
+          branch="docs-version/$TAG"
+          git switch -c "$branch"
+          printf '%s\n' "$TAG" > assets/help/docs-version
+          git -c user.name="palitra-docs-bot" -c user.email="noreply@palitra.io" \
+            commit -am "chore: pin help docs $TAG"
+          git push origin "$branch"
+          gh pr create \
+            --title "chore: pin help docs $TAG" \
+            --body "Points \`assets/help/docs-version\` at the docs release \`$TAG\`." \
+            --base "$(git symbolic-ref --short refs/remotes/origin/HEAD | cut -d/ -f2-)" \
+            --head "$branch"

@@ -48,3 +48,22 @@ Merging to `main` publishes both sites:
   `vercel.json`) and serves `dist/`.
 
 Pull requests run `.github/workflows/ci.yml` (tests, typecheck, both builds).
+
+## Help index
+
+`pnpm build:help-index` writes `dist/help-index.json`: one chunk per `##` section of every
+article (except `index` and `404`) of each locale with `published: true` in `src/locales.mjs`,
+with the locale origin, anchor URL, editions and plain text. `HELP_INDEX_VERSION` sets its
+`version` (default `dev`).
+
+`.github/workflows/release.yml` runs on every push to `main`. Job `release` builds the index and
+publishes a GitHub release `docs-YYYY.MM.DD-<sha7>` with `help-index.json` as its asset. Job
+`bump-backend` then opens a PR in `palitraio/palitra-backend` that writes the tag to
+`assets/help/docs-version`. It runs only when the repository variable `HELP_BOT_CLIENT_ID` is set.
+
+Setting up the bump PR (owner steps):
+
+1. Create a GitHub App owned by `palitraio` with repository permissions Contents: read and
+   write and Pull requests: read and write, and install it on `palitra-backend` only.
+2. In this repository add the Actions variable `HELP_BOT_CLIENT_ID` (the App's client ID) and the
+   Actions secret `HELP_BOT_PRIVATE_KEY` (a private key generated for the App).

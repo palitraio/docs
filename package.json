@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "./scripts/build-en.sh && ./scripts/build-ru.sh",
     "check:content": "node scripts/check-content.mjs",
+    "build:help-index": "node scripts/build-help-index.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "oxlint",
@@ -18,6 +19,7 @@
   "dependencies": {
     "@astrojs/starlight": "0.43.1",
     "astro": "7.4.13",
+    "github-slugger": "2.0.0",
     "gray-matter": "4.0.3",
     "sharp": "0.35.5"
   },
