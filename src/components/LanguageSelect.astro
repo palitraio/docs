@@ -1,0 +1,20 @@
+---
+import { LOCALES, otherLocale, resolveLocale } from "@/locales.mjs";
+
+const other = LOCALES[otherLocale(resolveLocale(process.env.SITE_LOCALE))];
+const href = new URL(Astro.url.pathname, other.origin).href;
+---
+
+<a class="language-switch" href={href} hreflang={other.lang} lang={other.lang} data-language-switch>
+  {other.label}
+</a>
+
+<style>
+  .language-switch {
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+  }
+  .language-switch:hover {
+    text-decoration: underline;
+  }
+</style>

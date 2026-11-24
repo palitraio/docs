@@ -24,3 +24,11 @@ language = "system"
 entry = "pnpm check:content"
 pass_filenames = false
 always_run = true
+
+[[repos.hooks]]
+id = "typecheck"
+name = "typecheck"
+language = "system"
+entry = "pnpm typecheck"
+pass_filenames = false
+always_run = true

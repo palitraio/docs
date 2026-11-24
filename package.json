@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/check-content.mjs && astro build",
+    "build": "./scripts/build-en.sh && ./scripts/build-ru.sh",
     "check:content": "node scripts/check-content.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
+    "typecheck": "astro check",
     "test": "vitest run"
   },
   "dependencies": {
@@ -21,8 +22,10 @@
     "sharp": "0.35.5"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.12",
     "oxfmt": "0.79.0",
     "oxlint": "1.94.0",
+    "typescript": "6.0.3",
     "vitest": "5.1.1"
   },
   "engines": {

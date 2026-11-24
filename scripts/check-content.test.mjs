@@ -27,8 +27,8 @@ function makeRoot(files) {
 
 describe("checkContent", () => {
   it("reports a ru article without an en twin", () => {
-    const root = makeRoot({ "connectors/yandex-direct.md": VALID });
-    expect(checkContent(root)).toContain("missing en: connectors/yandex-direct.md");
+    const root = makeRoot({ "ru/connectors/yandex-direct.md": VALID });
+    expect(checkContent(root)).toContain("missing en: ru/connectors/yandex-direct.md");
   });
 
   it("reports an en article without a ru twin", () => {
@@ -37,20 +37,44 @@ describe("checkContent", () => {
   });
 
   it("accepts .md and .mdx twins with the same stem", () => {
-    const root = makeRoot({ "faq.md": VALID, "en/faq.mdx": VALID });
+    const root = makeRoot({ "ru/faq.md": VALID, "en/faq.mdx": VALID });
     expect(checkContent(root)).toEqual([]);
+  });
+
+  it("reports an article outside ru/ and en/", () => {
+    const root = makeRoot({ "faq.md": VALID, "ru/faq.md": VALID, "en/faq.md": VALID });
+    expect(checkContent(root)).toContain("outside ru/ and en/: faq.md");
+  });
+
+  it("reports an en article without a ru twin in a nested path", () => {
+    const root = makeRoot({ "ru/faq.md": VALID, "en/connectors/x.md": VALID, "en/faq.md": VALID });
+    expect(checkContent(root)).toContain("missing ru: en/connectors/x.md");
   });
 
   it("reports empty sources", () => {
     const bad = VALID.replace(/sources:\n {2}- .*\n/, "sources: []\n");
-    const root = makeRoot({ "faq.md": bad, "en/faq.md": VALID });
+    const root = makeRoot({ "ru/faq.md": bad, "en/faq.md": VALID });
     const errors = checkContent(root);
     expect(errors.some((e) => e.includes("sources") && e.includes("faq.md"))).toBe(true);
   });
 
   it("reports an unknown edition", () => {
     const bad = VALID.replace("[saas, byoc]", "[cloud]");
-    const root = makeRoot({ "faq.md": bad, "en/faq.md": VALID });
+    const root = makeRoot({ "ru/faq.md": bad, "en/faq.md": VALID });
     expect(checkContent(root).some((e) => e.includes("editions"))).toBe(true);
+  });
+
+  it("reports an absolute source path", () => {
+    const bad = VALID.replace("palitra-frontend/app/[locale]", "/etc/passwd");
+    const root = makeRoot({ "ru/faq.md": bad, "en/faq.md": VALID });
+    const errors = checkContent(root);
+    expect(errors.some((e) => e.includes("faq.md") && e.includes("/etc/passwd"))).toBe(true);
+  });
+
+  it("reports a source path with ..", () => {
+    const bad = VALID.replace("palitra-frontend/app/[locale]", "palitra-frontend/../secret");
+    const root = makeRoot({ "ru/faq.md": bad, "en/faq.md": VALID });
+    const errors = checkContent(root);
+    expect(errors.some((e) => e.includes("faq.md") && e.includes("../secret"))).toBe(true);
   });
 });

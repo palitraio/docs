@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "main": true
+    }
+  },
+  "buildCommand": "./scripts/build-en.sh",
+  "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": { "re": "^ru\\b|[,;]\\s*ru\\b" }
+        }
+      ],
+      "destination": "https://docs.ru.palitra.io/",
+      "permanent": false
+    }
+  ]
+}
