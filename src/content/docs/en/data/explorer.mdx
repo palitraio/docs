@@ -30,6 +30,8 @@ sources:
   - palitra-frontend/components/billing/feature-gates.en.messages.json
   - palitra-frontend/components/billing/feature-lock.tsx
   - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-backend/src/modules/data_layer/api/tables_router.py
+  - palitra-backend/src/modules/data_layer/api/rows_router.py
   - palitra-backend/src/modules/data_layer/domain/services/row_filter_compiler.py
   - palitra-backend/src/modules/data_layer/domain/services/table_freshness.py
 ---
@@ -233,7 +235,7 @@ open it, click the "Mapped → …" or "No field mapping" badge on the "Schema &
   editor opens with a preview of the source's first 5 rows. Change the rules and click "Save
   mapping". "Remove mapping" deletes it; dependent data is reprocessed.
 - **A connector table** — the mapping is built into the connector and opens read-only.
-- **A reference table** — no mapping applies: "This table has no field mapping."
+- **A reference table** — no mapping applies, and the bar shows no mapping badge.
 
 How mapping rules work is described in the event registry article:
 [Event mapping](/data/events/#event-mapping).

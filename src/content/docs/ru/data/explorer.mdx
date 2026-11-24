@@ -30,6 +30,8 @@ sources:
   - palitra-frontend/components/billing/feature-gates.ru.messages.json
   - palitra-frontend/components/billing/feature-lock.tsx
   - palitra-frontend/components/billing/feature-lock-state.ru.messages.json
+  - palitra-backend/src/modules/data_layer/api/tables_router.py
+  - palitra-backend/src/modules/data_layer/api/rows_router.py
   - palitra-backend/src/modules/data_layer/domain/services/row_filter_compiler.py
   - palitra-backend/src/modules/data_layer/domain/services/table_freshness.py
 ---
@@ -243,8 +245,7 @@ import Screenshot from "@/components/Screenshot.astro";
   нажмите «Сохранить сопоставление». «Удалить сопоставление» убирает его; зависимые данные будут
   переобработаны.
 - **Таблица коннектора** — сопоставление встроено в коннектор и открывается только для просмотра.
-- **Справочник** — сопоставление не применяется: «Для этой таблицы сопоставление полей не
-  применяется.»
+- **Справочник** — сопоставление не применяется, отметки сопоставления на плашке нет.
 
 Как устроены правила сопоставления, описано в статье о реестре событий:
 [Сопоставление событий](/data/events/#сопоставление-событий).
