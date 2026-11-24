@@ -1,12 +1,12 @@
 # Publishes help-index.json, the article fragments the Palitra Chat help search loads, as a GitHub
-# release asset on every push to main, then opens a PR in palitra-backend that pins the new tag.
+# release asset on every push to main. palitra-backend's image build downloads the latest one.
 name: Release help index
 
 on:
   push:
     branches: [main]
 
-# Two quick merges would otherwise race to open bump PRs against each other's tag.
+# Two quick merges must publish in merge order, so the latest release is the newest content.
 concurrency:
   group: release-help-index
   cancel-in-progress: false
@@ -18,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    outputs:
-      tag: ${{ steps.tag.outputs.tag }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -53,66 +51,3 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "$TAG" \
             --notes "Help index built from $GITHUB_SHA."
-
-  # Uses palitra-release-bot, the org's GitHub App the other repos release with (see README.md).
-  # Skipped with a notice until this repository has its private key.
-  bump-backend:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check for the release-bot key
-        id: key
-        env:
-          KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-        run: |
-          if [ -z "$KEY" ]; then
-            echo "::notice::RELEASE_APP_PRIVATE_KEY unset; bump assets/help/docs-version by hand."
-            echo "present=false" >>"$GITHUB_OUTPUT"
-          else
-            echo "present=true" >>"$GITHUB_OUTPUT"
-          fi
-
-      - uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
-        if: steps.key.outputs.present == 'true'
-        id: app-token
-        with:
-          # palitra-release-bot's client ID: public, not a secret.
-          client-id: Iv23liOgAK1JwwBVlO31
-          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-          owner: palitraio
-          repositories: palitra-backend
-          permission-contents: write
-          permission-pull-requests: write
-
-      - name: Open the docs-version PR in palitra-backend
-        if: steps.key.outputs.present == 'true'
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          TAG: ${{ needs.release.outputs.tag }}
-        # Through the API, without a clone: palitra-backend keeps large files in Git LFS, and a
-        # one-line change needs none of them.
-        run: |
-          set -euo pipefail
-          repo=palitraio/palitra-backend
-          path=assets/help/docs-version
-          base="$(gh api "repos/$repo" --jq .default_branch)"
-          file="$(gh api "repos/$repo/contents/$path?ref=$base")"
-          current="$(jq -r .content <<<"$file" | base64 -d | tr -d '[:space:]')"
-          if [ "$current" = "$TAG" ]; then
-            echo "$path already at $TAG"
-            exit 0
-          fi
-          file_sha="$(jq -r .sha <<<"$file")"
-          base_sha="$(gh api "repos/$repo/git/ref/heads/$base" --jq .object.sha)"
-          branch="docs-version/$TAG"
-          gh api "repos/$repo/git/refs" -f ref="refs/heads/$branch" -f sha="$base_sha" >/dev/null
-          gh api -X PUT "repos/$repo/contents/$path" \
-            -f message="chore: pin help docs $TAG" \
-            -f content="$(printf '%s\n' "$TAG" | base64)" \
-            -f sha="$file_sha" \
-            -f branch="$branch" >/dev/null
-          gh pr create --repo "$repo" \
-            --title "chore: pin help docs $TAG" \
-            --body "Points \`$path\` at the docs release \`$TAG\`." \
-            --base "$base" \
-            --head "$branch"
