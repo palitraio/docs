@@ -11,6 +11,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title,
+      customCss: ["./src/styles/theme.css"],
       disable404Route: true,
       defaultLocale: "root",
       locales: { root: { label, lang } },
@@ -20,6 +21,7 @@ export default defineConfig({
         PageTitle: "./src/components/PageTitle.astro",
         LanguageSelect: "./src/components/LanguageSelect.astro",
         Head: "./src/components/Head.astro",
+        SiteTitle: "./src/components/SiteTitle.astro",
       },
     }),
   ],
