@@ -54,23 +54,38 @@ jobs:
             --title "$TAG" \
             --notes "Help index built from $GITHUB_SHA."
 
-  # Needs the GitHub App described in README.md; skipped until HELP_BOT_CLIENT_ID is set.
+  # Uses palitra-release-bot, the org's GitHub App the other repos release with (see README.md).
+  # Skipped with a notice until this repository has its private key.
   bump-backend:
     needs: release
-    if: vars.HELP_BOT_CLIENT_ID != ''
     runs-on: ubuntu-latest
     steps:
+      - name: Check for the release-bot key
+        id: key
+        env:
+          KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::notice::RELEASE_APP_PRIVATE_KEY is not set; bump assets/help/docs-version by hand."
+            echo "present=false" >>"$GITHUB_OUTPUT"
+          else
+            echo "present=true" >>"$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
+        if: steps.key.outputs.present == 'true'
         id: app-token
         with:
-          client-id: ${{ vars.HELP_BOT_CLIENT_ID }}
-          private-key: ${{ secrets.HELP_BOT_PRIVATE_KEY }}
+          # palitra-release-bot's client ID: public, not a secret.
+          client-id: Iv23liOgAK1JwwBVlO31
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
           owner: palitraio
           repositories: palitra-backend
           permission-contents: write
           permission-pull-requests: write
 
       - name: Open the docs-version PR in palitra-backend
+        if: steps.key.outputs.present == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           TAG: ${{ needs.release.outputs.tag }}
