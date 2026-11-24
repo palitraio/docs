@@ -1,0 +1,459 @@
+---
+title: Chats
+description: How to work with the agent in chat — the composer and commands, approving actions, results, the chat list, search and scheduled tasks.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/chat/page.tsx
+  - palitra-frontend/app/[locale]/(app)/chat/[chatId]/page.tsx
+  - palitra-frontend/app/[locale]/(app)/chat/chat-page.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/chats/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/chats/scheduled/[taskId]/page.tsx
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/sidebar-chat-lists.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/chat/Composer.tsx
+  - palitra-frontend/components/chat/composer/ComposerToolbar.tsx
+  - palitra-frontend/components/chat/composer/ApprovalModeSelector.tsx
+  - palitra-frontend/components/chat/composer/attachments.ts
+  - palitra-frontend/components/chat/composer/use-client-commands.ts
+  - palitra-frontend/components/chat/composer-editor/keymap.ts
+  - palitra-frontend/components/chat/composer-editor/input-rules.ts
+  - palitra-frontend/lib/chat/client-commands.ts
+  - palitra-frontend/components/chat/ModelSelector.tsx
+  - palitra-frontend/components/chat/QuickActions.tsx
+  - palitra-frontend/components/chat/chat-composer.en.messages.json
+  - palitra-frontend/components/chat/command-reference.en.messages.json
+  - palitra-frontend/components/chat/ApprovalCard.tsx
+  - palitra-frontend/components/chat/ChatToolGrantsDialog.tsx
+  - palitra-frontend/components/chat/chat-agent.en.messages.json
+  - palitra-frontend/components/chat/ChatHeader.tsx
+  - palitra-frontend/components/chat/chat-conversation.en.messages.json
+  - palitra-frontend/components/chat/chat-actions-menu.tsx
+  - palitra-frontend/components/chat/chat-actions-menu.en.messages.json
+  - palitra-frontend/components/chat/chat-state-dot.tsx
+  - palitra-frontend/components/chat/use-can-approve-tools.ts
+  - palitra-frontend/components/chat/use-can-manage-chat.ts
+  - palitra-frontend/components/chat/AssistantMessage.tsx
+  - palitra-frontend/components/chat/MessageFeedback.tsx
+  - palitra-frontend/components/chat/message-feedback.en.messages.json
+  - palitra-frontend/components/chat/ArtifactCard.tsx
+  - palitra-frontend/components/chat/artifact-card.en.messages.json
+  - palitra-frontend/components/chat/AddToContextButton.tsx
+  - palitra-frontend/components/chat/chart-block.en.messages.json
+  - palitra-frontend/components/chat/data-table-block.en.messages.json
+  - palitra-frontend/components/chat/compaction-notice.en.messages.json
+  - palitra-frontend/components/chat/turn-continuation-row.en.messages.json
+  - palitra-frontend/components/chat/context-meter.en.messages.json
+  - palitra-frontend/components/chat/annotations/SelectionToolbar.tsx
+  - palitra-frontend/components/chat/annotations/annotation-layer.en.messages.json
+  - palitra-frontend/components/chat/side-chat/SideChatWindow.tsx
+  - palitra-frontend/components/chat/side-chat/side-chat.en.messages.json
+  - palitra-frontend/components/chat/background/background-indicator.en.messages.json
+  - palitra-frontend/components/chat/background/background-item-line.en.messages.json
+  - palitra-frontend/components/chat/background/background-agent-banner.en.messages.json
+  - palitra-frontend/hooks/use-chat-hotkeys.ts
+  - palitra-frontend/components/chat-history/chats-history.tsx
+  - palitra-frontend/components/chat-history/chat-row.tsx
+  - palitra-frontend/components/chat-history/scheduled-task-row.tsx
+  - palitra-frontend/components/chat-history/chats-history.en.messages.json
+  - palitra-frontend/components/scheduling/ScheduledTaskDialog.tsx
+  - palitra-frontend/components/scheduling/scheduled-task-detail.tsx
+  - palitra-frontend/components/scheduling/scheduled-task-dialog.en.messages.json
+  - palitra-frontend/components/scheduling/scheduled-task-detail.en.messages.json
+  - palitra-frontend/lib/scheduling/cron-presets.ts
+  - palitra-backend/src/core/config.py
+  - palitra-backend/src/modules/chat/application/services/attachment_service.py
+  - palitra-backend/src/modules/chat/api/conversation_router.py
+  - palitra-backend/src/modules/chat/api/scheduled_task_router.py
+  - palitra-backend/src/modules/chat/api/_stream_common.py
+  - palitra-backend/src/modules/chat/domain/models/approval.py
+  - palitra-backend/src/modules/chat/domain/services/scope.py
+  - palitra-backend/src/modules/chat/domain/services/title.py
+  - palitra-backend/src/modules/chat/application/dtos/scheduled_task_dtos.py
+  - palitra-backend/src/modules/chat/infrastructure/repositories/conversation_repository.py
+  - palitra-backend/src/modules/billing/domain/models/feature_matrix.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+Chat is the main way to work with Palitra. You write a question or a task, and the agent answers
+from the project's data: it builds charts and tables, creates artifacts and can carry out actions
+in connected ad accounts. A short introduction to chat is in
+[For project managers](/getting-started/manager/); this article covers everything in detail.
+
+Every chat belongs to one project. All project members see its chats, except incognito chats:
+only their author sees those.
+
+What each role can do:
+
+- Any project member can write in a chat, copy its link, mark it read and rate answers.
+- The chat's author, a project manager, and the organization's owner and admins can pin, rename,
+  move and delete a chat, edit messages and regenerate answers.
+- A project manager and the organization's owner and admins can approve the agent's actions,
+  switch the "Approval mode" and revoke permissions in a chat.
+
+## Where to find chats
+
+- "New chat" at the top of the sidebar opens an empty chat.
+- "Chats" in the project's section list opens the page with all the project's chats, search and
+  scheduled tasks. Shortcut: `⌘E` (on Windows and Linux, `Ctrl+E`).
+- Below the sections, the sidebar shows the "Pinned" and "Recents" groups with your latest chats.
+- "Search" (`⌘K` or `Ctrl+K`) searches chats, workflows and pages.
+
+The dot before a chat's title shows its state: filled means the chat has something new for you,
+pulsing means the agent is working right now, hollow means nothing new. A ghost icon marks an
+incognito chat.
+
+## Start a new chat
+
+1. Click "New chat" in the sidebar.
+2. Type a question or a task in the composer. You can start from a ready prompt: the "Analyze",
+   "Compare", "Forecast", "Optimize" and "Report" buttons under the composer each open a few
+   example requests.
+3. Click "Send" or press Enter.
+
+Palitra creates the chat and opens it. The chat title is taken from the first message; you can
+change it.
+
+<Screenshot id="chat-new" alt="The new chat page with a greeting, the composer and example request buttons" />
+
+If you see "Could not start the conversation. Please try again.", send the message again.
+
+### Incognito chat
+
+To start a chat only you will see, click the ghost icon in the top right corner ("Incognito
+chat") before sending the first message. A note appears under the logo: "Only you will see this
+chat. The agent will not add to the project's memory. Artifacts, skills, project context files
+and actions in ad accounts created here are visible to the project."
+
+The header of such a chat shows an icon with the tooltip "Only visible to you". To open the chat
+to project members, choose "Make visible to project" in the chat menu and confirm with "Make
+visible". Only the chat's author can do this, and it can't be undone.
+
+## The composer
+
+- Enter sends the message, Shift+Enter starts a new line.
+- While the agent answers, the send button turns into "Stop (Esc)". The Esc key also stops the
+  answer.
+- A message sent while the agent is still working is "Queued" and goes out after the current
+  answer. Cancel it with "Cancel queued message".
+
+### Attach files
+
+Click "+" ("Attach files"), drag files onto the composer or paste an image from the clipboard.
+You can attach:
+
+| Type | Formats | Size |
+| --- | --- | --- |
+| Images | PNG, JPEG, WebP, GIF | up to 10 MB |
+| Documents | PDF, TXT, CSV, Markdown, DOCX, XLSX | up to 25 MB |
+
+If a file fails to upload, its chip shows the reason: "File too large", "Unsupported type" or
+"Upload failed".
+
+### Voice input
+
+Click the microphone icon ("Start voice input") and speak; the text appears in the composer.
+Pick "English" or "Russian" under "Dictation language". If the browser blocks the microphone,
+you'll see "Microphone access denied": allow the microphone for the site in your browser
+settings.
+
+### Model and thinking
+
+The button with the model name at the bottom right opens the "Models" list. Models are grouped
+into "Fast and cost-efficient", "Versatile and highly intelligent", "Most powerful at complex
+tasks" and "Other models". Until you pick one, the "Default model" is used.
+
+In the same panel, the "Thinking" row offers "Low", "Medium" or "High": the higher the level,
+the longer the agent thinks before answering. Clicking the selected level again turns thinking
+off.
+
+If the button says "Model unavailable", click "Retry loading models".
+
+### Approval mode
+
+If you can approve actions, the composer shows "Approval mode" at the bottom left:
+
+- "Ask" — "The agent asks before each change in your accounts."
+- "Auto" — "The agent carries out changes that match your requests on its own. Deletions are
+  always asked about."
+
+A new chat starts in "Auto". You can switch the mode at any time; it applies to the whole chat.
+In an incognito chat only its author can switch it.
+
+## Commands and triggers
+
+Four characters in the composer open extra options. The full list is in the "Commands &
+shortcuts" reference, opened by the `/help` command.
+
+| Character | What it does |
+| --- | --- |
+| `/` | Browse skills and client commands |
+| `@` | Reference a data table as query context |
+| `#` | Ask the agent to remember this in project memory |
+| `!` | Send with organization query scope |
+
+<Screenshot id="chat-composer-commands" alt="The composer's command menu with the Skills and Commands sections" />
+
+### Skills and commands: `/`
+
+Type `/` to open a menu with the "Skills" and "Commands" sections. Skills are ready-made
+scenarios for the agent; each is marked "Org" or "Project". See [Skills](/skills/) for more.
+
+Commands run immediately and send nothing to the agent:
+
+- `/help` — "Open the command reference".
+- `/schedule` — "Schedule this as a recurring task": opens the scheduled task window with the
+  composer text as the prompt. The command is missing from the menu if your plan doesn't include
+  scheduled tasks (see [below](#scheduled-chats)).
+- `/compact` — "Compact the conversation history". Only available in a chat that has started.
+
+### Data tables: `@`
+
+Type `@` and pick a table under "Data tables": the agent takes it as context for the request.
+See [Data overview](/data/overview/) for more about tables.
+
+### A note for project memory: `#`
+
+Type `#` in an empty composer to switch it to "Note" mode with the hint "What should the agent
+remember for this project…". The note goes into the chat as an ordinary message prefixed with
+"Remember:", and the agent saves it to project memory. Attachments and annotations don't travel
+with a note.
+
+### Organization scope: `!`
+
+Type `!` at the start of a message or after a space, and the composer shows an "Org" marker. With
+it the agent reaches beyond the current project: the organization's owner and admins get data
+from every project in the organization, everyone else from the projects they are members of.
+Typing `!` again returns to project scope. The scope resets after sending.
+
+## How the agent works on an answer
+
+While the agent answers, the chat shows what it is doing: "Working", "Writing the answer",
+"Compacting conversation". If the model is slow, you'll see "The model is taking longer than
+usual" or "The model didn't respond, retrying".
+
+- The "Reasoning" block ("Thought for Ns" once the answer is done) reveals the agent's thinking
+  and its steps: which commands it ran, what it searched for and read, which skills it loaded.
+  Each step's result can be expanded.
+- For larger tasks the agent keeps a task list: "N tasks · … done, … in progress, … pending".
+- When the agent starts a separate helper, the chat shows a "Subagent: …" block.
+
+### If an answer is incomplete
+
+A warning may appear under an answer:
+
+- "Stopped after reaching the step limit — this is a partial result.", "Stopped after reaching
+  the token budget — this is a partial result." or "Stopped after reaching the time limit — this
+  is a partial result." — narrow the request or split it into smaller steps.
+- "Stopped by you — this is a partial result." — you stopped the answer.
+- "No answer: the turn failed. Try sending the request again."
+- "No answer: your plan does not allow AI right now — the trial ended or the AI spending limit is
+  reached. Check Billing." — see [Billing](/organization/billing/).
+
+When a turn hits the time limit, the agent may continue on its own: "Continuing automatically:
+the previous turn hit the time limit".
+
+## Approve an agent action
+
+When the agent needs to change something in an ad account and the approval mode doesn't let it
+do so on its own, an action card appears in the chat. It shows the action's name and its
+parameters; sometimes the agent adds an explanation.
+
+<Screenshot id="chat-approval-card" alt="An agent action card with the Approve, Edit, Reject and Respond buttons" />
+
+What you can do:
+
+1. Optionally write a note in "Add a note (optional)…": the agent receives it with your decision.
+2. Choose a decision:
+   - "Approve" — run the action as is.
+   - "Edit" — change the parameters (as JSON) and click "Approve edited". Broken JSON shows
+     "Invalid JSON".
+   - "Reject" — don't run the action.
+   - "Respond" — don't run the action; reply to the agent with the text of the note instead.
+     The note is required for this.
+   - "Allow in this chat" — run it and stop asking about this action in the current chat.
+   - "Always allow" — run it and stop asking in the whole project. Palitra asks you to confirm:
+     "Applies to the whole project, including background tasks. You can revoke it in the
+     connector settings."
+
+The last two buttons are not offered for every action. After a decision the card is marked
+"Approved" or "Rejected". A decision made without asking is labelled "allowed in chat" or
+"auto mode".
+
+A project manager and the organization's owner and admins can approve actions. If nobody answers
+a card, the action is rejected automatically: by default after 5 minutes in a regular chat and
+after 24 hours in a scheduled chat.
+
+Possible errors:
+
+- "Couldn't submit your decision. Please try again."
+- "Action approved, but the permission couldn't be remembered for this chat." (or
+  "…permanently.") — the action ran, but the agent will ask again next time.
+
+### Permissions in this chat
+
+To see what the agent does in a chat without asking, open the chat menu (the "⋮" icon in the
+chat list) and choose "Permissions in this chat". Each permission shows who allowed it and when.
+A project manager and the organization's owner and admins can revoke a permission. With none
+saved you'll see "This chat has no saved permissions.".
+
+## What the agent creates in chat
+
+- **Charts.** Save a chart from an answer as an image with "Export as PNG".
+- **Tables.** A long table is shown in part: click "Show all N rows".
+- **Artifacts** — pages, dashboards, presentations and documents. The chat shows a card marked
+  "Created · version N" or "Updated · version N". "Open" shows the artifact in a panel to the
+  right of the chat. See [Artifacts](/artifacts/) for more.
+- **Files.** The "Files" button in the chat header opens "Files generated in this
+  conversation.": you can "View" or "Download" each. A manager can send a suitable file to the
+  project context with "Add to project context".
+
+## Working with messages
+
+Hover over a message to see its buttons:
+
+- "Copy" — copy the text.
+- "Good response" and "Bad response" — rate the agent's answer. You can "Add a comment" to a
+  rating.
+- "Edit" — change your message. Every message after it is removed, and the agent answers again.
+- "Regenerate" — get a new answer. Palitra warns: "This removes this answer and everything after
+  it. This can't be undone."
+
+You can't edit or regenerate while the agent is answering: "Wait for the current response to
+finish".
+
+### Follow up on part of an answer
+
+Select text in the agent's answer, and two buttons appear above it:
+
+- "Add to chat" — the fragment becomes an annotation on your next message; you can add a comment
+  to it. Annotations show above the composer; remove them with "Remove annotations".
+- "More details" — opens a "Side branch" window where the agent expands on the selected fragment
+  without cluttering the main chat. From the window you can "Add to chat" the branch's last
+  answer, "Open as a full chat", "Minimize" or "Close".
+
+### Context and compacting
+
+The "Context" meter next to the model picker shows how full the model's memory is in this chat.
+When a conversation gets long, click the meter or run `/compact`: the agent compacts the history
+and the chat shows "Conversation compacted". Palitra can also compact on its own: "Conversation
+compacted automatically to free up context".
+
+Compacting too early shows "Nothing to compact yet — the conversation is still small."; while
+the agent is still answering, "The agent is still generating. Wait for it to finish, then compact
+again.".
+
+### Background work
+
+The agent can run long operations in the background: wait for a condition ("Waiting: …"), run an
+action ("In background: …") or hand a task to a background agent ("Background agent: …"). A
+"N in background" counter then appears above the composer; any such operation can be cancelled
+with "Cancel". A background agent has its own chat marked "Background agent", with a link to the
+chat it was launched from.
+
+## The project's chat list
+
+Open "Chats" in the sidebar. The page has:
+
+- "Search chats…" — searches chat titles and message text.
+- "Pinned" — pinned chats. The group is hidden when there are none.
+- "Scheduled" — the project's scheduled tasks (see [below](#scheduled-chats)).
+- "Recent" — all other chats, newest first; more load as you scroll.
+
+Each row shows the title, the start of the last message, the message count and the time of the
+last activity. The pin icon on the left pins or unpins the chat.
+
+<Screenshot id="chat-history" alt="The Chats page with search and the Pinned, Scheduled and Recent groups" />
+
+Pins are shared: a pinned chat shows under "Pinned" for every project member. Read state is
+personal.
+
+### Chat actions
+
+Hover over a chat in the list or the sidebar and click "⋮":
+
+- "Copy link" — a link to the chat for your project colleagues.
+- "Pin" or "Unpin" (key P).
+- "Mark as read" or "Mark as unread" (U).
+- "Rename" (R).
+- "Move to project" — move the chat to another project. Not possible while the agent works: "The
+  chat can't be moved while the agent or work it started is still running."
+- "Permissions in this chat" — see [above](#permissions-in-this-chat).
+- "Make visible to project" — only for your own incognito chat.
+- "Delete" (D) — after confirmation the chat is removed for good.
+
+In an open chat the same actions are in the menu next to the title. The "Share" button in the
+header offers "Copy link" and "Export to Markdown", which downloads the conversation as a file.
+
+If a chat link opens "You don't have access to this conversation", the chat is in a project you
+are not a member of. Ask someone on that project to add you.
+
+## Scheduled chats
+
+A scheduled task is a prompt the agent runs on its own on a schedule. Each run creates a new
+chat, which shows up under "Recent".
+
+Scheduled tasks are available on the Pro, Scale and Enterprise plans. A project manager and the
+organization's owner and admins can create, change, run and delete them; other members see the
+task list.
+
+### Create a task
+
+1. On the "Chats" page click "Schedule". Alternatively, type a prompt in the composer and run
+   `/schedule`.
+2. In the "Create scheduled task" window fill in:
+   - "Name" — required;
+   - "Description" — optional;
+   - "Prompt" — required: what the agent should do on each run.
+3. Under "Frequency" pick "Hourly", "Daily", "Weekly", "Monthly" or "Custom (cron)". Daily,
+   weekly (on Mondays) and monthly (on the 1st) runs happen at 9:00 in the project's time zone.
+   For "Custom (cron)" enter a "Cron expression", for example `0 9 * * 1` — every Monday at
+   9:00 AM.
+4. Optionally open "More options":
+   - "Chat title template" — placeholders `{{name}}` and `{{date}}`; leave it empty for the
+     default title;
+   - "Max tokens" — a limit on the answer;
+   - "Model" — the model for this task.
+5. Click "Save".
+
+<Screenshot id="chat-scheduled-task-dialog" alt="The Create scheduled task window with the Name, Prompt and Frequency fields" />
+
+An empty required field shows "This field is required". If the model list says "Couldn’t load
+models — the task will use the default model.", the task still saves.
+
+### Manage a task
+
+In the "Scheduled" group each task shows its schedule and the next run ("Next: …"). The switch in
+the row enables and disables the task.
+
+Click a task to open its page with the "Active" or "Paused" status and the "Description",
+"Repeats", "Chat title template", "Next run", "Instructions" and "History" fields. Here you can:
+
+- "Run now" — run the task outside its schedule; you'll see "Run started".
+- "Edit" — change the task in the same window.
+- "Delete" — delete the task after confirmation.
+
+"History" lists every run with its date and a status icon: completed, failed, running or
+waiting for approval. Click a run to open its chat. With no runs yet you'll see "No runs yet".
+
+## Errors and messages
+
+| Message | What to do |
+| --- | --- |
+| "Live connection lost" | Click "Reconnect". |
+| "Couldn't load this conversation" | Check your connection and click "Retry". |
+| "Couldn't send your message. Please try again." | Send the message again. |
+| "Something went wrong while responding. Please try again." | Send the request again. |
+| "Couldn't load chats" | Click "Retry" on the "Chats" page. |
+| "Couldn't delete the chat yet. Try again in a moment." | Try deleting again later. |
+
+## Related articles
+
+- [For project managers](/getting-started/manager/)
+- [Artifacts](/artifacts/)
+- [Skills](/skills/)
+- [Workflows](/workflows/)
+- [Data overview](/data/overview/)
+- [Project instructions and context](/project-settings/instructions/)
+- [Billing](/organization/billing/)
