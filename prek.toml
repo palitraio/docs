@@ -1,0 +1,26 @@
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "oxfmt"
+name = "oxfmt"
+language = "system"
+entry = "pnpm exec oxfmt --check"
+pass_filenames = false
+always_run = true
+
+[[repos.hooks]]
+id = "oxlint"
+name = "oxlint"
+language = "system"
+entry = "pnpm exec oxlint"
+pass_filenames = false
+always_run = true
+
+[[repos.hooks]]
+id = "check-content"
+name = "check-content"
+language = "system"
+entry = "pnpm check:content"
+pass_filenames = false
+always_run = true

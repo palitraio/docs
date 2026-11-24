@@ -1,0 +1,20 @@
+---
+import { Badge } from "@astrojs/starlight/components";
+import Default from "@astrojs/starlight/components/PageTitle.astro";
+
+const { editions } = Astro.locals.starlightRoute.entry.data;
+const labels: Record<string, string> = { saas: "SaaS", byoc: "BYOC" };
+---
+
+<Default><slot /></Default>
+<p class="editions">
+  {editions.map((edition: string) => <Badge text={labels[edition] ?? edition} variant="note" />)}
+</p>
+
+<style>
+  .editions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+</style>

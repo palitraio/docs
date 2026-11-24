@@ -1,0 +1,5 @@
+minimumReleaseAge: 1440
+ignoreScripts: true
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
