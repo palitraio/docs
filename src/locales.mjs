@@ -11,7 +11,13 @@ export const LOCALES = {
     brand: "Palitra",
     section: "Docs",
     published: false,
-    sidebar: { gettingStarted: "Getting started", connectors: "Connectors" },
+    sidebar: {
+      gettingStarted: "Getting started",
+      connectors: "Connectors",
+      data: "Data",
+      organization: "Organization management",
+      projectSettings: "Project management",
+    },
   },
   ru: {
     lang: "ru",
@@ -21,7 +27,13 @@ export const LOCALES = {
     brand: "Палитра",
     section: "Документация",
     published: true,
-    sidebar: { gettingStarted: "Начало работы", connectors: "Коннекторы" },
+    sidebar: {
+      gettingStarted: "Начало работы",
+      connectors: "Коннекторы",
+      data: "Данные",
+      organization: "Управление организацией",
+      projectSettings: "Управление проектами",
+    },
   },
 };
 
@@ -61,7 +73,49 @@ export const SIDEBAR = [
       "getting-started/manager",
     ],
   },
-  { labelKey: "connectors", items: ["connectors/yandex-direct", "connectors/yandex-metrika"] },
+  "chat",
+  "workflows",
+  "artifacts",
+  {
+    labelKey: "connectors",
+    items: ["connectors/overview", "connectors/yandex-direct", "connectors/yandex-metrika"],
+  },
+  {
+    labelKey: "data",
+    items: [
+      "data/overview",
+      "data/explorer",
+      "data/events",
+      "data/attribution",
+      "data/pixel",
+      "data/uploads",
+      "data/webhooks",
+    ],
+  },
+  "jobs",
+  "skills",
+  "media-plans",
+  "action-log",
+  {
+    labelKey: "organization",
+    items: [
+      "organization/general",
+      "organization/members",
+      "organization/projects",
+      "organization/sso",
+      "organization/billing",
+    ],
+  },
+  {
+    labelKey: "projectSettings",
+    items: [
+      "project-settings/general",
+      "project-settings/instructions",
+      "project-settings/members",
+      "project-settings/notifications",
+      "project-settings/domains",
+    ],
+  },
   "faq",
 ];
 

@@ -1,0 +1,123 @@
+---
+title: Domains
+description: How to publish a project's artifacts on your own domain — DNS records, checking, the certificate and removing a domain.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/domains/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.en.messages.json
+  - palitra-frontend/components/project-settings/artifact-domains/DomainList.tsx
+  - palitra-frontend/components/project-settings/artifact-domains/AddDomainDialog.tsx
+  - palitra-frontend/components/project-settings/artifact-domains/DomainRow.tsx
+  - palitra-frontend/components/project-settings/artifact-domains/artifact-domains.en.messages.json
+  - palitra-frontend/components/artifacts/panel/use-artifact-permissions.ts
+  - palitra-frontend/lib/artifacts/artifact-errors.en.messages.json
+  - palitra-frontend/components/layout/project-switcher.tsx
+  - palitra-frontend/components/layout/project-switcher.en.messages.json
+  - palitra-backend/src/modules/artifacts/application/services/domain_service.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+Published [artifacts](/artifacts/) open on the Palitra address by default. On the "Domains" tab
+you can connect your own domain, such as `reports.example.com`, and publish artifacts there.
+
+Every project member sees the tab. Project managers, and the organization's owner and admins,
+can add, check and delete domains.
+
+## Open the tab
+
+1. Pick the project in the project list at the top of the sidebar.
+2. Click the gear icon next to the project name ("Project settings").
+3. Go to the "Domains" tab.
+
+<Screenshot id="project-settings-domains" alt="The Domains tab in project settings with the list of connected domains" />
+
+If you see "Custom domains aren't available" instead of the list, the feature is off on your
+Palitra installation: artifacts are published on the Palitra address only.
+
+## Connect a domain
+
+1. Click "Add domain".
+2. In "Add a custom domain", enter the "Hostname" artifacts should open on, such as
+   `reports.example.com`.
+3. Click "Add domain".
+
+The domain appears in the list as "Pending", with its DNS records table open below it.
+
+<Screenshot id="project-settings-domains-add" alt="The Add a custom domain dialog with the Hostname field" />
+
+If the domain is already connected in Palitra, you get an error saying so. If the hostname is
+malformed, Palitra asks you to check it and try again.
+
+## Create the DNS records
+
+Create the records at your DNS provider, wherever you manage the domain. To see them in Palitra,
+click "Show DNS records" on the domain's row. The table has "Type", "Name" and "Value" columns,
+with buttons to copy the name and the value.
+
+Palitra asks for:
+
+| Type | Purpose |
+| --- | --- |
+| `TXT` named `_palitra-verify.<your domain>` | Proves the domain is yours. |
+| `CNAME` to the Palitra address | Points a subdomain (such as `reports.example.com`) at Palitra. |
+| `A` to the Palitra addresses | Used instead of `CNAME` when you connect an apex domain (`example.com`). |
+
+Copy the values from the table, not from this article: they differ for every domain.
+
+If the table says "A records could not be listed right now. The table below may be incomplete.",
+click "Retry".
+
+<Screenshot id="project-settings-domains-records" alt="A domain's DNS records table with Type, Name and Value columns" />
+
+## Check the domain
+
+Once the records exist, click "Check now". DNS changes take time to spread: if the check fails,
+wait and try again.
+
+When the check passes, the status changes to "Active" and the row shows when the domain was
+verified and "Certificate valid until …". Palitra issues the HTTPS certificate itself.
+
+If the DNS server doesn't answer, Palitra shows "DNS did not answer; nothing changed." and the
+domain keeps its status.
+
+## Statuses and errors
+
+| Status | Meaning |
+| --- | --- |
+| "Pending" | The domain is added but its records are not verified yet. |
+| "Active" | The domain works and artifacts can be published on it. |
+| "Broken" | The check failed or the certificate couldn't be issued. |
+
+Under a "Broken" domain Palitra gives the reason:
+
+- "The verification TXT record wasn't found." — check the `TXT` record: name and value must match
+  the table.
+- "The domain doesn't point to the Palitra address." — check the `CNAME` or `A` records.
+- "The TLS certificate couldn't be issued." — usually caused by wrong DNS records; fix them and
+  click "Check now".
+- "The certificate couldn't be renewed and is about to expire." — check that the DNS records are
+  still in place.
+- "The DNS server didn't answer." — check again later.
+
+Next to the certificate date you may see "Expires soon" (less than two weeks left) or "Expired".
+
+## Artifacts on the domain
+
+The domain's row lists "Artifacts on this domain". Click a name to open the artifact.
+
+An artifact restricted to project members can't be published on a custom domain: publish it
+publicly or on the Palitra address.
+
+## Delete a domain
+
+1. Click "Delete" on the domain's row.
+2. Confirm with "Delete domain".
+
+Publications on this domain fall back to the Palitra address. You can then remove the DNS
+records at your provider.
+
+## Related articles
+
+- [Artifacts](/artifacts/)
+- [General project settings](/project-settings/general/)
