@@ -21,6 +21,15 @@ function stem(path) {
   return path.replace(ARTICLE, "");
 }
 
+const ABSOLUTE_SOURCE = /^([/\\~]|[A-Za-z]:)/;
+
+function sourceProblem(source) {
+  if (typeof source !== "string" || source === "") return "must be a non-empty string";
+  if (ABSOLUTE_SOURCE.test(source)) return "must be workspace-relative, not absolute";
+  if (source.split(/[/\\]/).includes("..")) return 'must not contain ".." segments';
+  return null;
+}
+
 function frontmatterErrors(docsDir, path) {
   const { data } = matter(readFileSync(join(docsDir, path), "utf8"));
   const errors = [];
@@ -32,12 +41,13 @@ function frontmatterErrors(docsDir, path) {
   if (!editionsValid) {
     errors.push(`${path}: editions must be a non-empty subset of [${EDITIONS.join(", ")}]`);
   }
-  const sourcesValid =
-    Array.isArray(sources) &&
-    sources.length > 0 &&
-    sources.every((source) => typeof source === "string" && source !== "");
-  if (!sourcesValid) {
+  if (!Array.isArray(sources) || sources.length === 0) {
     errors.push(`${path}: sources must be a non-empty list of workspace-relative paths`);
+  } else {
+    for (const source of sources) {
+      const problem = sourceProblem(source);
+      if (problem) errors.push(`${path}: sources entry "${source}" ${problem}`);
+    }
   }
   return errors;
 }

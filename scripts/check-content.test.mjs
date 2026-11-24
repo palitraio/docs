@@ -53,4 +53,18 @@ describe("checkContent", () => {
     const root = makeRoot({ "faq.md": bad, "en/faq.md": VALID });
     expect(checkContent(root).some((e) => e.includes("editions"))).toBe(true);
   });
+
+  it("reports an absolute source path", () => {
+    const bad = VALID.replace("palitra-frontend/app/[locale]", "/etc/passwd");
+    const root = makeRoot({ "faq.md": bad, "en/faq.md": VALID });
+    const errors = checkContent(root);
+    expect(errors.some((e) => e.includes("faq.md") && e.includes("/etc/passwd"))).toBe(true);
+  });
+
+  it("reports a source path with ..", () => {
+    const bad = VALID.replace("palitra-frontend/app/[locale]", "palitra-frontend/../secret");
+    const root = makeRoot({ "faq.md": bad, "en/faq.md": VALID });
+    const errors = checkContent(root);
+    expect(errors.some((e) => e.includes("faq.md") && e.includes("../secret"))).toBe(true);
+  });
 });

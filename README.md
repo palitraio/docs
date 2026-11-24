@@ -15,6 +15,7 @@ pnpm install
 pnpm dev            # http://localhost:4321
 pnpm test           # content checker tests
 pnpm lint           # oxlint
+pnpm typecheck      # astro check (TypeScript 6; astro check does not support 7)
 pnpm format:check   # oxfmt
 ```
 

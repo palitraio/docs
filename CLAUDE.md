@@ -20,7 +20,7 @@ public, built with Astro Starlight, in Russian (root locale) and English (`en/`)
 - Russian article: `src/content/docs/<path>.md(x)`. English twin: `src/content/docs/en/<path>.md(x)`.
   `.md` and `.mdx` count as the same stem. Both must exist.
 - Frontmatter: `title`, `description`, `editions` (non-empty subset of `saas`, `byoc`),
-  `sources` (non-empty list).
+  `sources` (non-empty list of workspace-relative paths: no absolute paths, no `..`).
 - `pnpm check:content` validates twins and frontmatter; `pnpm build` runs it first.
 
 ## Stability
