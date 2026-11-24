@@ -1,0 +1,184 @@
+/*
+ * Palitra brand theme for Starlight. Values come from the design system (`assets/design-system`,
+ * tokens/colors.css, typography.css, spacing.css): shadcn neutral OKLch scale, near-black
+ * primary, the 4-stop gradient only as a thin top bar, Geist type, border-only surfaces.
+ */
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+:root {
+  --brand-gradient: linear-gradient(90deg, #21ccee 0%, #1470ef 33%, #6927da 69%, #f23d94 100%);
+  --brand-blue: #1470ef;
+  --brand-bar-height: 3px;
+
+  --sl-font: "Geist Variable";
+  --sl-font-mono: "Geist Mono Variable";
+
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.5rem;
+  --sl-text-h3: 1.25rem;
+  --sl-text-h4: 1.125rem;
+
+  /* Dark theme (Starlight's default block): design-system `.dark` values. */
+  --sl-color-white: oklch(1 0 0);
+  --sl-color-gray-1: oklch(0.97 0 0);
+  --sl-color-gray-2: oklch(0.922 0 0);
+  --sl-color-gray-3: oklch(0.708 0 0);
+  --sl-color-gray-4: oklch(0.556 0 0);
+  --sl-color-gray-5: oklch(0.371 0 0);
+  --sl-color-gray-6: oklch(0.269 0 0);
+  --sl-color-black: oklch(0.145 0 0);
+
+  --sl-color-accent-low: oklch(0.269 0 0);
+  --sl-color-accent: oklch(0.922 0 0);
+  --sl-color-accent-high: oklch(0.985 0 0);
+
+  --sl-color-text: oklch(0.922 0 0);
+  --sl-color-text-accent: oklch(0.985 0 0);
+  --sl-color-bg: oklch(0.145 0 0);
+  --sl-color-bg-nav: oklch(0.145 0 0);
+  --sl-color-bg-sidebar: oklch(0.205 0 0);
+  --sl-color-bg-inline-code: oklch(0.269 0 0);
+  --sl-color-hairline-light: oklch(1 0 0 / 15%);
+  --sl-color-hairline: oklch(1 0 0 / 10%);
+  --sl-color-hairline-shade: oklch(1 0 0 / 10%);
+
+  --palitra-link: #6ea8ff;
+  --palitra-sidebar-active: oklch(0.269 0 0);
+  --palitra-sidebar-active-text: oklch(0.985 0 0);
+}
+
+:root[data-theme="light"] {
+  --sl-color-white: oklch(0.145 0 0);
+  --sl-color-gray-1: oklch(0.205 0 0);
+  --sl-color-gray-2: oklch(0.269 0 0);
+  --sl-color-gray-3: oklch(0.439 0 0);
+  --sl-color-gray-4: oklch(0.556 0 0);
+  --sl-color-gray-5: oklch(0.708 0 0);
+  --sl-color-gray-6: oklch(0.922 0 0);
+  --sl-color-gray-7: oklch(0.97 0 0);
+  --sl-color-black: oklch(1 0 0);
+
+  --sl-color-accent-low: oklch(0.97 0 0);
+  --sl-color-accent: oklch(0.205 0 0);
+  --sl-color-accent-high: oklch(0.145 0 0);
+
+  --sl-color-text: oklch(0.269 0 0);
+  --sl-color-text-accent: oklch(0.205 0 0);
+  --sl-color-text-invert: oklch(0.985 0 0);
+  --sl-color-bg: oklch(1 0 0);
+  --sl-color-bg-nav: oklch(1 0 0);
+  --sl-color-bg-sidebar: oklch(0.985 0 0);
+  --sl-color-bg-inline-code: oklch(0.97 0 0);
+  --sl-color-hairline-light: oklch(0.922 0 0);
+  --sl-color-hairline: oklch(0.922 0 0);
+  --sl-color-hairline-shade: oklch(0.922 0 0);
+
+  --palitra-link: var(--brand-blue);
+  --palitra-sidebar-active: oklch(0.94 0 0);
+  --palitra-sidebar-active-text: oklch(0.145 0 0);
+}
+
+/* The signature gradient bar pinned to the top of every page. */
+header.header {
+  border-top: var(--brand-bar-height) solid transparent;
+  border-image: var(--brand-gradient) 1;
+  border-image-width: var(--brand-bar-height) 0 0 0;
+}
+
+/* Headings: Geist, tight tracking, sentence case. */
+.sl-markdown-content :is(h1, h2, h3, h4),
+h1#_top {
+  color: var(--sl-color-white);
+  font-weight: 600;
+}
+
+@media (min-width: 50em) {
+  :root {
+    --sl-text-h1: 2.5rem;
+    --sl-text-h2: 1.75rem;
+    --sl-text-h3: 1.375rem;
+    --sl-text-h4: 1.125rem;
+  }
+}
+
+h1#_top {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sl-markdown-content h2 {
+  letter-spacing: -0.015em;
+}
+
+.sl-markdown-content h3 {
+  letter-spacing: -0.01em;
+}
+
+/* Body links: foreground text with a brand-blue underline, so they stay visible on near-black. */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--sl-color-white);
+  text-decoration-color: var(--palitra-link);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  color: var(--palitra-link);
+}
+
+/* Sidebar: active item is a soft neutral fill, as in the app shell, not an accent pill. */
+.sidebar-content a[aria-current="page"],
+.sidebar-content a[aria-current="page"]:hover,
+.sidebar-content a[aria-current="page"]:focus {
+  background-color: var(--palitra-sidebar-active);
+  color: var(--palitra-sidebar-active-text);
+  font-weight: 500;
+}
+
+.sidebar-content a {
+  border-radius: var(--radius-md);
+}
+
+/* Border-only surfaces with design-system radii. */
+.sl-markdown-content :is(table, pre, .expressive-code figure) {
+  border-radius: var(--radius-lg);
+}
+
+.sl-markdown-content code:not(pre code) {
+  border-radius: 6px;
+  padding: 0.125rem 0.375rem;
+}
+
+.starlight-aside {
+  border: 1px solid var(--sl-color-hairline);
+  border-inline-start-width: 3px;
+  border-radius: var(--radius-lg);
+}
+
+.card,
+.sl-link-card {
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+
+site-search button[data-open-modal],
+starlight-theme-select select,
+starlight-lang-select select {
+  border-radius: var(--radius-lg);
+}
+
+/* Badges follow the design-system Badge: neutral pill with a hairline border. */
+.sl-badge {
+  border: 1px solid var(--sl-color-hairline-light);
+  border-radius: 100px;
+  background: var(--sl-color-bg-inline-code);
+  color: var(--sl-color-white);
+  font-family: var(--__sl-font);
+  font-weight: 500;
+  padding-inline: 0.5rem;
+}
