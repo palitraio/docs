@@ -1,0 +1,307 @@
+---
+title: Artifacts
+description: Pages, dashboards, presentations and documents the agent builds — the list, viewing, versions, publishing, data refresh and deleting.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/artifacts/page.tsx
+  - palitra-frontend/app/[locale]/(viewer)/artifacts/view/[slug]/page.tsx
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/artifacts/list/ArtifactList.tsx
+  - palitra-frontend/components/artifacts/list/ArtifactListToolbar.tsx
+  - palitra-frontend/components/artifacts/list/ArtifactListRow.tsx
+  - palitra-frontend/components/artifacts/list/ArtifactListEmpty.tsx
+  - palitra-frontend/components/artifacts/list/ArtifactRowActions.tsx
+  - palitra-frontend/components/artifacts/list/artifact-list.en.messages.json
+  - palitra-frontend/components/artifacts/ArtifactSheet.tsx
+  - palitra-frontend/components/artifacts/PublishDialog.tsx
+  - palitra-frontend/components/artifacts/AdsConfirmFlow.tsx
+  - palitra-frontend/components/artifacts/publish-dialog.en.messages.json
+  - palitra-frontend/components/artifacts/MembersViewer.tsx
+  - palitra-frontend/components/artifacts/members-viewer.en.messages.json
+  - palitra-frontend/components/artifacts/artifact-frame.en.messages.json
+  - palitra-frontend/components/artifacts/panel/ArtifactPanel.tsx
+  - palitra-frontend/components/artifacts/panel/PanelHeader.tsx
+  - palitra-frontend/components/artifacts/panel/PublicationBadge.tsx
+  - palitra-frontend/components/artifacts/panel/PublicationOutdated.tsx
+  - palitra-frontend/components/artifacts/panel/UrlRow.tsx
+  - palitra-frontend/components/artifacts/panel/VersionsSection.tsx
+  - palitra-frontend/components/artifacts/panel/DataSection.tsx
+  - palitra-frontend/components/artifacts/panel/FormsSection.tsx
+  - palitra-frontend/components/artifacts/panel/use-artifact-permissions.ts
+  - palitra-frontend/components/artifacts/panel/artifact-panel.en.messages.json
+  - palitra-frontend/components/artifacts/panel/artifact-data.en.messages.json
+  - palitra-frontend/components/artifacts/panel/artifact-forms.en.messages.json
+  - palitra-frontend/components/chat/ArtifactCard.tsx
+  - palitra-frontend/components/chat/artifact-card.en.messages.json
+  - palitra-frontend/lib/artifacts/use-artifact-param.ts
+  - palitra-frontend/lib/artifacts/artifact-errors.en.messages.json
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-backend/src/capabilities/domain/toolsets.py
+  - palitra-backend/src/modules/artifacts/application/services/publication_service.py
+  - palitra-backend/src/modules/artifacts/application/services/artifact_service.py
+  - palitra-backend/src/modules/artifacts/application/services/data_service.py
+  - palitra-backend/src/modules/artifacts/application/services/members_view_service.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+Artifacts are what the agent builds for you in chat: pages, dashboards, presentations and
+documents. Each artifact is kept in the project with all its versions. You can open it, print it,
+publish it by link — for everyone or for project members only — and refresh a dashboard with
+fresh data on a schedule.
+
+Every project member sees the "Artifacts" section. What else you can do depends on your role:
+
+| Action | Who can |
+| --- | --- |
+| View artifacts and their versions | Every project member |
+| Restore versions, refresh data by hand | Project managers and viewers, the organization's owner and admins |
+| Rename, duplicate, publish, unpublish, delete, set auto-refresh and forms | Project managers, the organization's owner and admins |
+
+## Open the section
+
+Pick the project in the sidebar and click "Artifacts". The project's artifact list opens.
+
+When the agent creates or changes an artifact in chat, the conversation shows a card reading
+"Created · version …" or "Updated · version …". Click "Open" to view it without leaving the chat.
+
+<Screenshot id="artifacts-list" alt="The project's artifact list with search, filters and the Name, Updated, Publication and Data columns" />
+
+## Create an artifact
+
+The agent creates artifacts. Ask it in [chat](/chat/) to build, say, a spend dashboard or a
+promo page, and the result shows up in the list.
+
+If the project has no artifacts yet, the section says "No artifacts yet". Click "Ask the agent":
+Palitra opens a new chat with a ready-made request for a simple dashboard from the project data.
+
+## Find an artifact in the list
+
+The table has four columns:
+
+- "Name" — the artifact's name and an icon for its type: "Page", "Dashboard", "Presentation" or
+  "Document".
+- "Updated" — when the artifact last changed.
+- "Publication" — "Public", "Members", "Not published" or "Taken down". A published artifact has
+  icons next to it that open its page on the Palitra address and, if it is published on a custom
+  domain, on that domain.
+- "Data" — for artifacts with data: when it was refreshed ("Updated …"), "Never updated", or a
+  "Stale" mark. Hover over the mark to see why.
+
+Above the table are the "Search by name" box and filters:
+
+- "Type" — one of the four types or "All types";
+- "Publication" — "Published", "Not published" or "Any status";
+- "Audience" — "Public", "Members only" or "Any audience";
+- sorting by "Last updated" or "Name", in "Descending" or "Ascending" order.
+
+If nothing fits the filters, you see "Nothing matches". Click "Reset filters". When there are
+many artifacts, the bottom of the list has a "Load more" button.
+
+## Open an artifact
+
+Click an artifact's row. The artifact panel opens on the right:
+
+- the header shows the name, type and publication status;
+- the middle shows the artifact itself;
+- at the bottom are the "Versions", "Data" (artifacts with data) and "Forms" (pages) tabs.
+
+You can copy the link to an open panel from the browser's address bar and send it to a colleague:
+it opens the same artifact for them. The browser's Back button closes the panel, and so does the
+"Close panel" cross.
+
+<Screenshot id="artifacts-panel" alt="The artifact panel: header with publication status, preview, and the Versions, Data and Forms tabs" />
+
+If the preview fails to load, you see "Preview unavailable": click "Try again".
+
+Documents and presentations can be printed: in the "Actions" menu (three dots in the header),
+choose "Print". If the browser blocks the new window, Palitra shows "Open the document to print
+it" with an "Open document" link.
+
+## Change an artifact
+
+The agent changes an artifact's content. Open the chat the artifact was made in: in the list,
+click the three dots on the artifact's row and choose "Go to chat". The item is there as long as
+that chat exists. Tell the agent what to fix: every change is saved as a new version.
+
+The agent can also delete an artifact, but only once you approve. The agent does not handle
+publishing, access, domains or form destinations: you do that in the "Artifacts" section.
+
+## Versions
+
+The "Versions" tab lists every version of the artifact with its date and size. Marks next to the
+number:
+
+- "Current" — the latest version;
+- "Published" — the version the link serves;
+- "Viewing" — the version shown in the panel right now;
+- "Render failed" — the version rendered with errors. While you view it, the errors are listed
+  below the versions under "Render errors in version …".
+
+To look at an older version, click "View" next to it. To bring it back, click "Restore": Palitra
+saves a copy of it as the new current version, marked "Restored from version …". No history is
+lost.
+
+If a version loads anything from other websites, their addresses are listed under "External
+domains".
+
+## Rename or duplicate
+
+**Rename.** In the panel, click the "Rename" pencil next to the name, type the new one and press
+Enter (Esc cancels). In the list, use the three dots on the row → "Rename" → the "Rename
+artifact" dialog → "Save". Names are up to 200 characters.
+
+**Duplicate.** Choose "Duplicate" in the panel's "Actions" menu or the row menu. Palitra creates a
+copy and shows "Copy created"; from the panel, the copy opens right away.
+
+## Publish an artifact
+
+A published artifact opens by link, without signing in to Palitra or for project members only,
+as you choose.
+
+1. Open the artifact.
+2. In the "Actions" menu, choose "Publish…".
+3. In the "Publish artifact" dialog, under "Who can open it", choose:
+   - "Anyone with the link" — a public page;
+   - "Project members only" — it opens only for people signed in to Palitra who are in the
+     project.
+4. In "Version", choose which version to publish. The current one is the default.
+5. In "Address", keep "Palitra address" or pick a custom domain. Custom domains are connected in
+   [project settings](/project-settings/domains/); only working domains are listed.
+6. With a custom domain, fill in "Path on the domain", such as `promo`.
+7. Click "Publish".
+
+<Screenshot id="artifacts-publish" alt="The Publish artifact dialog with audience, version and address choices" />
+
+Publishing limits:
+
+- A members-only artifact is published on the Palitra address only: "Members-only artifacts are
+  available on the Palitra address only."
+- If the artifact shows project data and you publish it publicly, Palitra asks you to confirm:
+  "The data will become public". Tick "I understand the data becomes public" and click "Publish
+  publicly".
+- The number of published artifacts in an organization is limited by the plan. When the limit is
+  reached, Palitra tells you so — see [Billing](/organization/billing/).
+
+Once published, the status in the panel header changes to "Public" or "Members only". Click it to
+see the publication date and the links: "Palitra address" and, if set, "Custom domain". The
+buttons next to them copy the link ("Link copied") and open it.
+
+### What people see by the link
+
+- **A public artifact** opens on its own, without the Palitra interface.
+- **A members-only artifact** opens in Palitra with a thin bar on top and an "Open in Palitra"
+  button. Someone who is not in the project sees "You don't have access to this artifact"; they
+  need to ask a project manager to add them, or sign in with another account.
+- If the artifact was unpublished, the link shows "This artifact is not available"; if the link
+  is wrong or the artifact was deleted, "Artifact not found".
+
+## Update the published version
+
+A publication serves the version you published. When the agent saves a new version, the link
+keeps serving the old one, and the panel shows "Published version …, current is …".
+
+Click "Update publication": the link starts serving the current version with the same audience
+and address, and Palitra shows "The link now serves version …". If this needs the public-data
+confirmation, the publish dialog opens.
+
+To change the audience, version or address, choose "Change publication…" in the "Actions" menu.
+
+## Unpublish
+
+1. Choose "Unpublish" in the panel's "Actions" menu or the list's row menu.
+2. Confirm with "Unpublish".
+
+The link stops working. If ads in connected ad accounts link to the artifact, Palitra shows "Ads
+link to this artifact" with a list of campaigns and ads: they will break once you unpublish. To
+go ahead anyway, click "Unpublish anyway".
+
+## Data and refresh
+
+Dashboards show project data. Palitra keeps a snapshot of it and refreshes the snapshot by hand
+or on a schedule. Artifacts with data have a "Data" tab:
+
+- "Last updated" — when the data last refreshed successfully ("Never" if it hasn't yet);
+- "Stale reason" — if the last refresh failed;
+- "Auto-refresh" — how often to refresh: "Off", "Hourly", "Daily" or "Weekly".
+
+To refresh now, click "Refresh now". While it runs, the button reads "Refreshing…".
+
+Project managers and the organization's owner and admins choose the auto-refresh interval, for
+dashboards only. The most frequent interval available depends on the plan: if an interval isn't
+available on yours, Palitra offers to change the plan.
+
+<Screenshot id="artifacts-data" alt="The Data tab with the last update time, the auto-refresh choice and the Refresh now button" />
+
+Why data can go stale:
+
+| Reason | What to do |
+| --- | --- |
+| "The last refresh failed because the data query returned an error." | Ask the agent in chat to check the dashboard's query. |
+| "The last refresh took too long and was stopped." | Ask the agent to narrow the period or simplify the dashboard. |
+| "The data source was unavailable during the last refresh." | Click "Refresh now" again later. |
+| "The refreshed data is too large to store." | Ask the agent to cut down the data. |
+
+Errors from a manual refresh: "The data source isn't available right now.", "The data source took
+too long to respond.", "Too many refresh requests." — wait and try again.
+
+If the last refresh of a public artifact failed, the panel says "The public page shows no data
+until a refresh succeeds." The same warning can appear right after publishing: "Published, but
+the public page has no data yet".
+
+## Forms
+
+If a page has a form, the "Forms" tab sets where submissions go:
+
+1. Fill in "Email", "Webhook URL" or both.
+2. Click "Save".
+
+The first time you save a webhook, Palitra shows a "Webhook secret" dialog: use the secret to
+verify request signatures. "You won't be able to see this secret again. Copy it now." Click "Copy
+secret", then "Done". "Rotate secret" issues a new one.
+
+To stop receiving submissions, click "Remove" and confirm. The bottom of the tab shows
+"Deliveries, last 24 hours": "Delivered", "Pending", "Discarded".
+
+Project managers and the organization's owner and admins can change destinations. Everyone else
+sees them read-only.
+
+## Delete an artifact
+
+1. Choose "Delete" in the panel's "Actions" menu or the list's row menu.
+2. Confirm with "Delete" in the "Delete this artifact?" dialog.
+
+The artifact and all its versions are deleted for good, and its link stops working. If ads link
+to the artifact, Palitra lists them first; to go ahead, click "Delete anyway".
+
+## Statuses and errors
+
+**"Taken down".** Palitra has taken the artifact's publication down. The panel says "The
+platform took this artifact down. Publishing is disabled; you can still delete it." Only Palitra
+support can restore the publication.
+
+**"No access".** You don't have access to the artifact: ask a project manager for access.
+
+**"Artifact not found or deleted".** The artifact is no longer in the project, or the link to it
+is wrong.
+
+**"Version … was not found. Showing the current version …".** The link pointed to a version that
+no longer exists.
+
+Errors when publishing:
+
+- "This domain isn't active yet. Finish its DNS setup first." — finish checking the domain in
+  [project settings](/project-settings/domains/).
+- "This path on the domain is already taken" — pick another path.
+- "Members-only artifacts can't be published on a custom domain. Publish it publicly or on its
+  Palitra address."
+- "The current custom address will be replaced by the Palitra address." — the domain the artifact
+  was published on no longer works; saving moves the publication to the Palitra address.
+
+## Related articles
+
+- [Chat with the agent](/chat/)
+- [Domains](/project-settings/domains/)
+- [Project members](/project-settings/members/)
+- [Billing](/organization/billing/)
