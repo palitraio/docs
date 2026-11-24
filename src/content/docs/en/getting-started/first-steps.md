@@ -32,7 +32,7 @@ organization and first project, connecting platforms, and inviting colleagues.
 
 The wizard header shows which step you are on and how many steps there are. The total can grow
 as you go: some steps appear only once everything they need is in place. The steps have "Back"
-and "Continue" buttons at the bottom; on the last step, "Finish" replaces "Continue". You can
+and "Continue" buttons at the bottom ("Back" is inactive on the first step); on the last step, "Finish" replaces "Continue". You can
 skip optional steps with "Skip".
 
 ## Welcome
@@ -149,7 +149,7 @@ On the "Invite your team" step:
 1. Enter a colleague's address in the "Email addresses" field.
 2. Click "Add". Repeat for each colleague.
 
-Invitations are sent when you finish the wizard. Invitees join the organization as "Member" and
+Invitations are sent on the last step, when Palitra carries out everything you chose. Invitees join the organization as "Member" and
 get access to the new project as "Viewer". You can also invite people later from organization
 settings.
 
