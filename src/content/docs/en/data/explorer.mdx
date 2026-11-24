@@ -1,0 +1,295 @@
+---
+title: Data Explorer
+description: How to browse the project's tables, filter and sort rows, edit data, upload a CSV into a table and create your own tables.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/explorer/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/explorer/data-explorer.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/data-overview.en.messages.json
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/data-explorer/TableSidebar.tsx
+  - palitra-frontend/components/data-explorer/SchemaHeader.tsx
+  - palitra-frontend/components/data-explorer/ColumnFilters.tsx
+  - palitra-frontend/components/data-explorer/DataGrid.tsx
+  - palitra-frontend/components/data-explorer/RowDetailDrawer.tsx
+  - palitra-frontend/components/data-explorer/CrossLinks.tsx
+  - palitra-frontend/components/data-explorer/CrudToolbar.tsx
+  - palitra-frontend/components/data-explorer/PendingChangesBar.tsx
+  - palitra-frontend/components/data-explorer/CsvUploadModal.tsx
+  - palitra-frontend/components/data-explorer/CreateTableModal.tsx
+  - palitra-frontend/components/data-explorer/MappingSheet.tsx
+  - palitra-frontend/lib/data-explorer/editability.ts
+  - palitra-frontend/lib/data-explorer/explorer-state.ts
+  - palitra-frontend/lib/data-explorer/column-types.ts
+  - palitra-frontend/lib/data-explorer/rows-query.ts
+  - palitra-frontend/lib/data-explorer/csv-wizard.ts
+  - palitra-frontend/lib/event-mapping/targets.ts
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/components/billing/feature-gates.ts
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/billing/feature-lock.tsx
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-backend/src/modules/data_layer/api/tables_router.py
+  - palitra-backend/src/modules/data_layer/api/rows_router.py
+  - palitra-backend/src/modules/data_layer/domain/services/row_filter_compiler.py
+  - palitra-backend/src/modules/data_layer/domain/services/table_freshness.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "Data Explorer" shows every table of the project: raw data from connectors and uploads,
+events, aggregates and reference tables. You can browse the rows of any table, filter and sort
+them, and in your own tables and reference tables fix data, add rows or upload a CSV.
+
+Every project member can browse the tables. Project managers, and the organization's owner and
+admins, can change data:
+
+- rows can be edited in your own tables (uploaded or created by hand) and in reference tables
+  (the "Reference" layer);
+- only your own tables can be deleted — connector and system tables can't;
+- creating tables needs the Pro plan or higher.
+
+## Open the Data Explorer
+
+1. Click "Data" in the sidebar.
+2. On the "Data Pipeline" page, click "Explore data".
+
+The first table in the list opens. The selected table and the sort order are kept in the page
+address, so you can send a colleague a link to the open table.
+
+<Screenshot
+  id="data-explorer"
+  alt="The Data Explorer: the table list on the left and the selected table's rows on the right"
+/>
+
+If the project has no tables yet, you see "No data yet" and an "Upload data" button that opens
+the [CSV upload](/data/uploads/).
+
+## Find a table
+
+The tables in the left panel are grouped by layer:
+
+| Layer       | What it holds                                                    |
+| ----------- | ---------------------------------------------------------------- |
+| "Raw"       | Raw data as the source sent it: a connector or an uploaded file. |
+| "Event"     | The project's events.                                            |
+| "Aggregate" | Precomputed summary tables, such as spend per channel per day.   |
+| "Reference" | Reference tables.                                                |
+
+Each group shows how many tables it has, and it can be collapsed. Under a table's name you see
+its approximate row count. An upload icon next to the name means you created the table — by
+uploading a file or by hand.
+
+To find a table by name, start typing in "Search tables…". If nothing matches, you see "No
+tables match your search". Hide the panel with "Collapse sidebar".
+
+## Check the schema and freshness
+
+Above the rows there is a "Schema & Freshness" bar. On its right:
+
+- "Last updated" — when data was last written to the table;
+- a freshness badge: "Fresh" ("Data was updated recently"), "Stale" ("Data exists but has not
+  been updated recently") or "Empty" ("No data has been ingested into this table yet");
+- for raw tables, a field mapping badge: "Mapped → …" with the target table's name, or "No field
+  mapping". See [Set up field mapping](#set-up-field-mapping).
+
+Click "Schema & Freshness" to expand the column list: "Column", "Type" and "Nullable" (whether
+the value may be empty).
+
+<Screenshot
+  id="data-explorer-schema"
+  alt="The expanded Schema & Freshness bar with the table's column list"
+/>
+
+## Sort and page through rows
+
+- Click a column header to sort ascending. A second click sorts descending, a third clears the
+  sort.
+- Drag the edge of a header to change the column's width.
+- At the bottom, pick "Rows per page" — 25, 50, 100 or 200 — and move with "Previous" and "Next".
+  Next to them you see where you are: "Page 2 of 10".
+
+## Filter rows
+
+1. Click "Add filter".
+2. Pick a column, a condition and a value.
+3. Add more filters to narrow the result: a row is shown only when it meets every condition.
+
+The conditions depend on the column type:
+
+| Column type         | Conditions                                                      |
+| ------------------- | --------------------------------------------------------------- |
+| Text                | "equals", "contains", "starts with", "is empty", "is not empty" |
+| Number              | "equals", "not equals", `>`, `<`, "≥", "≤", "between"           |
+| Date, date and time | "on", "before", "after", "between", "is empty"                  |
+| Boolean             | "is" — "true" or "false"                                        |
+
+Columns holding lists or JSON can't be filtered. To remove every filter, click "Clear all".
+Changing filters or the sort takes the table back to the first page.
+
+<Screenshot
+  id="data-explorer-filters"
+  alt="The filter bar with a condition on a column and the Add filter button"
+/>
+
+## Open a whole row
+
+Click a row to open the "Row details" panel on the right with every field. Long values and JSON
+show in full there. To copy a field's value, hover it and click the copy button.
+
+Below the table there may be a "Related:" line with buttons for other tables — for example, the
+table the current one's data flows into. Click a button to go there.
+
+## Edit rows
+
+If you may change the table, "Add row" and "Upload CSV" buttons appear above it, and the rows get
+checkboxes.
+
+1. To change a value, double-click the cell, type the new value and press Enter. Escape cancels
+   the edit. If the value doesn't fit the column type, Palitra tells you, for example "Enter a
+   valid number" or "Enter a valid date".
+2. To add a row, click "Add row" and fill in the new row's cells the same way.
+3. To delete rows, tick them and click "Delete (N)", where N is the number of selected rows.
+
+Changes aren't saved right away: edited cells, new and deleted rows are highlighted, and a bar
+with counters appears at the bottom. To apply the changes, click "Save" and confirm "Save
+changes?". To drop them, click "Discard" and confirm "Discard changes?".
+
+<Screenshot
+  id="data-explorer-pending"
+  alt="A table with unsaved changes and the Save / Discard bar at the bottom"
+/>
+
+A reference table's key column can't be changed in existing rows — you can only set it in a new
+row.
+
+If you switch to another table with unsaved changes, Palitra asks "Discard unsaved changes?":
+"Discard and switch" drops the edits, "Stay" takes you back. Closing or reloading the browser tab
+also warns you about unsaved changes.
+
+If the table has a field mapping, saving shows "Downstream tables will update within ~2 min":
+Palitra reprocesses the data that flows from this table into events or spend.
+
+## Upload a CSV into a table
+
+This adds rows from a file to an existing table. To create a new table from a file, use the
+[CSV upload](/data/uploads/).
+
+1. Open the table and click "Upload CSV".
+2. Drop the file into the window or click "or browse files". `.csv` and `.tsv` files up to 50 MB
+   are accepted.
+3. At "Map CSV columns to table columns", pick a table column or "Skip" for each column of the
+   file. Below, Palitra shows which file columns "Will be ignored", which table columns "Will be
+   set to null", and a preview of the first rows.
+4. Click "Next" — the button says how many columns are mapped.
+5. Check the summary and click "Upload".
+
+Rows are written in the background: "Importing…" appears next to the table name. When the import
+finishes, Palitra tells you how many rows were added and how many duplicates were skipped.
+
+What can go wrong:
+
+- "File exceeds the 50 MB limit. Choose a smaller file."
+- "Only .csv and .tsv files are supported."
+- "The file has no data rows."
+- "Could not read the file. Please try again."
+- "No rows were accepted. Check the file and try again." — check that the values fit the table's
+  column types.
+- If only some rows are accepted, Palitra says how many were accepted out of the total and how
+  many could not be added.
+
+## Create a table
+
+You can create your own table from scratch and add data later — row by row or by CSV upload.
+
+1. Click "Create table" in the top right.
+2. Enter the "Table name". It starts with `udt_` followed by lowercase Latin letters, digits and
+   underscores, such as `udt_cbr_key_rate`.
+3. Pick the "Data type":
+   - "Ad metrics" — rows feed the per-channel spend (`channel_daily`);
+   - "Conversions" — rows feed the project's events (`events`);
+   - "Touchpoints" — offline touchpoints, also into events;
+   - "Reference data" — a reference table that feeds nothing.
+4. For conversions and touchpoints, choose how the event is assigned:
+   - "Same event for all rows" — pick the "Target event" from the registry;
+   - "Multiple event types" — pick the "Event name column".
+5. Add columns: a name, a type ("String", "Number", "Date", "Timestamp" or "Boolean") and, for
+   every type except reference data, the field the column maps to ("Maps to"). "Add column" adds
+   another one.
+6. For conversions you can turn on "Store unmapped columns in properties": columns with no target
+   field are kept on the event as a JSON object. When off, they are dropped.
+7. Click "Create".
+
+<Screenshot
+  id="data-explorer-create-table"
+  alt="The Create table dialog with the name, data type and column fields"
+/>
+
+Errors when creating:
+
+- "Name must match udt\_ followed by lowercase letters, digits, and underscores."
+- "A table with this name already exists."
+- "Could not create the table. Check the name and columns and try again."
+- "The table was created, but the field mapping could not be saved. Check the mapping and try
+  again." — the table exists and its name can no longer change. Fix the mapping and click "Retry
+  mapping".
+
+If you close the dialog with fields filled in, Palitra asks "Discard table?".
+
+If your plan doesn't include your own tables, "Create table" is disabled. Click it to see
+"User-managed tables aren't included in your plan" with "Available on Pro" and an "Upgrade plan"
+button. Plans are described in [billing](/organization/billing/).
+
+## Set up field mapping
+
+Field mapping tells Palitra how a raw table's rows become project events or per-channel spend. To
+open it, click the "Mapped → …" or "No field mapping" badge on the "Schema & Freshness" bar.
+
+- **Your own table** of type "Ad metrics", "Conversions" or "Touchpoints" — the "Field Mapping"
+  editor opens with a preview of the source's first 5 rows. Change the rules and click "Save
+  mapping". "Remove mapping" deletes it; dependent data is reprocessed.
+- **A connector table** — the mapping is built into the connector and opens read-only.
+- **A reference table** — no mapping applies, and the bar shows no mapping badge.
+
+How mapping rules work is described in the event registry article:
+[Event mapping](/data/events/#event-mapping).
+
+If saving fails, you see "Could not save the mapping. Check the field assignments and try
+again."
+
+## Reprocessing
+
+After you change the mapping or the data in your own table, Palitra reprocesses the dependent
+tables. While that runs, the "Schema & Freshness" bar shows "Reprocessing…". If something goes
+wrong, the bar shows one of these badges and the table gets an icon in the list:
+
+- "Reprocess failed" — the saved mapping can't be applied to the table's rows. Click the badge,
+  then "Edit field mapping", fix the rules and save again.
+- "Retrying…" — a temporary error. Palitra retries on its own; nothing to do.
+
+The badge's popover shows when it was "Last checked" and the number of "Consecutive failures".
+
+## Delete a table
+
+Only your own tables can be deleted.
+
+1. Open the table and click "Delete table".
+2. Confirm with "Delete table".
+
+The table and all its rows are deleted permanently.
+
+## Errors
+
+- "Could not load tables" — the table list didn't load. Click "Try again".
+- "Could not load rows" — the table's rows didn't load. Click "Try again".
+- "Table no longer exists" — the table was deleted in another tab or session. Click "Refresh" to
+  reload the list.
+- "No rows to display" — the table is empty or nothing matches the filters.
+
+## Related articles
+
+- [Data overview](/data/overview/)
+- [Event Registry](/data/events/)
+- [CSV uploads](/data/uploads/)
+- [Connectors](/connectors/overview/)

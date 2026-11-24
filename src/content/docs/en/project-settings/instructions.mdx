@@ -1,0 +1,161 @@
+---
+title: Instructions & context
+description: What the agent knows about a project — project instructions, context files and notes, limits and upload errors.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/instructions/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.en.messages.json
+  - palitra-frontend/components/project-settings/project-instructions-form.tsx
+  - palitra-frontend/components/project-settings/project-instructions-form.en.messages.json
+  - palitra-frontend/components/project-settings/project-context-section.tsx
+  - palitra-frontend/components/project-settings/project-context-section.en.messages.json
+  - palitra-frontend/components/project-settings/project-context-item-row.tsx
+  - palitra-frontend/components/project-settings/project-context-text-dialog.tsx
+  - palitra-frontend/components/project-settings/project-context-preview-sheet.tsx
+  - palitra-frontend/components/project-settings/project-context-limits.ts
+  - palitra-frontend/components/layout/project-switcher.tsx
+  - palitra-frontend/components/layout/project-switcher.en.messages.json
+  - palitra-frontend/lib/auth/use-can-mutate-project.ts
+  - palitra-backend/src/modules/identity/domain/models/project.py
+  - palitra-backend/src/modules/chat/application/services/context_assembly_service.py
+  - palitra-backend/src/modules/context/domain/services/project_context_rules.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "Instructions & context" tab is where you tell the agent about the project. It has two parts:
+
+- **Instructions** — text on how the agent should behave in this project: brand rules,
+  optimization preferences, reporting style, constraints.
+- **"Context"** — files and notes the agent uses in every conversation of the project:
+  documents, spreadsheets and text notes.
+
+The agent receives the project's instructions and context with every chat answer, next to its
+base rules. These parts are never shortened, even in a long conversation.
+
+Every project member sees the tab. Project managers, and the organization's owner and admins,
+can change the instructions and the context. Everyone else sees the instructions read-only, with
+the note "You have read-only access to this project", and can open and download context files.
+
+## Open the tab
+
+1. Pick the project in the project list at the top of the sidebar.
+2. Click the gear icon next to the project name ("Project settings").
+3. Go to the "Instructions & context" tab.
+
+<Screenshot
+  id="project-settings-instructions"
+  alt="The Instructions & context tab with the instructions field and the Context section"
+/>
+
+## Write instructions
+
+1. Type in the instructions field. An empty field shows an example.
+2. Click "Save". The button is active only once the text has changed.
+
+Palitra confirms with "Saved". Next to the button you see "Last saved: …", or "Not saved yet" if
+the instructions were never saved.
+
+Instructions can be up to 10 KB. If the text is longer, or saving fails for another reason,
+Palitra shows "Could not save instructions". Put long material into the context instead.
+
+### What to put in instructions
+
+The hint above the field reads: "Tell the agent how to behave in this project — brand rules,
+optimization preferences, reporting style, and constraints." The example in the empty field is
+split into Markdown sections:
+
+- "Brand Rules" — which campaigns are brand campaigns and what must never happen to them, the
+  campaign naming convention, requirements for ad copy;
+- "Optimization Preferences" — for example, reduce bids before pausing campaigns, how many days
+  of data to wait before changing bids, how far budget may shift per day;
+- "Reporting" — when reports are due, which comparisons to include, what to flag;
+- "Tone & Communication" — tone for client-facing reports and internal alerts.
+
+As in the example, name specific campaigns, numbers and thresholds.
+
+## Add files to the context
+
+1. In the "Context" section, click "Add" → "Upload from device".
+2. Pick one or more files.
+
+You can also drag files onto the "Context" section: it shows "Drop files to add them".
+
+Supported formats are PDF, DOCX, XLSX, CSV, TXT and MD, up to 25 MiB each. Text files must be
+UTF-8.
+
+After the upload Palitra extracts the file's text, and the file's row reads "Extracting text…".
+Once the text is ready, the row shows its size in tokens. The agent reads text only: scans
+without a text layer won't work.
+
+<Screenshot
+  id="project-settings-instructions-context"
+  alt="The Context section with a list of files and notes and the usage bar"
+/>
+
+## Add a note
+
+If the text you need isn't in a file, add it as a note.
+
+1. In the "Context" section, click "Add" → "Add text content".
+2. Fill in "Title" and "Content".
+3. Click "Add".
+
+A note can be up to 1 MiB.
+
+## Open, edit or delete an item
+
+Click the name of a file or note to open its contents. A note can be edited in the open panel;
+click "Save" when done.
+
+The item's menu (the "…" icon on its row) has:
+
+- "Open";
+- "Download" — files only;
+- "Delete" — after you confirm, the agent no longer sees the item in any conversation.
+
+## How much fits in the context
+
+Once the context holds at least one item, a bar above the list shows "… of … tokens", with the
+mode below it:
+
+| Mode                                                       | Meaning                                                                     |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------- |
+| "Fully included in every prompt"                           | The whole context goes to the agent with every answer.                      |
+| "Too large to include — the agent reads files when needed" | The context is too large to send whole: the agent opens the files it needs. |
+
+A project's context holds up to 100 items, and its total size is capped by the token limit on
+the bar.
+
+## Upload errors
+
+If a file doesn't upload, a line with the file's name and the reason appears above the list:
+
+- "Supported files: PDF, DOCX, XLSX, CSV, TXT, MD." — pick a file in another format.
+- "Files can be up to 25 MiB." — shrink the file or split it.
+- "Text files must be UTF-8. Re-save the file as UTF-8 and upload it again."
+- "The file's contents don't match its extension." — check that the file wasn't renamed from
+  another format.
+- "The file is empty."
+- "The project's context is full. Remove something first." — the token limit is used up.
+- "A project can hold up to 100 context items. Remove one first."
+- "Couldn't process the file right now. Try uploading it again."
+
+If a file uploaded but the agent can't read it, its row shows "Not available to the agent" and
+the reason:
+
+- "No text found — scanned documents are not supported." — upload a version with text.
+- "The file could not be read." — check the file and upload it again.
+- "Text could not be extracted because of a temporary error. Delete the file and upload it
+  again."
+- "The project's context is full. Remove something and upload again."
+
+If the list itself doesn't load, you see "Could not load context". This doesn't affect what the
+agent already has: click "Try again".
+
+## Related articles
+
+- [Chat with the agent](/chat/)
+- [Skills](/skills/)
+- [General project settings](/project-settings/general/)
+- [For project managers](/getting-started/manager/)

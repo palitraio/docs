@@ -31,6 +31,7 @@ sources:
   - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
   - palitra-frontend/components/connectors/use-connector-copy.en.messages.json
   - palitra-frontend/lib/connectors/tool-title.ts
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
 ---
 
 The Yandex.Direct connector loads your campaign statistics into Palitra and gives the agent
@@ -118,7 +119,9 @@ drove them.
 If something is wrong with the connector, an icon appears on its card in the "Connectors"
 section. Hover over it to see what happened and what to do.
 
-**"Sign-in has expired."** Click "Reconnect" on the connector card and sign in to Yandex again.
+**"Sign-in has expired."** In "Connectors", open the "Credentials" tab, click the three dots on
+the Yandex credential's row, choose "Reconnect" and sign in to Yandex again. See the
+[connectors overview](/connectors/overview/).
 
 **"The connector has no access to this account."** Check that the login you connected with is
 linked to Yandex.Direct and that the account has access to the Yandex.Direct API. Then reconnect

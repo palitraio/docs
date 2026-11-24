@@ -1,0 +1,369 @@
+---
+title: Connectors
+sidebar:
+  label: Overview
+description: How to connect ad platforms, analytics and other services, configure and delete connectors, and manage credentials.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/(list)/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/(list)/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/(list)/marketplace/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/(list)/credentials/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/new/[connectorType]/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/[connectorId]/page.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/connectors/connectors-tabs.tsx
+  - palitra-frontend/components/connectors/connectors-tabs.en.messages.json
+  - palitra-frontend/components/connectors/data-level-badge.tsx
+  - palitra-frontend/components/connectors/data-level-badge.en.messages.json
+  - palitra-frontend/components/connectors/connected-connectors-list.tsx
+  - palitra-frontend/components/connectors/connected-connectors-list.en.messages.json
+  - palitra-frontend/components/connectors/connected-connector-card.tsx
+  - palitra-frontend/components/connectors/connected-connector-card.en.messages.json
+  - palitra-frontend/components/connectors/connector-display-status.ts
+  - palitra-frontend/components/connectors/connector-issue-icon.tsx
+  - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
+  - palitra-frontend/components/connectors/connector-key-line.en.messages.json
+  - palitra-frontend/components/connectors/use-connector-sync.ts
+  - palitra-frontend/components/connectors/catalog-list.tsx
+  - palitra-frontend/components/connectors/catalog-list.en.messages.json
+  - palitra-frontend/components/connectors/catalog-connector-card.tsx
+  - palitra-frontend/components/connectors/catalog-connector-card.en.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
+  - palitra-frontend/components/connectors/revoke-credential-dialog.tsx
+  - palitra-frontend/components/connectors/revoke-credential-dialog.en.messages.json
+  - palitra-frontend/components/connectors/disconnect-actions-dialog.en.messages.json
+  - palitra-frontend/components/connectors/mcp-connect-form.en.messages.json
+  - palitra-frontend/components/connectors/mcp-reconnect-dialog.en.messages.json
+  - palitra-frontend/components/connector-setup/wizard.tsx
+  - palitra-frontend/components/connector-setup/wizard.en.messages.json
+  - palitra-frontend/components/connector-setup/header-controls.tsx
+  - palitra-frontend/components/connector-setup/header-controls.en.messages.json
+  - palitra-frontend/components/connector-setup/oauth-popup.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/auth-step.tsx
+  - palitra-frontend/components/connector-setup/steps/auth-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/auth-step-reuse-picker.tsx
+  - palitra-frontend/components/connector-setup/steps/auth-step-reuse-picker.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/ip-allow-list-notice.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/client-credentials-form.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/platform-key-choice.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/select-account-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/connector-settings-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/tool-permissions-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/guardrails-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/auto-tagging-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/event-mapping-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/review-step.tsx
+  - palitra-frontend/components/connector-setup/steps/review-step.en.messages.json
+  - palitra-frontend/lib/stores/connector-wizard-store.ts
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-backend/src/modules/connector_registry/api/connector_router.py
+  - palitra-backend/src/connectors/yandex/yandex_direct/manifest.yaml
+  - palitra-backend/src/connectors/yandex/yandex_metrika/manifest.yaml
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+A connector links the project to an outside service: an ad platform, an analytics system, call
+tracking and others. Through a connector Palitra loads data into the project, and the agent gets
+tools to work with the account — read reports and, if you allow it, make changes.
+
+Every project member sees the "Connectors" section. Project managers and the organization's owner
+and admins can connect, configure, sync and delete connectors and manage credentials.
+
+## Open the section
+
+Pick the project in the sidebar and click "Connectors". The section has three tabs:
+
+- "Connectors" — the connectors already connected to the project;
+- "Credentials" — saved OAuth tokens and API keys;
+- "Marketplace" — the catalog of services you can connect.
+
+On the right of the header is a "Data Level: L…" badge. It shows how complete the project's data
+is; click it to go to [Data](/data/overview/).
+
+<Screenshot
+  id="connectors-overview-list"
+  alt="The Connectors tab with cards of connected connectors"
+/>
+
+## Connect a connector
+
+1. Open the "Marketplace" tab.
+2. Find the service: type its name into "Search connectors" or pick a category — "All", "Ad
+   Platform", "Analytics", "Mobile Tracker", "Call Tracking", "Marketplaces", "CRM" or "Other".
+   "Available only" hides services that are still on the way.
+3. Click "Connect" on the service's card. If the project already has this connector, the button
+   reads "Connect another": that is how you connect a second account of the same service.
+4. Go through the wizard steps (described below) and click "Finish" on the last one.
+
+Services marked "Coming soon" can't be connected yet. Mobile tracker connectors aren't available
+on every plan: on a plan without them, the card shows a plan badge and "Connect" is disabled. See
+[Billing](/organization/billing/).
+
+How to connect specific services is covered in separate articles:
+[Yandex Direct](/connectors/yandex-direct/) and [Yandex Metrika](/connectors/yandex-metrika/).
+
+<Screenshot
+  id="connectors-overview-marketplace"
+  alt="The Marketplace tab with search, categories and service cards"
+/>
+
+## Wizard steps
+
+The wizard opens on a "Connect …" page. Above the steps it shows where you are: "Step … of …".
+Move between steps with "Continue" and "Back", or click the name of a step you have already
+completed. "Back to marketplace" returns you to the catalog.
+
+Which steps you see depends on the type of service:
+
+| Step             | When it appears                                                                                            |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| "Auth"           | Always.                                                                                                    |
+| "Settings"       | When the service needs settings at connect time.                                                           |
+| "Select account" | When the credential reaches several accounts (ad platforms, analytics, mobile trackers and call tracking). |
+| "Permissions"    | For ad platforms, analytics, mobile trackers and research services.                                        |
+| "Guardrails"     | For ad platforms.                                                                                          |
+| "Auto-tagging"   | For ad platforms.                                                                                          |
+| "Review"         | Always.                                                                                                    |
+| "Event mapping"  | For analytics and mobile trackers — after connecting, as the last step.                                    |
+
+<Screenshot
+  id="connectors-overview-wizard"
+  alt="The connector wizard: step indicator and the Auth step"
+/>
+
+### Auth
+
+On this step you give Palitra access to the service. The options depend on the service:
+
+- **An existing credential.** If access to this service is already saved in Palitra, the wizard
+  shows "Existing credentials". Click "Use this credential". The "Organization" or "Project"
+  badge shows where it is saved, and "Used by:" shows how many connectors use it. To connect a
+  different account, click "Connect a different account".
+- **OAuth.** Click "Connect with OAuth" and allow access in the service's popup. When it's done,
+  the wizard says "Connected. You can continue."
+- **An API key or token.** Paste the key from the service's account into the "API key" or "API
+  token" field. If the service accepts calls only from allowed addresses, the wizard shows an
+  "Allow Palitra's address" block with the address to add in the service's account.
+- **Your own API client.** For some services you can "Connect with your own API client": enter
+  the "Client id" and "Client secret" and click "Connect with client id and secret".
+- **Palitra's key.** For some services Palitra offers its own key. Under "Which key to use",
+  choose "Palitra's key" or "Your own key". Calls on Palitra's key count against your
+  organization's plan. You can't change this after connecting: "To switch to your own key,
+  delete the connection and connect again."
+
+The organization's owner and admins see a "Save at organization level" checkbox. Tick it if the
+same access will be needed in other projects: an organization-level credential can be picked when
+connecting in any of the organization's projects. Without it, the credential is saved in the
+current project only.
+
+If a saved credential lacks the access a new connector needs, "Use this credential" is replaced
+by "Reconnect to add access": the service asks you to confirm the new permission.
+"Re-authorize" runs a full re-authorization of the account.
+
+### Select account
+
+If the credential reaches several accounts — such as an agency account's clients — pick the one
+this connector needs under "Choose sub-account". One connector works with one account; for a
+second one, connect another connector.
+
+### Settings
+
+Some services ask how to read your data. Settings marked "Fixed after connecting." can't be
+changed later; the others can be changed in the connector's settings.
+
+### Permissions
+
+This step lists the agent's tools for the service. For each one, choose:
+
+- "Always Allow" — the agent acts on its own;
+- "Needs Approval" — the agent asks you first;
+- "Blocked" — the agent can't take the action.
+
+By default, reading is usually always allowed and changes need approval. How to approve the
+agent's actions is covered in [Getting started as a manager](/getting-started/manager/).
+
+### Guardrails
+
+Limits on what the agent can do in the ad account: "Change limits", "Budget bounds", "Destructive
+actions", "Minimum data threshold" and "Maximum paused ratio". Leave a field empty to keep the
+default. The fields are covered in detail in [Yandex Direct](/connectors/yandex-direct/).
+
+### Auto-tagging
+
+Palitra adds its own tag to ad links so it can tie clicks and conversions to ads. Keep "Enable
+automatic tagging" on, or copy the template from "Manual tracking template" with "Copy template"
+and paste it into the service's account yourself.
+
+### Review
+
+The last step sums up everything you chose. Click "Finish": Palitra connects the connector and
+tests the access; while it does, the button reads "Connecting and testing…". On success you see
+"Connector connected successfully".
+
+If the test fails, the wizard shows three rows — "Authentication", "API read access", "Data pull"
+— and marks the one that failed.
+
+### Event mapping
+
+For analytics systems and mobile trackers, the "Event mapping" step opens after connecting. Here
+the service's source events are tied to the project's events. Click "Save mapping" or "Skip for
+now"; you can come back to the step later in the connector's settings. More on events in
+[Events](/data/events/).
+
+## Connect an MCP server
+
+An external MCP server gives the agent extra tools. Click "Connect" on the card with the "MCP
+server" category. The "Connect MCP server" form opens:
+
+1. Enter a "Name" and the "Server URL" — a public HTTPS address.
+2. If the server is protected by a key, enter the "API key". Leave it empty for an open server.
+3. Click "Connect".
+
+If the server requires authorization, the form offers to "Authorize" in a popup. Palitra
+discovers the server's tools when you connect.
+
+## Connected connector cards
+
+On the "Connectors" tab every connector has a card:
+
+- the service name and the account it works with;
+- a key line — "Palitra's key", or "Key: …" with the key masked, when the connector runs on a key;
+- "Last sync: …" or "Never synced".
+
+A colored dot next to the name shows the state: green — the connector works, a spinning blue
+arrow — a sync is running, red — an error, grey — the connector is turned off or disconnected. A
+turned-off connector is shown faded.
+
+If the project has no connectors, the tab says "No connectors connected yet". Click "Connect
+account" to go to the marketplace.
+
+### Issue icons
+
+If something is wrong with a connector, an icon appears next to its name: a red cross for an
+error, a yellow triangle for a warning. Hover over it: Palitra says what happened and what to do.
+The same messages appear on the connector's page.
+
+Common messages:
+
+| Message                                               | What to do                                                                                |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| "Sign-in has expired."                                | Reconnect the credential on the "Credentials" tab and sign in again.                      |
+| "Access was revoked in the vendor's cabinet."         | Reconnect the connector with a valid key or authorization.                                |
+| "The connector has no access to this account."        | Check the account's rights in the service and reconnect the connector.                    |
+| "The last sync failed."                               | Palitra retries on its own. If it keeps failing, start a sync by hand or contact support. |
+| "The vendor's API limit is used up for now."          | Nothing to do: the sync resumes once the limit renews.                                    |
+| "The connection check failed."                        | Palitra checks the connection again later. If the problem stays, reconnect the connector. |
+| "Some ads could not be tagged with the Palitra link." | Tag those ads by hand or try again later.                                                 |
+
+## Sync by hand
+
+Palitra syncs data on a schedule by itself. To start a sync now:
+
+1. Click the three dots ("Actions") on the connector's card.
+2. Choose "Sync now".
+
+While the sync runs, the dot on the card turns into a spinning arrow. If a sync is already
+running, Palitra shows "A sync is already running for this connector". Connectors that don't load
+data, such as MCP servers, have no "Sync now" item.
+
+## Change a connector's settings
+
+1. Click the connector's name on its card, or choose "Configure" in the "Actions" menu.
+2. The "… settings" page opens with the same steps as when connecting. Above the steps are any
+   problems the connector reports.
+3. Change the steps you need and click "Save" on the "Review" step. Palitra shows "Connector
+   settings saved".
+
+If you change a setting the loaded data depends on, Palitra warns: "Saving reloads the
+connector's data for the full sync window." Until the reload finishes, reports show the data
+loaded with the old value.
+
+"Back to connectors" returns you to the list. If you leave the page with unsaved changes, the
+browser warns you.
+
+## Turn a connector off
+
+To pause a connector without deleting it, flip the switch next to "Disable" in the top right of
+the connector's settings page. To start it again, flip the switch back: the label changes to
+"Enable".
+
+## Delete a connector
+
+From the card:
+
+1. Click the three dots and choose "Delete".
+2. Confirm with "Delete" in the "Delete "…"?" dialog.
+
+From the settings page: click the "Delete connector" bin icon and confirm with "Delete".
+
+Future syncs and tool calls stop right away. Data the connector already loaded is kept and can
+still be queried. To add the account again, connect it from the marketplace.
+
+If Palitra couldn't remove its own setup in the service's account, a "… is disconnected" dialog
+lists what to do there by hand. Do it and click "Done".
+
+## Credentials
+
+The "Credentials" tab lists the OAuth tokens and API keys saved for the project and the
+organization. One credential can power several connectors of the same service: for example,
+access to Yandex can serve both Direct and Metrika.
+
+<Screenshot
+  id="connectors-overview-credentials"
+  alt="The Credentials tab with the table of saved tokens and keys"
+/>
+
+Table columns:
+
+- "Credential" — the service and the account;
+- "Level" — "Organization" (available in all the organization's projects) or "Project";
+- "Status" — "Active", "Invalid — needs Reconnect" or "Revoked";
+- "Used by" — how many connectors run on it; hover to see which. "Not linked" means none;
+- "Scopes" — the rights the service granted.
+
+### Reconnect a credential
+
+If the status is "Invalid — needs Reconnect" — for instance, sign-in has expired — click the three
+dots on the row and choose "Reconnect". Complete the authorization in the popup. On success
+Palitra shows "Reconnected successfully".
+
+### Revoke a credential
+
+1. Click the three dots on the row and choose "Revoke".
+2. Read the warning and confirm.
+
+If connectors run on the credential, the dialog lists them and the confirm button reads
+"Revoke and disable …" with the number of connectors. The affected connectors stay in the
+project with a "Reconnect …" hint until you reconnect or delete them. With no connectors, the
+record is simply removed: "This action cannot be undone."
+
+Palitra also revokes the token at the service. The exception is a credential connected with your
+own API client: Palitra leaves its token alone, so revoke it yourself in the service's account if
+you no longer need it.
+
+## Errors when connecting
+
+- "Popup blocked — open the authorization page in a new tab." — click the link under the button
+  or allow popups for Palitra.
+- "You declined the requested permissions. Please try again and approve all requested scopes."
+- "Authorization was cancelled. Please try again." or "Authorization timed out. Please try
+  again." — start the authorization over.
+- "This account is already connected in this project as "…"." — one account can't be connected to
+  a project twice. Click "Open the existing connector" or pick another account.
+- "This credential does not expose any sub-accounts for this connector." — click "Back to
+  authentication" and pick a different credential.
+- "Your session expired. Sign in again to continue this connector setup." — click "Sign in
+  again".
+- "The project workspace is still being prepared. Please try again in a few seconds." — wait and
+  click "Finish" again.
+
+## Related articles
+
+- [Yandex Direct](/connectors/yandex-direct/)
+- [Yandex Metrika](/connectors/yandex-metrika/)
+- [Data overview](/data/overview/)
+- [Action log](/action-log/)
+- [FAQ](/faq/)

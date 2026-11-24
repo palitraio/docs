@@ -1,0 +1,188 @@
+---
+title: Members
+description: Who works in a project — manager, viewer and guest roles, email invitations, changing roles, removing members and leaving a project.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/members/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.en.messages.json
+  - palitra-frontend/components/project-settings/project-member-list.tsx
+  - palitra-frontend/components/project-settings/project-member-list.en.messages.json
+  - palitra-frontend/components/project-settings/project-add-member-dialog.tsx
+  - palitra-frontend/components/project-settings/project-add-member-dialog.en.messages.json
+  - palitra-frontend/components/project-settings/project-role-change-dialog.tsx
+  - palitra-frontend/components/project-settings/project-role-change-dialog.en.messages.json
+  - palitra-frontend/components/project-settings/project-invitations-section.tsx
+  - palitra-frontend/components/project-settings/project-invitations-section.en.messages.json
+  - palitra-frontend/components/project-settings/project-org-invitations-section.tsx
+  - palitra-frontend/components/project-settings/project-org-invitations-section.en.messages.json
+  - palitra-frontend/components/project-settings/project-leave-button.tsx
+  - palitra-frontend/components/project-settings/project-leave-button.en.messages.json
+  - palitra-frontend/components/layout/project-switcher.tsx
+  - palitra-frontend/components/layout/project-switcher.en.messages.json
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/lib/auth/use-can-mutate-project.ts
+  - palitra-backend/src/modules/identity/application/services/project_service.py
+  - palitra-backend/src/modules/identity/api/projects.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "Members" tab shows who works in the project and with which role. It is also where people
+are added, invited and removed.
+
+Every project member sees the member list. Project managers, and the organization's owner and
+admins, can add people, change roles, remove members and manage invitations. Only the owner and
+admins can invite someone who isn't in the organization yet as a manager or viewer.
+
+## Open the tab
+
+1. Pick the project in the project list at the top of the sidebar.
+2. Click the gear icon next to the project name ("Project settings").
+3. Go to the "Members" tab.
+
+<Screenshot
+  id="project-settings-members"
+  alt="The Members tab with the project's members and their roles"
+/>
+
+The member table has "Member", "Email", "Role" and "Added" columns.
+
+## Project roles
+
+| Role      | Who                                                                                           | What they can do in project settings          |
+| --------- | --------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| "Manager" | An organization member who runs the project.                                                  | Changes project settings and manages members. |
+| "Viewer"  | An organization member who needs to see the project.                                          | Sees settings but can't change them.          |
+| "Guest"   | Someone invited by email, possibly from outside your organization. Reaches only this project. | Sees settings but can't change them.          |
+
+The organization's owner and admins can change any project as a manager would, even when they
+are not in the member list.
+
+Each person has one role in a project, set separately for each project: the same person can be
+a manager in one project and a viewer in another.
+
+## Add managers and viewers
+
+Managers and viewers are picked from organization members.
+
+1. Click "Add members".
+2. In "Add project members", pick a "Role": "Manager" or "Viewer".
+3. In "Who to add", start typing a name or email and pick the person from the list. You can pick
+   several people; remove one with its cross.
+4. Click "Invite".
+
+Organization members join the project right away, without an email.
+
+<Screenshot
+  id="project-settings-members-add"
+  alt="The Add project members dialog with the role picker and the list of organization members"
+/>
+
+When the list is empty, Palitra says why: "Everyone in the organization is already in the
+project or picked." or "No matches." — with a hint on inviting someone new if you are allowed to.
+
+### Invite someone new to the organization and the project
+
+The organization's owner and admins can invite a person who isn't in the organization yet:
+
+1. In "Add project members", pick the "Manager" or "Viewer" role.
+2. In "Who to add", type the full email address.
+3. Click the "Invite … to the organization and this project" row that appears.
+4. Click "Invite".
+
+The person gets one invitation. Accepting it joins them to both the organization and this
+project with the chosen role. Such invitations are listed under "Organization invitations
+granting this project".
+
+A project manager who isn't the organization's owner or an admin sees the hint "Managers and
+viewers are picked from organization members." Invite the person as a guest instead, or ask the
+owner or an admin to add them to the organization.
+
+## Invite a guest
+
+1. Click "Add members".
+2. Pick "Role" → "Guest".
+3. In "Emails", type an address and click "Add" (or press Enter). Repeat for each guest.
+4. Click "Invite".
+
+A guest receives an email invitation and reaches only this project. If someone with that
+address already has an account in your organization, Palitra adds them to the project right
+away.
+
+The invitation is valid for 7 days. Until it is accepted, it is listed under "Pending project
+invitations".
+
+## Results and errors
+
+After you click "Invite", Palitra reports how many people were added and how many were invited.
+If someone couldn't be added, the message lists the address and the reason:
+
+- "Already a member of this project."
+- "This address already has a pending invitation — resend it from the invitations list instead."
+- "A new user can only be given the guest role." — the person has no Palitra account; invite them
+  as a guest, or have the owner or an admin invite them to the organization.
+- "This person belongs to another organization — invite them as a project guest instead."
+- "The address or the role is not acceptable."
+- "This project no longer exists. Refresh the page."
+
+If nobody could be added, you see "Could not add any members".
+
+If you haven't confirmed your own email yet, Palitra won't send invitations and shows "Confirm
+your email address first — check your inbox for the verification link, or request a new one from
+the verification screen."
+
+## Manage invitations
+
+Below the member list, managers see "Pending project invitations": invitations nobody has
+accepted yet. The "Expires" column shows how long each stays valid. Each invitation has these
+actions:
+
+- "Copy invite link" — to send the invitation yourself, for example in a messenger;
+- "Resend invitation" — sends the email again;
+- "Revoke" — the invitation link stops working.
+
+The organization's owner and admins also see "Organization invitations granting this project":
+people invited to the organization and this project at once. The same actions are there, but
+"Revoke" asks for confirmation and cancels the whole organization invitation, not just access to
+this project.
+
+<Screenshot
+  id="project-settings-members-invitations"
+  alt="The Pending project invitations section with its actions"
+/>
+
+## Change a member's role
+
+1. On the member's row, click the "…" icon → "Change role".
+2. In "Change project role", pick the new "Role".
+3. Click "Save".
+
+Palitra confirms with "Role updated".
+
+## Remove a member
+
+1. On the member's row, click the "…" icon → "Remove from project".
+2. Confirm with "Remove".
+
+The person loses access to the project and Palitra confirms with "Member removed". The
+project's last manager can't be removed: Palitra shows "Could not remove member". Make someone
+else a manager first.
+
+## Leave a project
+
+If you are a member of the project, the tab has a "Leave project" button.
+
+1. Click "Leave project".
+2. Confirm with "Leave".
+
+You lose access to the project and can be re-invited later. The last manager can't leave:
+Palitra shows "You are the last manager — promote another member to manager first."
+
+The organization's owner and admins who aren't in the member list don't see this button.
+
+## Related articles
+
+- [Organization members](/organization/members/)
+- [For project managers](/getting-started/manager/)
+- [For owners and admins](/getting-started/owner-admin/)
+- [Project notifications](/project-settings/notifications/)

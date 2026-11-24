@@ -1,0 +1,118 @@
+---
+title: Projects
+description: The organization's project list — how to create a project, archive and restore it, and what to do at the plan's limit.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/org/settings/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/projects/page.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/org-settings.en.messages.json
+  - palitra-frontend/components/org-settings/org-projects-table.tsx
+  - palitra-frontend/components/org-settings/org-projects-table.en.messages.json
+  - palitra-frontend/components/org-settings/create-project-dialog.tsx
+  - palitra-frontend/components/org-settings/create-project-dialog.en.messages.json
+  - palitra-frontend/components/billing/feature-lock.tsx
+  - palitra-frontend/components/billing/feature-gates.ts
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/components/billing/limit-messages.en.messages.json
+  - palitra-frontend/components/billing/limit-exceeded-modal.tsx
+  - palitra-frontend/components/billing/limit-exceeded-modal.en.messages.json
+  - palitra-frontend/components/billing/addon-catalog.en.messages.json
+  - palitra-frontend/components/layout/project-switcher.en.messages.json
+  - palitra-backend/src/modules/identity/api/projects.py
+  - palitra-frontend/components/billing/usage-card.en.messages.json
+  - palitra-frontend/lib/stores/project-store.ts
+  - palitra-backend/src/modules/billing/domain/ports/project_count_port.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+A project is a separate workspace for one client or brand, with its own connectors, data,
+chats and workflows. The "Projects" tab lists all of the organization's projects, archived ones
+included: this is where you create, archive and restore them.
+
+The organization's owner and admins see the tab, and both can manage projects. People with the
+"Member" role work only in the projects they were invited to and don't see this tab.
+
+## Open the tab
+
+1. Click your name at the bottom of the sidebar and choose "Organization settings".
+2. Go to the "Projects" tab.
+
+The heading above the table shows the number of projects, for example "Projects (3)". The table
+has the columns "Project", "Status", "Created" and "Actions". A project's status is "Active" or
+"Archived".
+
+A project's name in the table links to its settings. The "Open settings" item in the actions
+menu does the same. Project settings are covered in
+[Project general settings](/project-settings/general/).
+
+<Screenshot
+  id="organization-projects"
+  alt="The Projects tab with the table of the organization's projects"
+/>
+
+## Create a project
+
+1. Click "New project".
+2. In the "New project" dialog, enter the "Project name".
+3. Click "Create project".
+
+You see "Project created", and the project appears in the table and in the project list at the
+top of the sidebar. You can also create a project from that list: it has "New project" too.
+
+Next, connect data sources to the project — [Yandex Direct](/connectors/yandex-direct/),
+[Yandex Metrika](/connectors/yandex-metrika/) — and invite your team:
+[Project members](/project-settings/members/).
+
+<Screenshot
+  id="organization-projects-create"
+  alt="The New project dialog with the Project name field"
+/>
+
+If the project can't be created, you see "Could not create project".
+
+## Project limit
+
+The number of projects is limited by your plan. When the limit is used up, the "New project"
+button is disabled. Click it to see a hint "You've reached your project limit" with an "Upgrade
+plan" button that opens plan selection on the "Billing" tab.
+
+If Palitra only learns about the limit when you create the project, a "Project limit reached"
+dialog opens with a usage counter and the buttons "Buy add-on", "Upgrade plan" and "Maybe
+later".
+
+There are two ways to get more projects:
+
+- switch to a plan with a higher limit;
+- add the "Extra Projects Pack" add-on, if your plan offers it.
+
+Both are done on the "Billing" tab — see [Billing](/organization/billing/). Current usage is on
+the "Projects used" card there. Archived projects don't count toward the limit.
+
+## Archive a project
+
+Archiving closes access to a project without deleting it.
+
+1. Open the actions menu in the project's row and choose "Archive".
+2. In the "Archive …?" dialog, click "Archive".
+
+You see "Project archived", and the status changes to "Archived". Members lose access to the
+project until it is restored.
+
+## Restore a project
+
+1. Open the actions menu in the archived project's row and choose "Restore".
+2. You see "Project restored", and the status is "Active" again.
+
+## Errors
+
+- "Could not archive project" or "Could not restore project" — try again later.
+- "Couldn't load this page" — the project list didn't load. Click "Try again".
+
+## Related articles
+
+- [For owners and admins](/getting-started/owner-admin/)
+- [Project general settings](/project-settings/general/)
+- [Project members](/project-settings/members/)
+- [Billing](/organization/billing/)

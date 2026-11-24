@@ -1,0 +1,226 @@
+---
+title: CSV upload
+description: How to upload a CSV file to a project — data type, schema and table name, field mapping, upload statuses and file parsing errors.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/csv-upload/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/csv-upload/csv-upload.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/uploads/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/uploads/uploads.en.messages.json
+  - palitra-frontend/components/data-explorer/recent-uploads.tsx
+  - palitra-frontend/components/data-explorer/recent-uploads.en.messages.json
+  - palitra-frontend/components/data-explorer/upload-mapping-preview.tsx
+  - palitra-frontend/components/data-explorer/MappingSheet.tsx
+  - palitra-frontend/components/data-explorer/hooks/use-csv-ingestion-job.ts
+  - palitra-frontend/components/event-mapping/event-mapping-editor.tsx
+  - palitra-frontend/components/event-mapping/event-mapping-editor.en.messages.json
+  - palitra-frontend/components/event-mapping/mapping-preview.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/data-sources-grid.tsx
+  - palitra-frontend/components/data-pipeline/overview/data-sources-grid.en.messages.json
+  - palitra-frontend/components/billing/feature-lock.tsx
+  - palitra-frontend/components/billing/feature-gates.ts
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/lib/data-explorer/csv-wizard.ts
+  - palitra-frontend/lib/data-explorer/csv-errors.ts
+  - palitra-frontend/lib/data-explorer/csv-errors.en.messages.json
+  - palitra-frontend/lib/event-mapping/targets.ts
+  - palitra-backend/src/modules/data_layer/api/csv_uploads_router.py
+  - palitra-backend/src/modules/data_layer/domain/models/csv_upload.py
+  - palitra-backend/src/modules/data_layer/application/services/csv_upload_service.py
+  - palitra-backend/src/modules/data_layer/application/services/csv_orphan_gc_service.py
+  - palitra-backend/src/modules/data_layer/infrastructure/repositories/csv_upload_repository.py
+  - palitra-backend/src/core/config.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+CSV upload brings data that no connector provides into a project: offline spend, CRM sales
+exports, call logs, lookup tables. Each file becomes a project table, visible in the
+[Data Explorer](/data/explorer/). Ad metrics and events from the file can be mapped to Palitra's
+system fields right away, so they take part in reports and attribution.
+
+The upload goes step by step: data type → file → schema and table name → field mapping. The
+"Logs" screen shows every upload in the project and its status.
+
+Project managers, and the organization's owner and admins, can upload files. Every project member
+can see "Logs". Creating tables from files is available on the Pro plan: on a plan without it,
+the table-creation button is disabled, and clicking it shows "User-managed tables aren't included
+in your plan" with an "Upgrade plan" button.
+
+## Open the screen
+
+1. Pick the project in the sidebar and go to "Data" — the "Data Pipeline" page opens.
+2. In "Data Sources", find the "CSV Upload" card.
+3. Click "Upload" to upload a file, or "Logs" to see the upload history.
+
+<Screenshot
+  id="data-uploads-select-type"
+  alt="The CSV Upload screen: data type cards and the file upload block"
+/>
+
+## Step 1. Choose the data type
+
+In "Step 1 — Data Type", choose what you are uploading:
+
+| Type             | What fits                                                             | What's next                        |
+| ---------------- | --------------------------------------------------------------------- | ---------------------------------- |
+| "Ad metrics"     | Ad platform exports: daily spend, impressions, clicks by campaign.    | Mapping to `channel_daily` fields. |
+| "Touchpoints"    | Offline touchpoints: calls, SMS, promo codes attributed to a channel. | Mapping to touchpoints.            |
+| "Conversions"    | CRM sales, call tracking logs, offline purchases, lead forms.         | Mapping to project events.         |
+| "Reference data" | Lookup and dimension tables: rates, seasonality calendars.            | No mapping.                        |
+
+### Download a template
+
+For "Ad metrics", "Touchpoints" and "Conversions", a "Need a template?" block appears under the
+cards. Click "Download template" to get a CSV file with a single header row: the standard columns
+for that type. The ad metrics template, for example, has `date`, `source`, `medium`,
+`campaign_id`, `adgroup_id`, `ad_id`, `impressions`, `clicks`, `spend`, `cost_currency` and
+`revenue`.
+
+Name your file's columns the same way and they map automatically at the mapping step.
+
+## Step 2. Upload the file
+
+1. Once a type is chosen, the "Step 2 — Upload File" block becomes available. Click "Choose
+   file".
+2. Pick a `.csv` or `.tsv` file of up to 50 MB.
+
+Palitra uploads the file and detects its columns and their types. While it parses, the screen
+shows "Uploading and parsing file…".
+
+The file must have:
+
+- a header row first, with a distinct name for each column;
+- a comma, semicolon or tab as the delimiter;
+- UTF-8 encoding.
+
+If the file has the wrong extension or size, or is empty, you see "The file could not be parsed.
+Make sure it is a valid .csv or .tsv file and try again." Other parsing errors are listed under
+[Errors in the file](#errors-in-the-file).
+
+## Step 3. Review the schema and name the table
+
+At "Step 2 — Schema & Table Name", Palitra shows the detected columns and a preview of the first
+five rows.
+
+1. Check the "Table name". It is suggested from the file name and always starts with `udt_`.
+2. In the column list, rename a column in its "Column" field if needed and change its "Type":
+   "String", "Number", "Date", "Timestamp" or "Boolean". The "Sample" column shows a value from
+   the file.
+3. Check the "Preview (first 5 rows)" block.
+4. Click "Next — Field Mapping". For reference data the button is "Create Table": it creates the
+   table straight away, with no mapping needed.
+
+The button stays disabled while a column has an empty name or the table name has a problem:
+
+- "Table name must start with udt\_ and contain only lowercase letters, digits, and underscores."
+- "A table with this name already exists. Choose a different name."
+
+If the file doesn't read with the chosen types, the error appears in the affected column's row,
+for example: Line 12, column “amount”: “abc” is not a number. Change the column's type and try
+again.
+
+<Screenshot
+  id="data-uploads-schema"
+  alt="The schema step: the Table name field, the column list with types and the five-row preview"
+/>
+
+## Step 4. Set up field mapping
+
+Mapping tells Palitra which file column means what. "Step 3 — Field Mapping" exists for ad
+metrics, touchpoints and conversions.
+
+- For "Ad metrics", columns map to `channel_daily` fields — the daily channel statistics.
+- For "Conversions", events from the file map to the project's [events](/data/events/) registry.
+- For "Touchpoints", channel columns map to touchpoints.
+
+Columns whose names match a Palitra field are mapped automatically. Set up the rest in the editor:
+for each field choose a "Source" — a file column — and a "Target field".
+
+Under the editor, the "Preview" block shows what the mapping does to a few rows of the file;
+nothing is saved. While the mapping has errors, it shows "Fix the mapping errors to see the
+result" instead.
+
+When you're done, choose:
+
+- "Save Mapping & Create Table" — create the table and save the mapping;
+- "Skip for now" — create the table without a mapping. You can set the mapping up later in the
+  [Data Explorer](/data/explorer/).
+
+<Screenshot
+  id="data-uploads-mapping"
+  alt="The Field Mapping step: the column mapping editor and the Preview block"
+/>
+
+If the mapping isn't saved, you see "The mapping could not be saved. Review the field mappings
+and try again." The table may already exist by then — fix the mapping and click the button again.
+
+## Done: the table is created
+
+Once the table is created, you see "Table udt\_… created" and a summary: the number of rows,
+columns and, with an event mapping, the events the file is mapped to.
+
+- "Open in Data Explorer" — go to the new table.
+- "Upload another file" — start over from the first step.
+
+The file's data loads into the table in the background. When it finishes, Palitra shows a
+notification: "N rows added" or, if the file had rows already loaded before, "N rows added, M
+duplicates skipped".
+
+## Upload logs
+
+The "Logs" screen lists every CSV upload in the project, newest first. Each row shows the file
+name, the table, how many rows were added and how many duplicates were skipped, the upload date
+and the status.
+
+| Status                | Meaning                                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| "Waiting for a table" | The file is uploaded, but no table has been created from it yet.           |
+| "Processing"          | The file's data is loading into the table.                                 |
+| "Ready"               | The upload is complete.                                                    |
+| "Error"               | The upload failed. Tooltip: "Upload failed. Try uploading the file again." |
+
+An uploaded file waits 24 hours for its table to be created. If no table is created in that time,
+the upload turns to "Error" — upload the file again.
+
+With no uploads yet, the screen says "No uploads yet". If the list doesn't load, you see "Couldn't
+load recent uploads"; click "Retry".
+
+<Screenshot
+  id="data-uploads-logs"
+  alt="The Logs screen with the list of CSV uploads and their statuses"
+/>
+
+## Errors in the file
+
+Palitra checks the file and names the line and column where it found a problem:
+
+- "The file has no header row. Put the column names in its first line."
+- Line 3: the header “price” appears twice. Give each column its own name.
+- "Line 7: 4 fields instead of 5" — the line has too few or too many values. Check the delimiters
+  and quotes.
+- "Line 7 does not read as CSV. Check its quotes and the length of its fields."
+- "The file's encoding is not supported. Re-save it in UTF-8."
+- "The file's delimiter is not supported. Use a comma, semicolon or tab."
+- "The file is larger than the upload limit." — reduce the file to 50 MB or split it.
+- "The uploaded file is no longer available. Upload it again." — more than 24 hours passed since
+  the upload. Start from the first step.
+
+Errors that can appear after the table is created, while data loads in the background:
+
+- "The file's data could not be loaded. Try uploading it again."
+- "Lost track of the file import. Check its status on the Jobs page." — open [Jobs](/jobs/) or
+  the "Logs" screen.
+
+If the file couldn't be sent, you see "The upload failed. Please check your connection and try
+again." Project members without manager rights see this error too.
+
+## Related articles
+
+- [Data Explorer](/data/explorer/)
+- [Events](/data/events/)
+- [Data overview](/data/overview/)
+- [Webhooks and API](/data/webhooks/)
+- [Jobs](/jobs/)
