@@ -45,10 +45,13 @@ sources:
   - palitra-frontend/components/chat/command-reference.en.messages.json
   - palitra-frontend/components/chat/chat-composer.en.messages.json
   - palitra-frontend/components/chat/chat-agent.en.messages.json
+  - palitra-frontend/lib/chat/client-commands.ts
   - palitra-backend/src/modules/skills/api/skills_router.py
   - palitra-backend/src/modules/skills/application/services/skill_service.py
   - palitra-backend/src/modules/skills/application/services/skill_resolution_service.py
   - palitra-backend/src/modules/skills/domain/services/package_validation.py
+  - palitra-backend/src/modules/skills/domain/services/argument_substitution.py
+  - palitra-backend/src/modules/skills/api/skill_import_router.py
   - palitra-backend/src/modules/skills/infrastructure/starter_skills/seeding.py
   - palitra-backend/src/modules/chat/infrastructure/langgraph/use_skill_tool.py
   - palitra-backend/src/modules/chat/infrastructure/langgraph/prompts.py
@@ -137,7 +140,7 @@ A new chat opens with the skill call, with your arguments, as its first message.
 ## What the skill card shows
 
 - The skill's name and group label: "SYSTEM", "ORG" or "PROJECT".
-- The "Enable skill" switch and the "…" actions menu.
+- The switch that enables the skill, and the "…" actions menu.
 - "Last updated" and "Description". Imported skills may also show "License", "Compatibility" and
   an expandable "Details" block.
 - "Arguments" — the skill's parameters, marked "required" or "optional", with their "default:"
@@ -145,14 +148,14 @@ A new chat opens with the skill call, with your arguments, as its first message.
 - "Internet access" — "On" or "Off", with the allowed sites or "Any site".
 - "Prompt" — the skill's instructions.
 - "Resources" — attached files, grouped into "Scripts", "References" and "Assets". Click a file
-  to open "File preview".
+  to preview it.
 
 <Screenshot id="skills-detail" alt="A skill's card with the Enable skill switch, arguments, prompt and resources" />
 
 ## Enable or disable a skill
 
-Click the "Enable skill" switch on the card. A disabled skill stays in the list marked
-"(disabled)", but the agent doesn't load it and `/` doesn't offer it.
+Click the switch in the card's header, next to the "…" menu. A disabled skill stays in the list
+marked "(disabled)", but the agent doesn't load it and `/` doesn't offer it.
 
 A built-in skill is enabled or disabled for the whole organization at once, in every project. The
 organization's owner and admins can do this.
@@ -174,10 +177,10 @@ package" are inactive; clicking them shows "Custom skills aren't included in you
 5. Add "Arguments" if needed (see below) and set "Internet access".
 6. Write the "Instructions" in Markdown. The field opens with a template in a comment: replace it
    with your own text — the comment itself doesn't count as instructions. The buttons above the
-   field switch between the editor and the preview. Empty instructions can't be saved:
-   "Instructions are required.".
+   field switch between the editor and the preview.
 7. Under "Resources" on the right, you can attach files right away with "Upload".
-8. Click "Create".
+8. Click "Create". The button stays inactive while the name breaks the rules, the instructions
+   are empty or an argument name is invalid.
 
 <Screenshot id="skills-form" alt="The Create skill dialog with scope, name, description, arguments and the instructions editor" />
 
@@ -225,8 +228,8 @@ Limits:
 - Up to 50 files per skill: "This skill already has the maximum of 50 files.".
 - Up to 100 MB for all files together: "These files would exceed the 100 MB total size limit.".
 
-A file's "…" menu has "Download", "Overwrite" and "Remove". Text files open in an editor right in
-"File preview" — click "Save" after editing. Built-in skills' files can only be viewed and
+A file's "…" menu has "Download", "Overwrite" and "Remove". Clicking a text file opens it in an
+editor — click "Save" after editing. Built-in skills' files can only be viewed and
 downloaded.
 
 ## Edit, duplicate and delete a skill
@@ -274,15 +277,17 @@ Built-in skills can't be exported.
 
 1. Click "Import package".
 2. In "Import skill package", click "Click to select a .zip file" and pick the package.
-3. Choose the "Scope": "Project" or "Organization".
-4. Click "Import".
+3. If you are the organization's owner or an admin, choose the "Scope": "Project" or
+   "Organization". Everyone else imports into the project.
+4. Click "Import". You see "Skill imported".
 
 A package is a single folder named after the skill, containing `SKILL.md`. Its header
 (frontmatter) must have a `name` matching the folder name and a `description`. The package's
 other files become the skill's resources. A package holds up to 50 files and 100 MB.
 
-If the package doesn't fit, you see "This package is not valid or is incompatible. Please check
-the file and try again.".
+If the package is malformed, the dialog shows "This package is not valid or is incompatible.
+Please check the file and try again.". If a skill with that name already exists in the chosen
+scope, or the package is too large, you see "Could not import skill".
 
 ## Who can do what
 

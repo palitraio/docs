@@ -35,6 +35,9 @@ sources:
   - palitra-backend/src/modules/jobs/domain/models/job.py
   - palitra-backend/src/modules/jobs/api/jobs_router.py
   - palitra-backend/src/modules/jobs/application/services/job_retry_service.py
+  - palitra-backend/src/modules/data_layer/infrastructure/tasks.py
+  - palitra-backend/src/modules/data_layer/infrastructure/jobs/job_writer.py
+  - palitra-backend/src/modules/data_layer/application/services/row_command_service.py
 ---
 
 import Screenshot from "@/components/Screenshot.astro";
@@ -84,7 +87,7 @@ Job types you may see in the "Type" column:
 | `csv_ingestion` | Processing an uploaded CSV file. |
 | `webhook_batch_ingest` | Taking in a batch of data that arrived through a webhook. |
 | `attribution_recompute` | Recomputing attribution. |
-| `connector_reprocess` | Reprocessing a connector's already loaded data. |
+| `connector_reprocess` | Rebuilding events from a connector's already loaded data after its event mapping is saved. |
 | `tool_run` | A background call of a connector tool that the agent started from chat. |
 | `artifact_refresh` | An on-demand refresh of a dashboard artifact. |
 | `reconciliation_sync` | A data reconciliation from older Palitra versions. No new ones are created. |
@@ -92,7 +95,7 @@ Job types you may see in the "Type" column:
 
 ## Filter jobs by status
 
-1. Open the "Status" list above the table.
+1. Open the status list above the table; it shows "All statuses" by default.
 2. Pick a status, such as "Failed". To see everything again, pick "All statuses".
 
 The filter resets when you switch to another project.

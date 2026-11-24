@@ -35,6 +35,9 @@ sources:
   - palitra-backend/src/modules/jobs/domain/models/job.py
   - palitra-backend/src/modules/jobs/api/jobs_router.py
   - palitra-backend/src/modules/jobs/application/services/job_retry_service.py
+  - palitra-backend/src/modules/data_layer/infrastructure/tasks.py
+  - palitra-backend/src/modules/data_layer/infrastructure/jobs/job_writer.py
+  - palitra-backend/src/modules/data_layer/application/services/row_command_service.py
 ---
 
 import Screenshot from "@/components/Screenshot.astro";
@@ -85,7 +88,7 @@ import Screenshot from "@/components/Screenshot.astro";
 | `csv_ingestion` | Обработка загруженного CSV-файла. |
 | `webhook_batch_ingest` | Приём пачки данных, пришедших через вебхук. |
 | `attribution_recompute` | Пересчёт атрибуции. |
-| `connector_reprocess` | Повторная обработка уже загруженных данных коннектора. |
+| `connector_reprocess` | Пересборка событий из уже загруженных данных коннектора после сохранения мэппинга событий. |
 | `tool_run` | Фоновый вызов инструмента коннектора, запущенный агентом из чата. |
 | `artifact_refresh` | Обновление дашборда-артефакта по запросу. |
 | `reconciliation_sync` | Сверка данных из старых версий Палитры. Новые такие задачи не создаются. |
@@ -93,7 +96,7 @@ import Screenshot from "@/components/Screenshot.astro";
 
 ## Отфильтровать задачи по статусу
 
-1. Откройте список «Статус» над таблицей.
+1. Откройте список статусов над таблицей — по умолчанию в нём выбрано «Все статусы».
 2. Выберите статус, например «Ошибка». Чтобы снова видеть всё, выберите «Все статусы».
 
 Фильтр сбрасывается, когда вы переключаетесь на другой проект.
