@@ -37,3 +37,37 @@ export function resolveLocale(value = "en") {
 export function otherLocale(locale) {
   return locale === "en" ? "ru" : "en";
 }
+
+/**
+ * Sidebar structure shared by all locales: a group names its label by key in each locale's
+ * `sidebar` labels, a plain string is a top-level article slug.
+ */
+export const SIDEBAR = [
+  {
+    labelKey: "gettingStarted",
+    items: [
+      "getting-started/first-steps",
+      "getting-started/owner-admin",
+      "getting-started/manager",
+    ],
+  },
+  { labelKey: "connectors", items: ["connectors/yandex-direct", "connectors/yandex-metrika"] },
+  "faq",
+];
+
+/**
+ * Builds the Starlight sidebar for one locale.
+ *
+ * @param {Record<string, string>} labels Group labels of the locale.
+ * @returns {Array<string | {label: string, items: string[]}>}
+ */
+export function sidebarFor(labels) {
+  return SIDEBAR.map((entry) =>
+    typeof entry === "string" ? entry : { label: labels[entry.labelKey], items: entry.items },
+  );
+}
+
+/** @returns {string[]} Every article slug the sidebar lists. */
+export function sidebarSlugs() {
+  return SIDEBAR.flatMap((entry) => (typeof entry === "string" ? [entry] : entry.items));
+}

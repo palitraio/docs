@@ -15,20 +15,32 @@ docs.ru.palitra.io) and English (`en/`, docs.palitra.io), each built with `SITE_
   at least one).
 - Use the terms from `docs-internal/01-ubiquitous-language.md` in their customer-facing form
   for each locale.
+- Quote button and section names exactly as the messages file of that locale has them. An
+  English article cites `*.en.messages.json` sources, a Russian article `*.ru.messages.json`.
+  Not machine-checked.
 
 ## Article layout
 
 - Russian article: `src/content/docs/ru/<path>.md(x)`. English twin: `src/content/docs/en/<path>.md(x)`.
   `.md` and `.mdx` count as the same stem. Both must exist.
 - Frontmatter: `title`, `description`, `editions` (non-empty subset of `saas`, `byoc`),
-  `sources` (non-empty list of workspace-relative paths: no absolute paths, no `..`).
-- `pnpm check:content` validates twins and frontmatter; `pnpm build` runs it first.
+  `sources` (non-empty list of workspace-relative paths: no absolute paths, no `..`; the first
+  segment is a repo: `palitra-frontend`, `palitra-backend`, `palitra-tag`, `deploy`,
+  `license-server`, `landing-page` or `docs-internal`). Twins have the same `editions`.
+- Slugs contain no `.` (`/release-2.0` would hit the bucket's file rule and 404).
+- Every article except `index` and `404` is listed in `SIDEBAR` in `src/locales.mjs`, and every
+  sidebar slug has an article.
+- `pnpm check:content` validates twins, frontmatter, sidebar coverage, slugs and, when the
+  sibling repo sits next to this one, that each source path exists (skipped in CI, where the
+  siblings are absent); `pnpm build` runs it first.
 - Internal links are locale-free (`/getting-started/manager/`): never write `/en/` or `/ru/`.
 
 ## Stability
 
 - Slugs and heading anchors are stable: others link to them. When one must change, add a
-  redirect from the old URL.
+  redirect from the old URL: an Astro `redirects` entry in `astro.config.mjs` (a static page,
+  works in the bucket). The RU deploy syncs with `--delete`, so an old URL without a redirect
+  becomes the bucket's XML 404.
 
 ## Process
 
