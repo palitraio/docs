@@ -1,7 +1,8 @@
 # CLAUDE.md
 
 Rules for agents writing or editing customer documentation in this repository. The site is
-public, built with Astro Starlight, in Russian (root locale) and English (`en/`).
+public, built with Astro Starlight, with one site per locale: Russian (`ru/`,
+docs.ru.palitra.io) and English (`en/`, docs.palitra.io), each built with `SITE_LOCALE`.
 
 ## Where facts come from
 
@@ -17,11 +18,12 @@ public, built with Astro Starlight, in Russian (root locale) and English (`en/`)
 
 ## Article layout
 
-- Russian article: `src/content/docs/<path>.md(x)`. English twin: `src/content/docs/en/<path>.md(x)`.
+- Russian article: `src/content/docs/ru/<path>.md(x)`. English twin: `src/content/docs/en/<path>.md(x)`.
   `.md` and `.mdx` count as the same stem. Both must exist.
 - Frontmatter: `title`, `description`, `editions` (non-empty subset of `saas`, `byoc`),
   `sources` (non-empty list of workspace-relative paths: no absolute paths, no `..`).
 - `pnpm check:content` validates twins and frontmatter; `pnpm build` runs it first.
+- Internal links are locale-free (`/getting-started/manager/`): never write `/en/` or `/ru/`.
 
 ## Stability
 

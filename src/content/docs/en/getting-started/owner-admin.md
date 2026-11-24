@@ -29,7 +29,7 @@ Everyone in the organization has one of these roles:
 - "Member" — works only in the projects they have been given access to.
 
 Inside a project, a member also has a project role: "Manager", "Viewer" or "Guest". For work
-inside a project, see [For project managers](/en/getting-started/manager/).
+inside a project, see [For project managers](/getting-started/manager/).
 
 ## Organization settings
 
@@ -73,4 +73,4 @@ projects.
 3. Click "Create project".
 
 Next, connect ad accounts and analytics to the project:
-[Yandex.Direct](/en/connectors/yandex-direct/), [Yandex.Metrika](/en/connectors/yandex-metrika/).
+[Yandex.Direct](/connectors/yandex-direct/), [Yandex.Metrika](/connectors/yandex-metrika/).

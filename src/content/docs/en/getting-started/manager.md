@@ -100,5 +100,5 @@ Managers and viewers are picked from organization members. If the person is not 
 organization yet, invite them as "Guest". Only the owner or an admin can invite a new person to
 the organization and the project at once.
 
-To connect ad accounts to the project: [Yandex.Direct](/en/connectors/yandex-direct/),
-[Yandex.Metrika](/en/connectors/yandex-metrika/).
+To connect ad accounts to the project: [Yandex.Direct](/connectors/yandex-direct/),
+[Yandex.Metrika](/connectors/yandex-metrika/).

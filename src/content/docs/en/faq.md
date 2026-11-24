@@ -34,7 +34,7 @@ to the "Connect your platforms" step and connect one.
 Not by default. Changes in Yandex.Direct need your approval, and deletion is off in the connector's
 guardrails. If you can approve actions, you can choose "Auto" in the "Approval mode" menu of the
 chat input. The agent then carries out changes that match your requests on its own, but it still
-asks about deletions. See [For project managers](/en/getting-started/manager/).
+asks about deletions. See [For project managers](/getting-started/manager/).
 
 ## How do I invite someone who already works in another organization?
 

@@ -99,8 +99,8 @@ This step shows only platforms you connect by signing in to your account. You co
 others later, on the "Marketplace" tab of the "Connectors" section. Platforms connected in the
 wizard use default settings — you can change them in the "Connectors" section.
 
-More: [Yandex.Direct](/en/connectors/yandex-direct/),
-[Yandex.Metrika](/en/connectors/yandex-metrika/).
+More: [Yandex.Direct](/connectors/yandex-direct/),
+[Yandex.Metrika](/connectors/yandex-metrika/).
 
 ## Events
 
