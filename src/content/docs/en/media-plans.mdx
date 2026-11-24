@@ -1,0 +1,295 @@
+---
+title: Media Plans
+description: How to keep a project's monthly media plans — budgets and KPIs per channel, uploading from a file, editing and deleting, and how the agent uses the plan.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/media-plans/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/media-plans/media-plans-page.en.messages.json
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/media-plans/media-plans-list.tsx
+  - palitra-frontend/components/media-plans/media-plans-list.en.messages.json
+  - palitra-frontend/components/media-plans/media-plan-list-section.tsx
+  - palitra-frontend/components/media-plans/media-plan-list-section.en.messages.json
+  - palitra-frontend/components/media-plans/media-plan-list-row.tsx
+  - palitra-frontend/components/media-plans/media-plan-list-row.en.messages.json
+  - palitra-frontend/components/media-plans/media-plan-status.ts
+  - palitra-frontend/components/media-plans/media-plan-empty-state.tsx
+  - palitra-frontend/components/media-plans/media-plan-empty-state.en.messages.json
+  - palitra-frontend/components/media-plans/media-plan-draft-editor.tsx
+  - palitra-frontend/components/media-plans/media-plan-draft-editor.en.messages.json
+  - palitra-frontend/components/media-plans/month-picker.tsx
+  - palitra-frontend/components/media-plans/month-picker.en.messages.json
+  - palitra-frontend/components/media-plans/media-plan-channel-table.tsx
+  - palitra-frontend/components/media-plans/media-plan-channel-table.en.messages.json
+  - palitra-frontend/components/media-plans/media-plan-derive.ts
+  - palitra-frontend/components/media-plans/connector-select.tsx
+  - palitra-frontend/components/media-plans/connector-select.en.messages.json
+  - palitra-frontend/components/media-plans/use-ad-platform-connectors.ts
+  - palitra-frontend/components/media-plans/media-plan-detail.tsx
+  - palitra-frontend/components/media-plans/media-plan-detail.en.messages.json
+  - palitra-frontend/components/media-plans/use-media-plan-lifecycle.ts
+  - palitra-frontend/components/media-plans/use-media-plan-lifecycle.en.messages.json
+  - palitra-frontend/components/media-plans/use-media-plan-upload.ts
+  - palitra-frontend/components/media-plans/use-media-plan-upload.en.messages.json
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/billing/feature-lock-state.tsx
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/components/workflow-editor/config-forms/config-forms.en.messages.json
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/lib/billing/use-license-gate.ts
+  - palitra-frontend/lib/types/media-plan.ts
+  - palitra-backend/src/modules/billing/domain/models/feature_matrix.py
+  - palitra-backend/src/modules/context/api/media_plans_router.py
+  - palitra-backend/src/modules/context/application/dtos/media_plan_dtos.py
+  - palitra-backend/src/modules/context/application/services/media_plan_service.py
+  - palitra-backend/src/modules/context/domain/services/plan_status.py
+  - palitra-backend/src/modules/context/domain/events/media_plan_events.py
+  - palitra-backend/src/capabilities/declarations/media_plans.py
+  - palitra-backend/src/modules/chat/application/services/media_plan_section_provider.py
+  - palitra-backend/src/modules/chat/application/services/project_setup_section_provider.py
+  - palitra-backend/src/modules/skills/infrastructure/starter_skills/budget_pacing.py
+  - palitra-frontend/components/media-plans/media-plan-totals.ts
+  - palitra-frontend/lib/auth/use-can-mutate-project.ts
+  - palitra-frontend/components/billing/feature-gates.ts
+  - palitra-frontend/components/workflow-editor/config-forms/EventTriggerForm.tsx
+  - palitra-backend/src/modules/context/application/services/media_plan_parse_service.py
+  - palitra-backend/src/modules/context/infrastructure/llm/media_plan_parse_adapter.py
+  - palitra-backend/src/modules/context/infrastructure/analytics/revenue_readiness_adapter.py
+  - palitra-backend/src/modules/context/domain/errors.py
+  - palitra-backend/src/modules/chat/infrastructure/langgraph/prompts.py
+  - palitra-backend/src/modules/identity/api/dependencies.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+A media plan is a project's plan for one calendar month: which channels you run, the budget for
+each, and how many conversions and how much revenue you expect from it. The agent sees the
+active media plan in every conversation, and in chat you can check actual spend against it.
+
+Every project member sees the section. Project managers, and the organization's owner and
+admins, can create, change and delete media plans. Everyone else sees them read-only.
+
+Media plans are part of the Scale and Enterprise plans. On other plans the section shows
+"Media-plan tracking isn't included in your plan" and an "Upgrade plan" button, which opens the
+plan picker in [organization billing](/organization/billing/).
+
+## Open the section
+
+1. Pick the project in the project list at the top of the sidebar.
+2. Click "Media Plans".
+
+<Screenshot
+  id="media-plans-list"
+  alt="The Media Plans section: plans by month on the left and the selected plan on the right"
+/>
+
+If the project has no plans yet, you see "No media plans yet" with two buttons: "New plan" and
+"Upload plan". You can also upload the first media plan in the project setup wizard — see
+[First steps](/getting-started/first-steps/#media-plan).
+
+## One plan per month, and its status
+
+Every media plan has a month, and a project holds only one plan per month. Palitra sets the
+plan's status itself, from its month and the project's time zone:
+
+| Status     | Meaning                                                                               |
+| ---------- | ------------------------------------------------------------------------------------- |
+| "Active"   | The plan for the current month. This is the plan the agent sees.                      |
+| "Upcoming" | A plan for a later month. It becomes active when its month starts.                    |
+| "Past"     | A plan for a month that is over. Its rows can't change; the plan can only be deleted. |
+
+There is nothing to switch on: on the first day of a month the upcoming plan becomes active and
+the active one becomes past.
+
+## Find a plan
+
+On the left, plans are grouped under "Active", "Upcoming" and "Past", with the number of plans
+in brackets. "Past" starts collapsed: click its heading to expand it. Each row shows the month,
+the status and the plan's total budget.
+
+To find a plan, start typing a month in "Search by month…": both the month name and the form
+`2026-03` work. If nothing matches, you see "No plans match your search.".
+
+When you open the section, the active plan is already shown on the right. Without one, the
+nearest upcoming plan is shown; without that, the latest past plan.
+
+## Create a plan by hand
+
+1. Click "New plan". "New media plan" opens on the right.
+2. Under "Period", click "Select month" and pick a month. Only the current and future months
+   are available; the arrows next to the year move to the next year.
+3. In the "Channels & Budgets" table, fill in the first row: the channel name in the "Channel"
+   column and the planned figures (see
+   [how the figures are recalculated](#fill-in-the-channel-table) below).
+4. To add another channel, click "Add channel". Remove an extra row with the trash icon at the
+   end of the row.
+5. Click "Create plan".
+
+"Create plan" is available once a month is picked and the table has at least one row. Every row
+needs a channel name. "Cancel" closes the editor without saving.
+
+<Screenshot
+  id="media-plans-new"
+  alt="The New media plan editor with the Period field and the Channels & Budgets table"
+/>
+
+### If the month already has a plan
+
+If the chosen month already has a media plan, Palitra asks: "Plan already exists" — "A media
+plan for … already exists. Do you want to replace it?".
+
+- "Replace" deletes the old plan and saves the new one in its place.
+- "Cancel" saves nothing and takes you back to the editor.
+
+## Upload a plan from a file
+
+If your media plan is already in a spreadsheet, upload the file and Palitra reads the rows for
+you.
+
+1. Click "Upload plan".
+2. Choose an `.xlsx`, `.xls` or `.csv` file of up to 10 MB.
+3. Wait while Palitra reads the file. "New media plan" opens, filled in from the file: the month,
+   channels, budgets, conversions, revenue and comments. When a channel in the file is
+   recognised as one of the project's ad-platform connectors, Palitra binds the row to it.
+4. Check the month and the rows, correct them if needed, and click "Create plan".
+
+Nothing is saved until you click "Create plan". Palitra reads the budgets in the project's
+currency. The file name later shows on the plan as "Source file".
+
+If the file names a month that is over, "Period" stays empty and shows "The file is for …,
+which has already passed. Pick the current or a future month.".
+
+Upload errors:
+
+- "Invalid file type. Please upload an .xlsx, .xls, or .csv file." — save the spreadsheet in one
+  of these formats.
+- "File is too large. Maximum size is 10 MB." — remove extra sheets and data from the file.
+- "Failed to parse the media plan. Please check the file and try again." — Palitra couldn't read
+  the file. Check that it has channel names and budgets, or create the plan by hand.
+
+## Fill in the channel table
+
+One row is one channel. The columns:
+
+| Column                   | What to enter                                                              |
+| ------------------------ | -------------------------------------------------------------------------- |
+| "Channel"                | The channel's name, such as "Yandex.Direct — search".                      |
+| "Connector"              | The project's ad-platform connector the channel belongs to, or "Unlinked". |
+| "Budget"                 | Planned spend for the month in the project's currency.                     |
+| "Volume" → "Conversions" | Planned number of conversions.                                             |
+| "Volume" → "CPA"         | Planned cost per conversion.                                               |
+| "Revenue" → "GMV"        | Planned revenue.                                                           |
+| "Revenue" → "ROAS"       | Planned return on ad spend: revenue divided by budget.                     |
+| "Revenue" → "ACoS"       | Planned ad spend as a share of revenue, in percent.                        |
+| "AOV"                    | Calculated: revenue divided by conversions. Not entered by hand.           |
+
+Palitra stores three numbers — budget, conversions and revenue — and calculates the other
+columns from them. So entering one value recalculates others:
+
+- Change "CPA" and conversions are recalculated; the budget stays.
+- Change "ROAS" or "ACoS" and revenue is recalculated; the budget stays.
+- Change "Budget" and CPA, ROAS and ACoS stay, while conversions and revenue scale with the
+  budget.
+
+A value applies when you leave the cell. An empty value, a negative number or something that
+isn't a number is not applied: the cell keeps its previous value.
+
+The "Total" row sums budget, conversions and revenue across channels and shows the ratios
+calculated from those sums.
+
+### Connector binding and a note for the agent
+
+The "Connector" column offers only this project's ad-platform connectors. The binding tells the
+agent which ad account a channel belongs to, so it matches the plan to actual spend without
+guessing from the channel name.
+
+Once a connector is picked, a field appears under the row: "Note for the agent: channel goal,
+constraints, specifics". Write what the agent should keep in mind for this channel, up to 1,000
+characters. The agent sees these notes as written by the project team. Switching back to
+"Unlinked" removes the note.
+
+If the project's data has no revenue yet and the plan sets revenue for at least one channel, a
+warning appears above the table: "This project has no revenue data source, so revenue targets
+won't be measurable against actuals.". You can still save the plan, but its revenue has nothing
+to be compared with.
+
+## Change a plan
+
+Active and upcoming plans are edited right in the table on the right.
+
+1. Select the plan in the list.
+2. Change the cells you need, add or remove rows.
+3. "Discard" and "Save" appear at the bottom. Click "Save".
+
+"Discard" returns the table to its saved state.
+
+Above the table are the plan's "Total budget", the "Created" date and, for a plan uploaded from a
+file, "Source file".
+
+<Screenshot
+  id="media-plans-detail"
+  alt="An open media plan: status, total budget and the channel table with the Discard and Save buttons"
+/>
+
+A saved plan's month can't be changed on this page. To move a plan to another month, ask the
+agent in chat or create the plan for that month again.
+
+Save errors:
+
+- "Could not save — the plan has changed since you started editing" — while you were editing,
+  the plan's month ended and the plan became past, and a past plan's rows can't change. The
+  table returns to its saved state.
+- "Invalid connector for one of the channels" — the chosen connector no longer qualifies, for
+  example it was removed from the project. The row is highlighted: pick another connector or
+  "Unlinked".
+- "Failed to update media plan" or "Failed to create media plan" — check that every row has a
+  channel name and try again.
+
+## Delete a plan
+
+1. Select the plan in the list.
+2. Click the three-dots icon next to the month and choose "Delete".
+3. Confirm in "Delete media plan?" with "Delete".
+
+The plan and all its rows are deleted and can't be restored. The month is free for a new plan.
+Past plans can be deleted too.
+
+## How the agent uses the media plan
+
+- **It sees the active plan in every conversation.** The agent gets the current month's plan
+  as a table: channels, bound connectors, budgets, planned conversions and revenue, and your
+  notes on the channels.
+- **It checks the plan against actuals.** The agent compares plan and actual spend in
+  [chat](/chat/): the Media Plans page shows planned figures only. The starter
+  [skill](/skills/) `budget-pacing` does this: it takes the planned budget per channel from the
+  active media plan, compares it with spend to date, projects the month-end total and flags
+  channels whose spend to date is outside 90–110% of what the plan expects by now.
+- **It points out a missing plan.** When the current month has no plan, the agent knows pacing
+  has no target and can offer to create a plan right in the chat.
+- **It creates and changes plans in chat.** The agent can list the project's plans, create a
+  plan, change its rows or move it to another month, and delete a plan. Each such change waits
+  for approval in the chat — see
+  [approving actions](/getting-started/manager/#approving-actions). To delete, the agent also
+  repeats the plan's month. The agent can't upload a media plan file: files are uploaded on this
+  page or in the project setup wizard.
+
+Creating, changing or deleting a media plan can trigger a [workflow](/workflows/): the "Media
+plan updated" event.
+
+## Errors loading the section
+
+- "Couldn't load media plans" — the list of plans didn't load. Click "Retry".
+- "Couldn't load media plan" — the selected plan didn't load. Click "Retry".
+
+On a BYOC installation with a restricted license, the "Upload plan" and "New plan" buttons above
+the list are unavailable.
+
+## Related articles
+
+- [First steps](/getting-started/first-steps/)
+- [Chat](/chat/)
+- [Skills](/skills/)
+- [Connectors](/connectors/overview/)
+- [Action Logs](/action-log/)
+- [Billing](/organization/billing/)

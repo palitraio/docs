@@ -1,0 +1,184 @@
+---
+title: Members
+description: How to invite people to the organization, change their role, transfer ownership, remove members and manage invitations.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/org/settings/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/members/page.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/org-settings.en.messages.json
+  - palitra-frontend/components/org-settings/org-member-list.tsx
+  - palitra-frontend/components/org-settings/org-member-list.en.messages.json
+  - palitra-frontend/components/org-settings/org-invite-dialog.tsx
+  - palitra-frontend/components/org-settings/org-invite-dialog.en.messages.json
+  - palitra-frontend/components/org-settings/org-role-change-dialog.tsx
+  - palitra-frontend/components/org-settings/org-role-change-dialog.en.messages.json
+  - palitra-frontend/components/org-settings/org-invitations-section.tsx
+  - palitra-frontend/components/org-settings/org-invitations-section.en.messages.json
+  - palitra-frontend/components/org-settings/members/sso-bypass-badge.en.messages.json
+  - palitra-frontend/components/org-settings/members/sso-bypass-menu-item.tsx
+  - palitra-frontend/components/org-settings/members/sso-bypass-menu-item.en.messages.json
+  - palitra-frontend/lib/flags.ts
+  - palitra-backend/src/modules/identity/api/orgs.py
+  - palitra-backend/src/modules/identity/application/services/org_service.py
+  - palitra-backend/src/modules/identity/application/services/auth_service.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "Members" tab shows who belongs to the organization and with which role, and it is where
+you invite new people. Below the table is the list of invitations that haven't been accepted
+yet.
+
+The organization has three roles:
+
+- "Owner" — runs the whole organization: billing, single sign-on, deleting the organization.
+- "Admin" — "Manages members, projects and AI settings".
+- "Member" — "Access is limited to assigned projects".
+
+Roles are summarized in [For owners and admins](/getting-started/owner-admin/). Here is what each
+role can do on this tab:
+
+| Action                                         | Owner | Admin |
+| ---------------------------------------------- | ----- | ----- |
+| Invite members, revoke or resend an invitation | yes   | yes   |
+| Remove a member from the organization          | yes   | yes   |
+| Change a member's role                         | yes   | no    |
+| Transfer ownership                             | yes   | no    |
+| Grant or revoke SSO bypass                     | yes   | no    |
+
+The owner's row has no actions menu: the owner can't be removed or demoted from this tab.
+
+## Open the tab
+
+1. Click your name at the bottom of the sidebar and choose "Organization settings".
+2. Go to the "Members" tab.
+
+The members table has the columns "Member", "Email", "Role", "Joined" and "Actions".
+
+<Screenshot
+  id="organization-members"
+  alt="The Members tab with the members table and the invitations list"
+/>
+
+## Invite a member
+
+1. Click "Invite members".
+2. In the "Invite to organization" dialog, enter the person's "Email".
+3. Choose the "Organization role": "Admin" or "Member".
+4. If you chose "Member", the "Project access" block appears. Tick the projects and pick a role
+   for each: "Manager", "Viewer" or "Guest". The block is shown only when the organization has
+   at least one active project. For the "Admin" role the block isn't shown.
+5. Click "Send invitation".
+
+You see "Invitation sent", and the invitation appears in the pending invitations list. The
+person receives an email with a link. An invitation is valid for 7 days.
+
+Project roles are explained in [For project managers](/getting-started/manager/).
+
+<Screenshot
+  id="organization-members-invite"
+  alt="The Invite to organization dialog with the role and project access options"
+/>
+
+### If the invitation isn't sent
+
+Palitra shows "Could not send invitation" with the reason:
+
+- "This address already has a pending invitation — resend it from the invitations list
+  instead."
+- "This person is already a member of the organization."
+- "This person already belongs to another organization. A person can belong to exactly one
+  organization — invite them as a project guest instead." See
+  [Project members](/project-settings/members/) for how.
+- "One of the selected projects no longer exists. Reopen the dialog and pick the projects
+  again."
+- "Confirm your email address first — check your inbox for the verification link, or request a
+  new one from the verification screen." You can invite people only after confirming your own
+  email.
+
+### If SSO is enforced in the organization
+
+The invite dialog shows a block "This organization uses SSO (…)". Invited people will sign in
+through your identity provider. Send them the sign-in address: you can copy it on the "Single
+Sign-On" tab. See [Single Sign-On](/organization/sso/).
+
+## Manage invitations
+
+The owner and admins see the pending invitations list. It has the columns "Email", "Role",
+"Expires" and "Actions". The actions menu of an invitation offers:
+
+- "Copy invite link" — copy the invitation link to send it yourself, for example in a
+  messenger. You see "Invite link copied".
+- "Resend invitation" — send the email again. You see "Invitation resent".
+- "Revoke" — cancel the invitation. Confirm in the "Revoke invitation for …?" dialog with
+  "Revoke". The link from the email stops working.
+
+With no invitations, the list reads "No pending invitations".
+
+<Screenshot
+  id="organization-members-invitations"
+  alt="The pending invitations list with an invitation's actions menu"
+/>
+
+## Change a member's role
+
+Only the owner can change roles.
+
+1. Open the actions menu in the member's row and choose "Change role".
+2. In the "Change role" dialog, pick the "Role": "Admin" or "Member".
+3. Click "Save". You see "Role updated".
+
+You can't change your own role. The only way to make someone else the owner is to transfer
+ownership.
+
+If a role claim is set in the single sign-on settings, the member's role is taken from the role
+mapping again at their next SSO sign-in. See [Single Sign-On](/organization/sso/).
+
+## Transfer ownership
+
+To make another member the owner:
+
+1. Open the actions menu in the future owner's row and choose "Transfer ownership".
+2. Read the warning: the member "becomes the owner and you become an admin. You lose access to
+   billing, SSO settings and deleting the organization. Only the new owner can transfer it
+   back."
+3. Click "Transfer". You see "Ownership transferred".
+
+## Remove a member
+
+1. Open the actions menu in the member's row and choose "Remove from organization".
+2. Confirm with "Remove". The person loses access to all projects in this organization.
+
+You see "Member removed".
+
+## Leave the organization
+
+Admins see "Leave organization" in their own row. Once you confirm, you lose access
+to all projects in this organization; you can be re-invited later.
+
+The owner doesn't have this item: to leave, first transfer ownership to another member.
+
+## SSO bypass
+
+When single sign-on is enforced, members have to sign in through the identity provider. The
+owner can let a particular person sign in with a password as well — for example, an automation
+account, or for emergency access if the provider is down.
+
+1. Open the actions menu in the member's row.
+2. Choose "Grant SSO bypass". To undo, choose "Revoke SSO bypass".
+
+A member with bypass gets a "Bypass SSO" badge in the table. These items appear only when SSO is
+enforced. The owner can always sign in with a password.
+
+## Loading errors
+
+If the table doesn't load, you see "Couldn't load members"; for the invitations list,
+"Couldn't load invitations". Click "Try again".
+
+## Related articles
+
+- [For owners and admins](/getting-started/owner-admin/)
+- [For project managers](/getting-started/manager/)
+- [Project members](/project-settings/members/)
+- [Single Sign-On](/organization/sso/)
+- [Projects](/organization/projects/)

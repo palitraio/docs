@@ -1,0 +1,221 @@
+---
+title: Attribution
+description: How to set up attribution in a project — the attribution window, the default model and conversion event, enabling models and their parameters.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/attribution/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/attribution/attribution.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/data-overview.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/settings-sheet.tsx
+  - palitra-frontend/components/data-pipeline/overview/settings-sheet.en.messages.json
+  - palitra-frontend/components/data-pipeline/attribution/attribution-windows.tsx
+  - palitra-frontend/components/data-pipeline/attribution/attribution-windows.en.messages.json
+  - palitra-frontend/components/data-pipeline/attribution/default-model-section.tsx
+  - palitra-frontend/components/data-pipeline/attribution/default-model-section.en.messages.json
+  - palitra-frontend/components/data-pipeline/attribution/models-list.tsx
+  - palitra-frontend/components/data-pipeline/attribution/models-list.en.messages.json
+  - palitra-frontend/components/data-pipeline/attribution/time-decay-config.tsx
+  - palitra-frontend/components/data-pipeline/attribution/time-decay-config.en.messages.json
+  - palitra-frontend/components/data-pipeline/attribution/position-based-config.tsx
+  - palitra-frontend/components/data-pipeline/attribution/position-based-config.en.messages.json
+  - palitra-frontend/components/data-pipeline/attribution/dynamic-thresholds-card.tsx
+  - palitra-frontend/components/data-pipeline/attribution/dynamic-thresholds-card.en.messages.json
+  - palitra-frontend/components/data-pipeline/hooks/use-save-attribution.en.messages.json
+  - palitra-frontend/components/auth/project-role-guard.tsx
+  - palitra-frontend/components/auth/project-role-guard.en.messages.json
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/lib/types/attribution.ts
+  - palitra-backend/src/modules/analytics_engine/domain/models/model_id.py
+  - palitra-backend/src/modules/analytics_engine/application/services/config_service.py
+  - palitra-backend/src/modules/analytics_engine/infrastructure/models/attribution_config_model.py
+  - palitra-backend/src/modules/analytics_engine/api/attribution_router.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+Attribution splits the value of a conversion between the ad channels that led to it. The
+"Attribution Settings" screen sets how Palitra computes that credit in a project: how far back to
+look for touches, which attribution models to compute and which one to use by default.
+
+In the screen's own words, the default model is "used by default in Chat responses, dashboards,
+and Workflow triggers".
+
+Project managers, and the organization's owner and admins, can open and change the attribution
+settings. Other project members see "You don't have access".
+
+## Open the screen
+
+1. Pick the project in the sidebar and go to "Data" — the "Data Pipeline" page opens.
+2. Click "Settings" in the top right corner — the "Data Pipeline Settings" panel opens.
+3. In the "Attribution Engine" block, click "Configure".
+
+The "Attribution Engine" block shows the current state at a glance: "N of 8 models enabled" and a
+line such as "30 day window · Default: Last Click". Without edit rights, the "Configure" button is
+disabled and its tooltip says "You have read-only access to this project".
+
+<Screenshot
+  id="data-attribution-overview"
+  alt="The Attribution Settings screen with the General, Attribution Models and Dynamic Thresholds blocks"
+/>
+
+The screen has the "General", "Attribution Models", "Model Parameters" (shown when Time Decay or
+Position Based is enabled) and "Dynamic Thresholds" blocks. Nothing is applied until you click
+"Save changes".
+
+## Set the attribution window
+
+The "Attribution window" is how far back to look for events before a conversion. Touches older
+than that are not counted.
+
+1. In "General", move the "Attribution window" slider. The value, such as "30 days", is shown on
+   the right.
+2. Click "Save changes".
+
+The window ranges from 7 to 90 days. The default is 30 days.
+
+### Install attribution window
+
+If the project has a mobile tracker connected, an "Install attribution window" slider appears
+under the main window: a "shorter window for app install attribution (1–30 days)". It sets how far
+back from an app install to look for ad touches. It does not apply to in-app events after the
+install. The default is 7 days.
+
+Without a mobile tracker the slider is not shown.
+
+## Choose the default model and conversion event
+
+1. In "General", open "Default attribution model" and pick a model. The list holds only the models
+   currently available to the project (see below).
+2. In "Default conversion event", pick the conversion event to use as the default target in
+   attribution reports, or keep "All conversion events".
+3. Click "Save changes".
+
+The event list holds only events marked as conversions in the project. To add an event to it, mark
+it as a conversion on the [events](/data/events/) screen.
+
+<Screenshot
+  id="data-attribution-general"
+  alt="The General block: the Attribution window slider and the default model and conversion event lists"
+/>
+
+## Enable or disable models
+
+The "Attribution Models" block lists all eight Palitra models. Tick the ones to compute, untick
+the rest and click "Save changes".
+
+| Model                                                       | Type                | Data level needed             |
+| ----------------------------------------------------------- | ------------------- | ----------------------------- |
+| Last Click, First Click, Linear, Time Decay, Position Based | "Rule-based (L2+)"  | L2                            |
+| Markov Chains, Shapley Value                                | "Statistical (L3+)" | L3 and a conversion threshold |
+| Data Driven                                                 | "ML (L4+)"          | L4 and a conversion threshold |
+
+By default only Last Click is enabled, and it is also the default model.
+
+You can't disable the default model: its checkbox is disabled and it says "Default model — choose
+another default before disabling this one". Pick another default model first, then untick it.
+
+<Screenshot
+  id="data-attribution-models"
+  alt="The attribution model list: available models with checkboxes and locked ones with a level badge"
+/>
+
+### Why a model is unavailable
+
+A model's availability depends on the project's data level and, for statistical and ML models, on
+the number of conversions. The current level is in the block's description: "Availability depends
+on data level (L2) and conversion volume." How the data level grows is covered in
+[Data overview](/data/overview/).
+
+An unavailable model has a dashed border, a disabled checkbox and a level badge on the right, such
+as "L3+". The badge's tooltip gives the reason:
+
+- "Requires data level L3" — the project's data level is too low.
+- "Requires data level L3 and 200+ conversions" — both the level and a conversion threshold are
+  needed.
+
+If the model has a conversion threshold, a progress bar under its name shows something like
+"120/200 conversions".
+
+## Thresholds for advanced models
+
+The "Dynamic Thresholds" block shows how many conversions Markov Chains, Shapley Value and Data
+Driven need. The threshold depends on the number of channels in the project: more channels need
+more conversions.
+
+| Models             | Threshold                                                        |
+| ------------------ | ---------------------------------------------------------------- |
+| "Markov / Shapley" | at least 200 conversions or 50 per channel, whichever is higher  |
+| "Data-Driven (ML)" | at least 500 conversions or 100 per channel, whichever is higher |
+
+Channels and conversions are counted over the last 90 days. "Current conversions (90d)" is shown
+next to the thresholds. If a specific default conversion event is selected, only that event's
+conversions are counted.
+
+## Tune model parameters
+
+The "Model Parameters" block appears when Time Decay or Position Based is enabled.
+
+### Time Decay
+
+"Time Decay half-life" is the number of days after which an event receives half the credit. Lower
+values give more weight to recent touches.
+
+1. Move the slider or type the number of days in the field next to it.
+2. Click "Save changes".
+
+Values from 1 to 30 days are allowed; the default is 7. Outside that range the field shows
+"Half-life must be between 1 and 30 days" and the settings can't be saved.
+
+### Position Based
+
+"Position-Based weights" set the share of credit for "First touch", "Middle touches" and "Last
+touch".
+
+1. Enter the weights, in percent, in the three fields.
+2. Click "Save changes".
+
+The default weights are 40 / 20 / 40. An error may appear under the fields, and while it is there
+the settings can't be saved:
+
+- "Weights must sum to 100% (currently 90%)" — adjust the weights so they add up to 100.
+- "Weights must be whole numbers" — drop the decimals.
+- "Weights cannot be negative" — replace the negative number.
+
+<Screenshot
+  id="data-attribution-parameters"
+  alt="The Model Parameters block: Time Decay half-life and the three Position-Based weight fields"
+/>
+
+## Reset the settings
+
+1. Click "Reset to defaults".
+2. In "Reset attribution settings?", confirm with "Reset to defaults".
+
+All models, windows and weights return to platform defaults: a 30-day window, a 7-day install
+window, only Last Click enabled, a 7-day half-life and 40 / 20 / 40 weights. The reset can't be
+undone.
+
+## Messages and errors
+
+After a save or a reset Palitra shows a notification:
+
+- "Attribution settings saved" or "Attribution settings reset to defaults" — it worked.
+- "Some attribution settings are invalid" — a value failed validation. Check the windows, the
+  half-life and the weights.
+- "That model is no longer available" — a model you are enabling is no longer available to the
+  project, for example because conversions fell below the threshold. Refresh the page, untick that
+  model and save again.
+- "Failed to save attribution settings" or "Failed to reset attribution settings" — try again
+  later.
+
+If the screen itself doesn't load, you see "Failed to load attribution settings". Click "Retry"
+or refresh the page.
+
+## Related articles
+
+- [Data overview](/data/overview/)
+- [Events](/data/events/)
+- [Palitra Tag](/data/pixel/)
+- [Chat](/chat/)
+- [Project members](/project-settings/members/)

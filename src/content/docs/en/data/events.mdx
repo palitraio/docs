@@ -1,0 +1,268 @@
+---
+title: Event Registry
+description: How to keep the project's list of events — conversions, touchpoints, parameters, templates, unregistered events — and how to map source events onto it.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/events/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/events/events.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/settings-sheet.tsx
+  - palitra-frontend/components/data-pipeline/overview/settings-sheet.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/data-overview.en.messages.json
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/explorer/data-explorer.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/events-table.tsx
+  - palitra-frontend/components/data-pipeline/events/events-table.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/event-form.tsx
+  - palitra-frontend/components/data-pipeline/events/event-form.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/template-section.tsx
+  - palitra-frontend/components/data-pipeline/events/template-section.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/unregistered-events-alert.tsx
+  - palitra-frontend/components/data-pipeline/events/unregistered-events-alert.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/delete-event-confirm.tsx
+  - palitra-frontend/components/data-pipeline/events/delete-event-confirm.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/hooks/use-apply-templates.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/hooks/use-event-mutations.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/hooks/use-ignore-unregistered.en.messages.json
+  - palitra-frontend/components/data-pipeline/events/hooks/use-reorder-events.en.messages.json
+  - palitra-frontend/lib/data-pipeline/event-role.ts
+  - palitra-frontend/lib/data-pipeline/event-templates.ts
+  - palitra-frontend/lib/billing/use-license-gate.ts
+  - palitra-frontend/components/event-mapping/event-mapping-editor.tsx
+  - palitra-frontend/components/event-mapping/event-mapping-editor.en.messages.json
+  - palitra-frontend/components/event-mapping/field-rows.tsx
+  - palitra-frontend/components/event-mapping/field-settings.tsx
+  - palitra-frontend/components/event-mapping/identity-row.tsx
+  - palitra-frontend/components/event-mapping/mapping-preview.tsx
+  - palitra-frontend/components/event-mapping/mapping-preview.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/event-mapping-step.tsx
+  - palitra-frontend/components/connector-setup/steps/event-mapping-step.en.messages.json
+  - palitra-frontend/components/connector-setup/wizard.en.messages.json
+  - palitra-frontend/lib/stores/connector-wizard-store.ts
+  - palitra-backend/src/modules/data_layer/api/event_registry_router.py
+  - palitra-backend/src/modules/data_layer/application/services/project_event_service.py
+  - palitra-backend/src/modules/data_layer/application/services/apply_template_service.py
+  - palitra-backend/src/modules/data_layer/application/services/unregistered_event_service.py
+  - palitra-backend/src/modules/data_layer/domain/services/event_name_validator.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "Event Registry" is the list of events Palitra knows in your project: purchases, leads,
+visits, calls and anything else the Tag, webhooks, connectors and uploads send. For each event
+the registry keeps a readable name, a role (conversion, touchpoint or regular event), a place in
+the funnel and the parameters the event carries. Palitra uses the registry to count conversions
+and attribution, build funnels and understand events in chat and reports.
+
+Project managers, and the organization's owner and admins, work with the registry: only they have
+the button that opens the screen enabled, and only they can add, change and delete events and apply
+templates — the server checks this too. Other members see only a summary on the "Data Pipeline"
+page: how many events, conversions and standard events the project has. On a BYOC installation, "Add
+event" is disabled while the license is restricted or suspended.
+
+## Open the registry
+
+1. Click "Data" in the sidebar.
+2. On the "Data Pipeline" page, click "Settings".
+3. In the "Event Registry" block, click "Manage".
+
+If the button is disabled and shows "You have read-only access to this project", you don't have
+the right to change the project. The "Back to Data Pipeline" link returns to the data overview.
+
+<Screenshot
+  id="data-events"
+  alt="The Event Registry: the event table with Event name, Display name and Role columns"
+/>
+
+## What the registry shows
+
+| Column         | Meaning                                                         |
+| -------------- | --------------------------------------------------------------- |
+| "#"            | The event's place in the funnel.                                |
+| "Event name"   | The technical name the event arrives under, such as `purchase`. |
+| "Display name" | A readable name for people and for the AI.                      |
+| "Role"         | "Conversion", "Touchpoint" or "—" when the event is neither.    |
+
+If there are no events yet, you see "No events yet" with a hint to apply a template or create the
+first event.
+
+## Add events from a template
+
+Templates are ready-made sets of recommended events for common business types.
+
+1. Click "Add from template".
+2. In "Event Templates", tick one or more templates: "E-commerce", "Lead Generation", "SaaS /
+   Subscriptions", "Mobile App", "Offline", "Affiliate". Each template shows the events it adds.
+3. Click "Apply" — the button says how many templates are selected.
+
+Events already in the registry are skipped. Palitra reports the result: "Applied templates: N
+created, M skipped". Template events count as standard — their number shows in the data pipeline
+settings.
+
+<Screenshot
+  id="data-events-templates"
+  alt="The Event Templates dialog with template cards and their events"
+/>
+
+## Add an event by hand
+
+1. Click "Add event".
+2. Fill in the "Event name" — snake_case only: lowercase Latin letters, digits and underscores,
+   starting with a letter, such as `offline_purchase`. The name must be unique within the project
+   and no longer than 63 characters. It can't be changed after creation.
+3. Fill in the "Display name", such as "Offline Purchase" — up to 255 characters.
+4. Optionally add a "Description". It helps the AI understand this event in chat and reports.
+5. Pick the "Event role":
+   - "Conversion" — the goal you optimize for: a purchase, a signup. Counted as a conversion in
+     funnels and reports.
+   - "Touchpoint" — a marketing channel touch: a site visit, an ad click, an email open. Earns
+     attribution credit. For a touchpoint, pick the "Touchpoint kind": "Click", "Impression" or
+     "Engagement".
+   - "Neither" — a regular event.
+6. Tick the "Standard parameters" the event carries: `value`, `currency`, `transaction_id`,
+   `lead_id`, `coupon`, `partner_id`, `payment_method`, `items[]`. "Show item sub-parameters"
+   expands the product fields: `item_id`, `item_name`, `item_price`, `item_quantity`,
+   `item_category`, `item_brand`.
+7. If the event carries parameters of its own, add them under "Custom parameters": a snake_case
+   name and a type — "String", "Number", "Date", "Boolean" or "Array".
+8. Click "Create event".
+
+The new event goes to the end of the funnel.
+
+<Screenshot
+  id="data-events-form"
+  alt="The Add event dialog with the name, display name, role and parameter fields"
+/>
+
+Form errors:
+
+- "Use snake_case: lowercase letters, digits, and underscores; must start with a letter."
+- "An event with this name already exists in this project."
+- "Display name is required."
+- "Display name must be 255 characters or fewer."
+- "An event can be a conversion or a touchpoint, but not both."
+- "A parameter with this name already exists." — the parameter is already among the standard or
+  custom ones.
+
+The registry holds at most 500 events — whether you add them by hand or from templates.
+
+## Edit an event
+
+- **Rename quickly.** Click the display name in the table, type the new one and press Enter.
+  Escape cancels.
+- **Change anything else.** Open the row's actions menu and pick "Edit event". Change the display
+  name, description, role or parameters and click "Save changes". The "Event name" can't be
+  changed.
+
+If saving fails, you see "Could not update event".
+
+## Reorder the funnel
+
+The row order is the order of the funnel steps. To move an event, drag it by the handle to the
+left of its number and drop it in the new place. The numbers in "#" are recalculated.
+
+If the order isn't saved, you see "Could not reorder events".
+
+## Register new events from your data
+
+A block "N unregistered events detected in the last 7 days" may appear above the table. It lists
+events that reached the project's data in the last week but aren't in the registry. Each shows
+how many times and since when it arrived.
+
+- "Add to registry" opens the new event form with the name filled in.
+- "Ignore" removes the event from this block. The event's data stays.
+
+The block shows the most frequent events, up to 100. If there are more, you see "Showing first N
+events — list is truncated" at the bottom.
+
+<Screenshot
+  id="data-events-unregistered"
+  alt="The unregistered events block with Add to registry and Ignore buttons"
+/>
+
+## Delete an event
+
+1. Open the row's actions menu and pick "Delete event".
+2. Confirm "Delete event?" with "Delete".
+
+The event leaves the registry. Rows with this event already written to the project's data
+stay. If the
+event keeps arriving, it shows up in the unregistered events block.
+
+## Event mapping
+
+Sources name events their own way: a web analytics connector has its own goals, an uploaded
+table has rows with an event type column. Mapping tells Palitra which registry event each source
+event becomes and where its fields go. Without it, the source's data lands in the project under
+its original names or not at all.
+
+Mapping isn't set up on the registry screen but where the source is connected:
+
+- in the setup wizard of a web analytics or mobile tracker connector — the "Event mapping" step.
+  When you connect, it comes last, after the connector is created; later you can open it in the
+  connector's settings;
+- in the [Data Explorer](/data/explorer/#set-up-field-mapping) — for your own tables of
+  conversions, touchpoints or ad metrics;
+- during a [CSV upload](/data/uploads/).
+
+<Screenshot
+  id="data-events-mapping"
+  alt="The mapping editor: source events and the project event chosen for each"
+/>
+
+How the editor is laid out:
+
+1. **"User identifier".** Pick the source field Palitra recognizes the user by, and the
+   "Identifier type": "User ID", "Email", "Phone" or "Device ID".
+2. **"Mapping for all events".** Rules that apply to every source event.
+3. **"Keep unmapped fields in properties".** Fields without a rule are kept in the event's
+   properties instead of being dropped.
+4. **Source events.** For each "Source event", pick a "Project event":
+   - "Keep source name" — load it under the same name;
+   - an event from the registry. The list holds only events with a matching role: touchpoints for
+     touchpoint data, the other events for everything else;
+   - "Ignore" — these events are not loaded; already loaded ones are removed on reprocess.
+5. **"Rules for this event".** Expand to set rules for this event only:
+   - "Field" — which source field ("Source") fills which event field ("Target field"). Instead of
+     an event field you can pick "Custom property…" — one of the parameters you described on the
+     event in the registry. If the parameter doesn't exist yet, type its name and pick "Create …"
+     with that name — the parameter is added to the event in the registry when you save the
+     mapping;
+   - "Products" — where products come from: "JSON array in a field" or "Rows sharing a key";
+   - "Static value" — the same value for every record;
+   - "Condition" — only records meeting every condition are loaded.
+
+   An event rule with the same target field as a common rule replaces it and is marked "replaces
+   the rule for all events". "Field settings" let you set "Fallback sources", a "Multiplier", a
+   "Date format" and a "Time zone".
+
+6. **"Preview".** Shows what the mapping makes of a few real records. Nothing is saved.
+
+In the connector wizard, a hint above the editor says what happens to events: "While nothing is
+mapped, every event is imported under its own name." or "Events without a mapping are not
+imported." To save, click "Save mapping". When connecting a connector, "Skip for now" finishes
+the wizard without saving the mapping.
+
+Errors related to the registry:
+
+- "Not an event of this project." — the chosen event was deleted from the registry or doesn't
+  exist yet. Add it to the registry or pick another.
+- "Not an expected parameter of the chosen event." — add the parameter to the event in the
+  registry, or create it right from the editor.
+- "Choose where this event goes." — the source event has no project event chosen.
+
+## Errors
+
+- "Unable to load events" — click "Retry".
+- "Couldn't load unregistered events" — click "Try again" in a moment.
+- "Could not create event", "Could not delete event" — try again later.
+- "Could not apply event templates" — apply them again.
+- "Could not ignore event" — "Ignore" didn't go through; try again.
+
+## Related articles
+
+- [Data overview](/data/overview/)
+- [Data Explorer](/data/explorer/)
+- [Attribution](/data/attribution/)
+- [Tag](/data/pixel/)
+- [Webhooks](/data/webhooks/)
+- [Connectors](/connectors/overview/)

@@ -32,6 +32,7 @@ sources:
   - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
   - palitra-frontend/components/connectors/use-connector-copy.en.messages.json
   - palitra-frontend/lib/connectors/tool-title.ts
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
 ---
 
 The Yandex.Metrika connector loads site visits and goal completions into Palitra. Goals become
@@ -93,7 +94,9 @@ by default:
 If something is wrong with the connector, an icon appears on its card in the "Connectors"
 section. Hover over it to see what happened and what to do.
 
-**"Sign-in has expired."** Click "Reconnect" on the connector card and sign in to Yandex again.
+**"Sign-in has expired."** In "Connectors", open the "Credentials" tab, click the three dots on
+the Yandex credential's row, choose "Reconnect" and sign in to Yandex again. See the
+[connectors overview](/connectors/overview/).
 
 **"The connector has no access to this account."** The login you connected with no longer has
 access to the counter. Ask the counter's owner to grant access, then reconnect the connector.
