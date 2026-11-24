@@ -1,0 +1,169 @@
+---
+title: Notifications
+description: How to get project events in Telegram, Slack and email — personal notifications, messenger links and project group channels.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/notifications/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.en.messages.json
+  - palitra-frontend/components/project-settings/project-notifications-form.tsx
+  - palitra-frontend/components/project-settings/project-notifications-form.en.messages.json
+  - palitra-frontend/components/project-settings/notifications/my-notifications-section.tsx
+  - palitra-frontend/components/project-settings/notifications/messenger-links-cards.tsx
+  - palitra-frontend/components/project-settings/notifications/messenger-link-card.tsx
+  - palitra-frontend/components/project-settings/notifications/pair-messenger-dialog.tsx
+  - palitra-frontend/components/project-settings/notifications/event-routing-table.tsx
+  - palitra-frontend/components/project-settings/notifications/group-channels-section.tsx
+  - palitra-frontend/components/project-settings/notifications/group-binding-card.tsx
+  - palitra-frontend/components/project-settings/notifications/bind-group-dialog.tsx
+  - palitra-frontend/components/notifications/NotificationBell.tsx
+  - palitra-frontend/components/notifications/notification-bell.en.messages.json
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/project-switcher.tsx
+  - palitra-frontend/components/layout/project-switcher.en.messages.json
+  - palitra-frontend/lib/types/notifications.ts
+  - palitra-frontend/lib/auth/use-can-mutate-project.ts
+  - palitra-backend/src/modules/notifications/application/services/notification_routing_service.py
+  - palitra-backend/src/modules/notifications/application/services/account_pairing_service.py
+  - palitra-backend/src/modules/notifications/application/services/channel_binding_service.py
+  - palitra-backend/src/modules/notifications/infrastructure/channels/telegram/poller.py
+  - palitra-backend/src/modules/notifications/infrastructure/channels/slack/pairing.py
+  - palitra-backend/src/composition/messenger/routing.py
+  - palitra-backend/src/modules/billing/domain/models/feature_matrix.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "Notifications" tab sets which project events go where: to Telegram, Slack or email.
+Notifications inside Palitra itself live under the "Notifications" bell icon in the sidebar; this
+tab is about delivery outside it.
+
+The tab has two parts:
+
+- "My notifications" — your personal settings. Every project member picks events and channels
+  for themselves, without affecting anyone else.
+- "Project group channels" — shared Telegram groups or Slack channels where the whole team gets
+  events. Every project member sees them; project managers, and the organization's owner and
+  admins, can bind groups and change their settings.
+
+## Open the tab
+
+1. Pick the project in the project list at the top of the sidebar.
+2. Click the gear icon next to the project name ("Project settings").
+3. Go to the "Notifications" tab. "My notifications" opens first.
+
+<Screenshot id="project-settings-notifications" alt="The Notifications tab: My notifications with messenger links and the event table" />
+
+## Link Telegram or Slack
+
+To get notifications in a messenger, first link your account there to Palitra. The link belongs
+to your Palitra account, not to the project.
+
+1. Open "My notifications". Under "Messenger links", Telegram and Slack show "Linked" or "Not
+   linked".
+2. Click "Link" next to the messenger. A "Link Telegram" or "Link Slack" dialog opens with a code.
+3. Click "Open Telegram" (or "Open Slack").
+   - In Telegram, the Palitra bot opens: send it the code. "Copy code" copies it for you.
+   - For Slack, the button leads to Slack's connection page: approve the access there.
+4. Wait until "Waiting for you to confirm in …" changes to "Linked. You can close this dialog.",
+   then click "Done".
+
+<Screenshot id="project-settings-notifications-pair" alt="The Link Telegram dialog with the pairing code and the Open Telegram button" />
+
+The code is valid for a limited time, shown below it as "Code valid until …". If you see "This
+code has expired. Close and start linking again.", close the dialog and click "Link" again.
+"Lost connection — retrying…" means Palitra can't check the link for a moment and keeps trying:
+you don't need to close the dialog.
+
+Email needs no linking: notifications go to your account's address. The "Email" row shows it, or
+reads "Uses your account email".
+
+### Unlink a messenger
+
+1. Click "Unlink" on the messenger's row.
+2. Confirm with "Unlink".
+
+Personal delivery to that messenger stops immediately. You can link it again anytime.
+
+## Choose which events reach you
+
+Below the links, "My notifications" has the "Event routing" table: events in rows, and the
+"Telegram", "Slack" and "Email" channels in columns.
+
+1. Tick the box where an event meets a channel. One event can go to several channels.
+2. Click "Save changes".
+
+Palitra confirms with "Routing saved". These settings apply to this project only; set them
+separately in each project.
+
+The Telegram and Slack columns stay disabled until that messenger is linked. Hovering a box
+explains why, for example "Link Telegram to route events here".
+
+<Screenshot id="project-settings-notifications-routing" alt="The Event routing table with events in rows and channels in columns" />
+
+The events you can pick:
+
+- "Workflow completed"
+- "Workflow awaiting approval"
+- "Workflow failed"
+- "Guardrail triggered"
+- "KPI warning"
+- "KPI critical"
+- "Monitor fired"
+- "Monitor expired"
+- "Monitor stopped"
+
+## Bind a Telegram group
+
+A group channel sends events to the whole team in a shared chat. A group can be bound to one
+project only.
+
+1. Add the Palitra bot to the Telegram group.
+2. Send the `/bind` command in the group. The bot replies with a pairing code.
+3. In Palitra, open "Notifications" → "Project group channels" and click "Bind a group".
+4. Under "Channel", pick "Telegram".
+5. Paste the code into "Pairing code" and click "Bind".
+
+Palitra confirms with "Group bound" and the group appears in the list under its name.
+
+<Screenshot id="project-settings-notifications-group" alt="Project group channels with a bound group and its event list" />
+
+If the organization's plan doesn't include messenger delivery, binding a group fails and Palitra
+offers to change the plan.
+
+Members who can't change the project see "Only project managers can bind groups or change their
+routing."
+
+### Choose events for a group
+
+A group's card lists "Events posted to this group".
+
+1. Tick the events you want.
+2. Click "Save routing".
+
+Palitra confirms with "Routing saved". A group's settings don't depend on members' personal
+settings.
+
+### Unbind a group
+
+1. Click "Unbind" on the group's card.
+2. Confirm with "Unbind".
+
+Delivery to the group stops immediately and Palitra confirms with "Group unbound". You can bind
+it again later.
+
+## Errors
+
+- "Couldn't load notification settings" — click "Try again".
+- "Couldn't start linking" — Palitra couldn't issue a code; try again.
+- "Couldn't save routing" — the changes weren't saved; try again.
+- "Couldn't bind group" — check the code: it works once and for a limited time. If it was used
+  or has expired, send `/bind` in the group again. You also get this error when the group is
+  already bound to another project.
+- "Couldn't unlink messenger", "Couldn't unbind group" — try again later.
+
+## Related articles
+
+- [Workflows](/workflows/)
+- [Chat with the agent](/chat/)
+- [Project members](/project-settings/members/)
+- [For project managers](/getting-started/manager/)

@@ -1,0 +1,172 @@
+---
+title: Уведомления
+description: Как получать события проекта в Telegram, Slack и на почту — личные уведомления, привязка мессенджеров и групповые каналы проекта.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/notifications/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.ru.messages.json
+  - palitra-frontend/components/project-settings/project-notifications-form.tsx
+  - palitra-frontend/components/project-settings/project-notifications-form.ru.messages.json
+  - palitra-frontend/components/project-settings/notifications/my-notifications-section.tsx
+  - palitra-frontend/components/project-settings/notifications/messenger-links-cards.tsx
+  - palitra-frontend/components/project-settings/notifications/messenger-link-card.tsx
+  - palitra-frontend/components/project-settings/notifications/pair-messenger-dialog.tsx
+  - palitra-frontend/components/project-settings/notifications/event-routing-table.tsx
+  - palitra-frontend/components/project-settings/notifications/group-channels-section.tsx
+  - palitra-frontend/components/project-settings/notifications/group-binding-card.tsx
+  - palitra-frontend/components/project-settings/notifications/bind-group-dialog.tsx
+  - palitra-frontend/components/notifications/NotificationBell.tsx
+  - palitra-frontend/components/notifications/notification-bell.ru.messages.json
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/project-switcher.tsx
+  - palitra-frontend/components/layout/project-switcher.ru.messages.json
+  - palitra-frontend/lib/types/notifications.ts
+  - palitra-frontend/lib/auth/use-can-mutate-project.ts
+  - palitra-backend/src/modules/notifications/application/services/notification_routing_service.py
+  - palitra-backend/src/modules/notifications/application/services/account_pairing_service.py
+  - palitra-backend/src/modules/notifications/application/services/channel_binding_service.py
+  - palitra-backend/src/modules/notifications/infrastructure/channels/telegram/poller.py
+  - palitra-backend/src/modules/notifications/infrastructure/channels/slack/pairing.py
+  - palitra-backend/src/composition/messenger/routing.py
+  - palitra-backend/src/modules/billing/domain/models/feature_matrix.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+На вкладке «Уведомления» настраивается, какие события проекта и куда приходят: в Telegram, в
+Slack или на почту. Уведомления внутри самой Палитры собраны под значком колокольчика
+«Уведомления» в боковой панели; эта вкладка — про доставку за её пределы.
+
+На вкладке две части:
+
+- «Мои уведомления» — ваши личные настройки. Каждый участник проекта выбирает события и каналы
+  для себя, и это не влияет на других.
+- «Групповые каналы проекта» — общие группы Telegram или каналы Slack, куда события приходят всей
+  команде. Их видят все участники проекта, а привязывать группы и менять их настройки могут
+  менеджеры проекта, а также владелец и администратор организации.
+
+## Как открыть вкладку
+
+1. В боковой панели выберите проект в списке проектов.
+2. Нажмите на значок шестерёнки рядом с названием проекта — откроются «Настройки проекта».
+3. Перейдите на вкладку «Уведомления». Сначала открывается «Мои уведомления».
+
+<Screenshot id="project-settings-notifications" alt="Вкладка «Уведомления»: «Мои уведомления» с привязками мессенджеров и таблицей событий" />
+
+## Привязать Telegram или Slack
+
+Чтобы получать уведомления в мессенджер, сначала привяжите к Палитре свой аккаунт в нём.
+Привязка относится к вашему аккаунту Палитры, а не к проекту.
+
+1. Откройте «Мои уведомления». В блоке «Привязки мессенджеров» у Telegram и Slack указано
+   «Привязан» или «Не привязан».
+2. Нажмите «Привязать» у нужного мессенджера. Откроется окно «Привязать Telegram» или
+   «Привязать Slack» с кодом.
+3. Нажмите «Открыть Telegram» (или «Открыть Slack»).
+   - В Telegram откроется бот Палитры: отправьте ему код. Скопировать код можно кнопкой
+     «Скопировать код».
+   - Для Slack кнопка ведёт на страницу подключения Slack: подтвердите доступ там.
+4. Дождитесь, пока вместо «Ожидаем подтверждение в …» появится «Привязано. Можно закрыть это
+   окно.», и нажмите «Готово».
+
+<Screenshot id="project-settings-notifications-pair" alt="Окно «Привязать Telegram» с кодом привязки и кнопкой «Открыть Telegram»" />
+
+Код действует ограниченное время — под ним написано «Код действителен до …». Если появилось «Код
+истёк. Закройте окно и начните привязку заново.», закройте окно и снова нажмите «Привязать».
+Надпись «Соединение потеряно — повторяем…» означает, что Палитра временно не может проверить
+привязку и пробует снова: окно закрывать не нужно.
+
+Почту привязывать не нужно: уведомления уходят на адрес вашего аккаунта. Он показан в строке
+«Email» или подписан «Используется почта вашего аккаунта».
+
+### Отвязать мессенджер
+
+1. В строке мессенджера нажмите «Отвязать».
+2. Подтвердите кнопкой «Отвязать».
+
+Личная доставка в этот мессенджер прекратится сразу. Привязать его снова можно в любой момент.
+
+## Выбрать, какие события приходят вам
+
+На вкладке «Мои уведомления» под привязками есть таблица «Маршрутизация событий». В строках —
+события, в колонках — каналы «Telegram», «Slack» и «Email».
+
+1. Отметьте флажки на пересечении события и канала. Одно событие можно отправлять в несколько
+   каналов.
+2. Нажмите «Сохранить изменения».
+
+Появится сообщение «Маршрутизация сохранена». Эти настройки действуют только в этом проекте; в
+другом проекте их задают отдельно.
+
+Колонки Telegram и Slack недоступны, пока мессенджер не привязан. При наведении на флажок
+Палитра подскажет, например: «Привяжите Telegram, чтобы направлять события сюда».
+
+<Screenshot id="project-settings-notifications-routing" alt="Таблица «Маршрутизация событий» с событиями в строках и каналами в колонках" />
+
+События, которые можно выбрать:
+
+- «Воркфлоу завершён»
+- «Воркфлоу ожидает подтверждения»
+- «Воркфлоу завершился ошибкой»
+- «Сработал guardrail»
+- «Предупреждение KPI»
+- «Критичное отклонение KPI»
+- «Монитор сработал»
+- «Монитор истёк»
+- «Монитор остановлен»
+
+## Привязать группу Telegram
+
+Групповой канал нужен, чтобы события приходили сразу всей команде в общий чат. Одну группу
+можно привязать только к одному проекту.
+
+1. Добавьте бота Палитры в группу Telegram.
+2. Отправьте в группе команду `/bind`. Бот ответит сообщением с кодом привязки.
+3. В Палитре откройте «Уведомления» → «Групповые каналы проекта» и нажмите «Привязать группу».
+4. В поле «Канал» выберите «Telegram».
+5. Вставьте код в поле «Код привязки» и нажмите «Привязать».
+
+Появится сообщение «Группа привязана», а группа — в списке с её названием.
+
+<Screenshot id="project-settings-notifications-group" alt="«Групповые каналы проекта» с привязанной группой и списком её событий" />
+
+Если тариф организации не включает доставку в мессенджеры, привязать группу не получится:
+Палитра предложит сменить тариф.
+
+Участники без прав на изменение проекта видят надпись «Только менеджеры проекта могут привязывать
+группы и менять их маршрутизацию.»
+
+### Выбрать события для группы
+
+В карточке группы есть список «События, публикуемые в эту группу».
+
+1. Отметьте нужные события.
+2. Нажмите «Сохранить маршрутизацию».
+
+Появится сообщение «Маршрутизация сохранена». Настройки группы не зависят от личных настроек
+участников.
+
+### Отвязать группу
+
+1. В карточке группы нажмите «Отвязать».
+2. Подтвердите кнопкой «Отвязать».
+
+Доставка в группу прекратится сразу, появится сообщение «Группа отвязана». Привязать её снова
+можно позже.
+
+## Ошибки
+
+- «Не удалось загрузить настройки уведомлений» — нажмите «Повторить».
+- «Не удалось начать привязку» — Палитра не смогла выдать код; попробуйте ещё раз.
+- «Не удалось сохранить маршрутизацию» — изменения не сохранены; повторите.
+- «Не удалось привязать группу» — проверьте код: он одноразовый и действует ограниченное время.
+  Если код уже использован или истёк, отправьте `/bind` в группе ещё раз. Ошибка будет и тогда,
+  когда группа уже привязана к другому проекту.
+- «Не удалось отвязать мессенджер», «Не удалось отвязать группу» — повторите позже.
+
+## Связанные статьи
+
+- [Воркфлоу](/workflows/)
+- [Чат с агентом](/chat/)
+- [Участники проекта](/project-settings/members/)
+- [Менеджеру проекта](/getting-started/manager/)

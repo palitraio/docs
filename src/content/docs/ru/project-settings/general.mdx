@@ -1,0 +1,102 @@
+---
+title: Общие
+description: Название, описание, валюта и часовой пояс проекта, а также архивация и восстановление проекта.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/general/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/settings/project-settings.ru.messages.json
+  - palitra-frontend/components/project-settings/project-general-form.tsx
+  - palitra-frontend/components/project-settings/project-general-form.ru.messages.json
+  - palitra-frontend/components/project-settings/project-archive-dialog.tsx
+  - palitra-frontend/components/project-settings/project-archive-dialog.ru.messages.json
+  - palitra-frontend/components/layout/project-switcher.tsx
+  - palitra-frontend/components/layout/project-switcher.ru.messages.json
+  - palitra-frontend/components/org-settings/org-projects-table.tsx
+  - palitra-frontend/components/org-settings/org-projects-table.ru.messages.json
+  - palitra-frontend/app/[locale]/(app)/org/settings/projects/page.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/org-settings.ru.messages.json
+  - palitra-frontend/components/layout/app-sidebar.ru.messages.json
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-frontend/lib/auth/use-can-mutate-project.ts
+  - palitra-backend/src/modules/identity/application/services/project_service.py
+  - palitra-backend/src/modules/data_layer/application/services/reconciliation_service.py
+  - palitra-backend/src/core/config.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+Вкладка «Общие» — первая в настройках проекта. Здесь задаются название и описание проекта, его
+валюта и часовой пояс, а в разделе «Опасная зона» проект можно архивировать.
+
+Вкладку видят все участники проекта. Менять поля и архивировать проект могут менеджеры проекта,
+а также владелец и администратор организации. Остальные видят поля только для чтения и надпись
+«У вас нет прав на изменение проекта».
+
+## Как открыть вкладку
+
+1. В боковой панели выберите проект в списке проектов.
+2. Нажмите на значок шестерёнки рядом с названием проекта — откроются «Настройки проекта».
+3. Вкладка «Общие» открывается первой. Если вы на другой вкладке, перейдите на «Общие».
+
+<Screenshot id="project-settings-general" alt="Вкладка «Общие» с блоком «Профиль проекта» и разделом «Опасная зона»" />
+
+## Изменить профиль проекта
+
+В блоке «Профиль проекта» четыре поля:
+
+| Поле | Что в нём |
+| --- | --- |
+| «Название проекта» | Имя проекта в списке проектов и в настройках организации. Обязательное поле. |
+| «Описание» | Краткое описание проекта. Необязательное. |
+| «Валюта» | Валюта проекта. Выбирается из списка, есть поиск. |
+| «Часовой пояс» | Часовой пояс проекта. Выбирается из списка, есть поиск. |
+
+1. Измените нужные поля.
+2. Нажмите «Сохранить». Кнопка активна, только когда в форме есть несохранённые изменения.
+
+После сохранения появится сообщение «Сохранено».
+
+Если название пустое, под полем появится «Это поле обязательно». Если сохранить не удалось,
+Палитра покажет «Не удалось сохранить изменения». Так бывает, например, если в организации уже
+есть проект с таким названием: названия проектов в одной организации не повторяются.
+
+## Архивировать проект
+
+Архивация убирает проект из рабочего пространства, не удаляя его сразу. Раздел «Опасная зона»
+видят только те, кто может менять проект.
+
+1. В разделе «Опасная зона» нажмите «Архивировать проект».
+2. В окне «Архивировать этот проект?» нажмите «Архивировать».
+
+После архивации появится сообщение «Проект архивирован», и Палитра переключит вас на другой
+активный проект. Если активных проектов больше нет, откроется раздел «Чаты».
+
+<Screenshot id="project-settings-general-archive" alt="Окно подтверждения «Архивировать этот проект?»" />
+
+Что происходит с архивным проектом:
+
+- он пропадает из списка проектов в боковой панели и доступен только для чтения;
+- в настройках организации на вкладке «Проекты» у него статус «В архиве»;
+- таблицы с данными проекта хранятся ограниченное время: по умолчанию через 30 дней после
+  архивации Палитра их удаляет.
+
+Если архивировать не удалось, появится «Не удалось архивировать проект».
+
+## Восстановить проект
+
+Восстановить проект из настроек проекта нельзя: архивного проекта нет в списке проектов. Это
+делается в настройках организации, и только владельцем или администратором организации.
+
+1. Откройте «Настройки организации» → «Проекты».
+2. В строке проекта со статусом «В архиве» нажмите «Восстановить».
+
+Проект вернётся в список проектов, появится сообщение «Проект восстановлен». Подробнее — в статье
+[Проекты организации](/organization/projects/).
+
+## Связанные статьи
+
+- [Инструкции и контекст](/project-settings/instructions/)
+- [Участники проекта](/project-settings/members/)
+- [Проекты организации](/organization/projects/)
+- [Менеджеру проекта](/getting-started/manager/)
