@@ -1,0 +1,64 @@
+# Publishes docs.ru.palitra.io to cloud.ru Object Storage. The docs.palitra.io deploy is Vercel's
+# git integration (vercel.json) and is untouched by this file.
+name: Deploy RU docs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# A second push while the first sync is still running would interleave two versions in the
+# bucket, and --delete makes that visible as missing pages rather than stale ones.
+concurrency:
+  group: deploy-ru
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: 10
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the RU site
+        run: ./scripts/build-ru.sh
+
+      # cloud.ru Object Storage, the palitra-ru bucket under docs/. cloud.ru resolves buckets by
+      # path only, so the CLI is told not to put the bucket in the host name.
+      #
+      # Three passes, so a visitor never gets a page whose assets are not there yet: the new
+      # hashed _astro/ files first, then the pages, and only then the old _astro/ files go.
+      # --delete prunes objects the build no longer produces; without it a renamed page stays
+      # reachable at its old URL forever. _astro/ names carry a content hash and never change,
+      # so they are cached for good; everything else, pagefind/ included (its file names are not
+      # content-hashed across builds), for five minutes.
+      - name: Sync to Object Storage
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDRU_DOCS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDRU_DOCS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ru-central-1
+        run: |
+          set -euo pipefail
+          aws configure set default.s3.addressing_style path
+          s3() { aws s3 sync "$@" --endpoint-url https://s3.cloud.ru --no-progress; }
+          s3 dist/_astro/ s3://palitra-ru/docs/_astro/ \
+            --cache-control 'public, max-age=31536000, immutable'
+          s3 dist/ s3://palitra-ru/docs/ --exclude '_astro/*' --delete \
+            --cache-control 'public, max-age=300'
+          s3 dist/_astro/ s3://palitra-ru/docs/_astro/ --delete \
+            --cache-control 'public, max-age=31536000, immutable'
