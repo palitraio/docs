@@ -39,4 +39,12 @@ when `editions` / `sources` frontmatter is missing or invalid.
 
 ## Publish
 
-Merging to `main` publishes the site. The publish workflows are added separately.
+Merging to `main` publishes both sites:
+
+- Russian, docs.ru.palitra.io: `.github/workflows/deploy-ru.yml` runs on push to `main`, builds
+  with `./scripts/build-ru.sh` and syncs `dist/` to the `palitra-ru` bucket under `docs/` on
+  cloud.ru Object Storage.
+- English, docs.palitra.io: Vercel's git integration builds `./scripts/build-en.sh` (see
+  `vercel.json`) and serves `dist/`.
+
+Pull requests run `.github/workflows/ci.yml` (tests, typecheck, both builds).
