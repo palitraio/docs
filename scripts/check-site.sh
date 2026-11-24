@@ -45,6 +45,8 @@ while IFS= read -r page; do
   fi
 done < <(find dist -name '*.html')
 
+node scripts/check-links.mjs dist || fail "dead internal link(s) in dist/"
+
 [ -f dist/favicon.svg ] || fail "dist/favicon.svg missing"
 [ -f dist/robots.txt ] || fail "dist/robots.txt missing"
 grep -qx 'User-agent: \*' dist/robots.txt || fail "robots.txt lacks 'User-agent: *'"
