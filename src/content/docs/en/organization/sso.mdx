@@ -1,0 +1,242 @@
+---
+title: Single Sign-On
+description: How to set up sign-in to Palitra through your company identity provider over SAML 2.0 or OIDC — the setup wizard, domains, roles and enforcement.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/org/settings/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/org-settings.en.messages.json
+  - palitra-frontend/app/[locale]/(app)/org/settings/sso/page.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/sso/sso.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-settings-client.tsx
+  - palitra-frontend/components/org-settings/sso/sso-settings-client.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-empty-state.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-wizard.tsx
+  - palitra-frontend/components/org-settings/sso/sso-wizard.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-protocol.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-idp-config.tsx
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-idp-config.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-email-domains.tsx
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-email-domains.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-roles.tsx
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-roles.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-settings.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-wizard-step-review.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-card.tsx
+  - palitra-frontend/components/org-settings/sso/sso-card.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-login-url-block.tsx
+  - palitra-frontend/components/org-settings/sso/sso-login-url-block.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-diagnostic-panel.en.messages.json
+  - palitra-frontend/components/org-settings/sso/sso-delete-dialog.en.messages.json
+  - palitra-frontend/components/billing/feature-gates.ts
+  - palitra-frontend/components/billing/feature-gates.en.messages.json
+  - palitra-frontend/components/billing/feature-lock-state.tsx
+  - palitra-frontend/components/billing/feature-lock-state.en.messages.json
+  - palitra-frontend/lib/schemas/sso.ts
+  - palitra-backend/src/modules/identity/api/sso.py
+  - palitra-backend/src/modules/identity/api/sso_public.py
+  - palitra-backend/src/modules/identity/application/services/sso_service.py
+  - palitra-backend/src/modules/identity/application/services/auth_service.py
+  - palitra-backend/src/modules/identity/domain/models/sso_connection.py
+  - palitra-frontend/components/org-settings/org-general-form.en.messages.json
+  - palitra-frontend/components/org-settings/org-invite-dialog.en.messages.json
+  - palitra-frontend/components/org-settings/members/sso-bypass-menu-item.en.messages.json
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+Single sign-on (SSO) lets employees sign in to Palitra through your company identity provider
+(IdP) — for example Okta, Azure AD, Google Workspace or Keycloak. SAML 2.0 and OpenID Connect
+(OIDC) are supported. An organization can have one SSO connection.
+
+Only the organization's owner sees and configures the "Single Sign-On" tab. Admins don't see
+it.
+
+Single sign-on is part of the Enterprise plan; on other plans it comes with the "SSO / SAML"
+add-on. Without either, instead of the settings you see "SSO / SAML isn't included in your
+plan" with the buttons "Buy add-on" and "Upgrade plan". Both lead to the "Billing" tab — see
+[Billing](/organization/billing/).
+
+## Open the tab
+
+1. Click your name at the bottom of the sidebar and choose "Organization settings".
+2. Go to the "Single Sign-On" tab.
+
+Until a connection exists, the tab reads "Sign in with your company identity provider. Supports
+SAML 2.0 and OIDC." and has a "Set up SSO" button.
+
+<Screenshot id="organization-sso-empty" alt="The Single Sign-On tab before setup, with the Set up SSO button" />
+
+## Set up SSO
+
+Click "Set up SSO" to open the six-step "Set Up Single Sign-On" wizard. The step number is shown
+at the top, for example "Step 1 of 6". Move forward with "Continue" and back with "Back". The
+wizard won't move on until the step's required fields are filled in.
+
+Keep your IdP's admin console at hand: some values come from it, and some go into it from
+Palitra.
+
+<Screenshot id="organization-sso-wizard" alt="The Set Up Single Sign-On wizard at the protocol step" />
+
+### Step 1. Protocol
+
+1. Choose the "Protocol": "SAML 2.0" or "OpenID Connect (OIDC)".
+2. Enter the "Connection name", for example `Acme Corp SSO` — up to 100 characters. The name is
+   shown in Palitra, for example in the invite dialog on the "Members" tab.
+
+The protocol can't be changed later: when you edit the connection, the wizard starts at step 2.
+To switch protocols, delete the connection and create a new one.
+
+### Step 2. Provider details
+
+Fill in the fields from your application's settings in the IdP.
+
+For SAML 2.0:
+
+- "IdP Entity ID"
+- "IdP SSO URL"
+- "X.509 Certificate" — the IdP's signing certificate.
+- "Name ID Format" — optional, for example
+  `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
+
+For OIDC:
+
+- "Issuer URL"
+- "Client ID"
+- "Client Secret" — "Stored encrypted at rest. Never exposed in API responses."
+
+### Step 3. Email domains
+
+In "Allowed email domains", add your company's email domains, for example `acme.com`. Type a
+domain and press Enter or a comma; you can add several. At least one is required.
+
+Palitra uses these domains to decide who enforced SSO applies to (see
+[Enforced SSO](#enforced-sso)).
+
+A domain can belong to only one organization in Palitra. Errors at this step:
+
+- "Invalid domain. Use the format: example.com" — the domain has a typo, for example a leading
+  `@`.
+- "This domain is already claimed by another organization." — the domain is already listed in
+  another organization's SSO connection.
+
+### Step 4. Roles
+
+This step sets the organization role a person gets when signing in through SSO.
+
+- "Default role" — "Owner", "Admin" or "Member". The default is "Member".
+- "Role claim attribute" — optional. The name of the attribute (claim) in the IdP's response
+  that determines the role, for example `groups`.
+- "Role mapping" — a "Claim value" → "Role" table. Add rows with "Add mapping", remove them
+  with "Remove row".
+
+If the user's claim value matches a table row, they get that row's role; otherwise they get the
+default role. When a role claim is set, the role is recalculated on every SSO sign-in: a role
+you changed by hand on the "Members" tab is overwritten at the next sign-in.
+
+### Step 5. Settings
+
+- "Enable SSO" — on by default. Turn it off to stop SSO without deleting the configuration.
+- "Enforce SSO" — off by default. When on, members have to sign in through SSO. Owners and
+  members with SSO bypass can still sign in with a password.
+
+### Step 6. Review
+
+The wizard shows everything you entered under "General", "Roles", "Settings" and "Service
+Provider Metadata". Palitra's metadata (Entity ID, metadata file) appears after saving: it is
+marked "Available after saving.".
+
+Click "Save". Once saved, the tab shows the connection card.
+
+### If saving fails
+
+- "One or more email domains are already claimed by another organization." — the wizard goes
+  back to step 3 and marks the taken domains. Remove them and save again.
+- "The IdP configuration is invalid. Please check your settings and try again." — the wizard
+  goes back to step 2. Compare the values with your IdP console.
+- "Something went wrong. Please try again." — try saving again later.
+
+## Give Palitra's details to the IdP
+
+For the IdP to accept sign-ins to Palitra, it needs Palitra's addresses. They are on the
+connection card, under "Service provider metadata":
+
+- for SAML — the "ACS URL" and the metadata file: click "Download metadata" and import the file
+  into the IdP;
+- for OIDC — the "Redirect URI": add it to the application's allowed redirect URIs in the IdP.
+
+## The connection card
+
+After setup the tab shows a card with the connection name, the protocol ("SAML" or "OIDC") and
+an "Active" or "Inactive" badge. The card has:
+
+- "Login URL" — an address like `https://…/orgs/<slug>/login`, with "Copy" and "Open in new
+  tab" buttons. "Share this URL with your team so they can sign in via SSO."
+- "Email domains" — the domains from step 3.
+- "Default role", "Role claim" and "Role mapping" — the settings from step 4.
+- "Access control" — the "Enabled" and "Enforced" switches. They change the setting at once,
+  without the wizard. If that fails: "Failed to update the setting. Please try again.".
+- "Service provider metadata" — the details for the IdP (see above).
+- "Diagnostics" — a connection check.
+
+The slug in the login URL is the organization's "URL slug" from the
+[General](/organization/general/) tab. If you change it, the login URL changes too.
+
+<Screenshot id="organization-sso-card" alt="The SSO connection card with the login URL, switches and diagnostics" />
+
+## Check the connection
+
+1. On the card, under "Diagnostics", click "Run diagnostic".
+2. If everything is fine, you see "Config is reachable".
+3. If not, you see a "Diagnostic errors" list. Fix the settings with "Edit".
+
+## How members sign in
+
+Share the login URL with your team. A person opens it, signs in at your IdP and lands in
+Palitra.
+
+On the first SSO sign-in Palitra creates the account if it doesn't exist yet and adds the person
+to the organization with a role from the step 4 rules. You don't need to invite them
+separately.
+
+If you invite people by hand, the invite dialog on the "Members" tab reminds you: "This
+organization uses SSO (…)". See [Members](/organization/members/).
+
+## Enforced SSO
+
+With "Enforced" on, an organization member whose email is on one of the connection's domains
+can't sign in with a password — only through SSO. The exceptions:
+
+- the organization's owner can always sign in with a password, so access isn't lost if the IdP
+  is down;
+- members with SSO bypass. The owner grants it on the "Members" tab: "Grant SSO bypass" in the
+  member's menu. See [Members](/organization/members/#sso-bypass).
+
+Before turning enforcement on, run the diagnostic and make sure SSO sign-in works.
+
+## Edit the connection
+
+1. On the card, click "Edit".
+2. The "Edit SSO Configuration" wizard opens at step 2: the protocol can't be changed.
+3. Enter the IdP details again: "Re-enter your IdP credentials below. Secrets are not returned by
+   the server and must be provided again."
+4. Go through the steps and click "Save".
+
+## Delete the connection
+
+1. On the card, click "Delete connection".
+2. Confirm in the "Delete SSO connection?" dialog with "Delete".
+
+SSO is turned off for the organization. People who signed in only through SSO lose access
+unless they have SSO bypass. If deletion fails: "Failed to delete the SSO connection. Please try
+again.".
+
+## Loading errors
+
+"Failed to load SSO configuration. Please try again." — reload the page.
+
+## Related articles
+
+- [Members](/organization/members/)
+- [General](/organization/general/)
+- [Billing](/organization/billing/)
+- [For owners and admins](/getting-started/owner-admin/)

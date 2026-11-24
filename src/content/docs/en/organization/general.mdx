@@ -1,0 +1,96 @@
+---
+title: General
+description: Your organization's profile in Palitra — name, URL slug, type and deleting the organization.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/org/settings/layout.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/general/page.tsx
+  - palitra-frontend/app/[locale]/(app)/org/settings/org-settings.en.messages.json
+  - palitra-frontend/components/org-settings/org-general-form.tsx
+  - palitra-frontend/components/org-settings/org-general-form.en.messages.json
+  - palitra-frontend/components/org-settings/org-delete-dialog.tsx
+  - palitra-frontend/components/org-settings/org-delete-dialog.en.messages.json
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/lib/schemas/org.ts
+  - palitra-backend/src/modules/identity/api/orgs.py
+  - palitra-backend/src/modules/identity/application/services/org_service.py
+  - palitra-frontend/components/org-settings/org-member-list.en.messages.json
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The "General" tab is the first tab of the organization settings. Here you set the
+organization's name, URL slug and type, and the owner can delete the whole organization.
+
+Only the owner and admins see the organization settings. Both can edit the profile; the
+"Danger zone" block with organization deletion is shown to the owner only. Roles are explained
+in [For owners and admins](/getting-started/owner-admin/).
+
+## Open the tab
+
+1. Click your name at the bottom of the sidebar.
+2. Choose "Organization settings".
+3. The "General" tab opens.
+
+If the menu has no "Organization settings" item, your role is "Member". Ask the organization's
+owner or an admin to make the change or to change your role.
+
+<Screenshot id="organization-general" alt="The General tab with the Organization profile block" />
+
+## Edit the organization profile
+
+The "Organization profile" block has three fields:
+
+- "Organization name" — what the organization is called in Palitra.
+- "URL slug" — a short Latin name for the organization: "Lowercase letters, numbers and hyphens
+  only". Until you edit the slug by hand, Palitra fills it in from the name.
+- "Organization type" — "Agency" ("We manage advertising for multiple clients") or "In-house"
+  ("We manage advertising for our own brand").
+
+To save your changes:
+
+1. Edit the fields.
+2. Click "Save changes". The button is active only when the form has changes.
+3. A "Saved" notice appears.
+
+If saving fails, you see "Could not save changes". This happens, for example, when another
+organization already uses the slug: pick a different one.
+
+### What the URL slug affects
+
+The slug is part of addresses you may already have shared:
+
+- Published [artifacts](/artifacts/) open on a subdomain carrying the organization's slug. When
+  you edit the field, Palitra warns: "Published artifacts will move to the subdomain with the
+  new slug; old links to them will stop working."
+- The single sign-on address contains the slug: `/orgs/<slug>/login`. After changing the slug,
+  share the new address with your team. See [Single Sign-On](/organization/sso/).
+
+## Delete the organization
+
+Only the owner can delete the organization. This is permanent: all projects, members,
+invitations and AI configuration are deleted.
+
+1. At the bottom of the "General" tab, in the "Danger zone" block, click "Delete organization".
+2. In the "Delete organization" dialog, type the organization name exactly as it appears in the
+   profile. The hint above the field reads: Type "…" to confirm.
+3. Click "Delete organization". The button is active only when the name matches.
+
+After deletion you see "Organization deleted", Palitra signs you out and opens the sign-in
+page.
+
+<Screenshot id="organization-general-delete" alt="The Delete organization dialog with the name confirmation field" />
+
+If deletion fails, you see "Could not delete organization". Try again later.
+
+If you want to hand the organization over to someone else rather than delete it, use "Transfer
+ownership" on the "Members" tab: see [Members](/organization/members/).
+
+## Related articles
+
+- [For owners and admins](/getting-started/owner-admin/)
+- [Members](/organization/members/)
+- [Projects](/organization/projects/)
+- [Single Sign-On](/organization/sso/)
+- [Billing](/organization/billing/)
