@@ -57,9 +57,6 @@ with the locale origin, anchor URL, editions and plain text. `HELP_INDEX_VERSION
 `version` (default `dev`).
 
 `.github/workflows/release.yml` runs on every push to `main`. Job `release` builds the index and
-publishes a GitHub release `docs-YYYY.MM.DD-<sha7>` with `help-index.json` as its asset. Job
-`bump-backend` then opens a PR in `palitraio/palitra-backend` that writes the tag to
-`assets/help/docs-version`, using `palitra-release-bot` (the org's GitHub App, with Contents and
-Pull requests write on `palitra-backend`). It needs the Actions secret `RELEASE_APP_PRIVATE_KEY`
-in this repository, the same key the other repositories hold; without it the job skips with a
-notice and the tag is bumped by hand.
+publishes a GitHub release `docs-YYYY.MM.DD-<sha7>` with `help-index.json` as its asset.
+`palitraio/palitra-backend` downloads `releases/latest/download/help-index.json` when it builds
+its image, so a docs change reaches the chat with the next backend deploy.
