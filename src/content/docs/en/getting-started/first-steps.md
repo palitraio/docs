@@ -58,8 +58,8 @@ new one. Ask its administrator to send you an invitation.
 
 ## Payment method
 
-Once the organization is created, the wizard shows the "Add a payment method" step. Its
-"Continue" button becomes available only once a trial has started.
+Once the organization is created, the wizard shows the payment step. Its "Continue" button
+becomes available once a trial has started or a plan is already active.
 
 In the cloud version of Palitra:
 
@@ -67,6 +67,10 @@ In the cloud version of Palitra:
 2. When "Trial active — you're all set." appears, click "Continue".
 
 If you have a promo code, click "I have a promo code" and enter it.
+
+If Palitra is installed on your company's servers, the plan comes from the license and no card
+is needed. The step is titled "Your plan is active" and shows "… is active — no card needed.".
+Click "Continue".
 
 In any version, you can leave this step with "Set up later". The wizard closes and opens your
 organization's billing page.
