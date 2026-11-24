@@ -41,26 +41,32 @@ disabled with the hint "You have read-only access to this project".
 
 The "Data Pipeline" page opens.
 
-<Screenshot id="data-overview" alt="The Data Pipeline page with source cards, the maturity level and capabilities" />
+<Screenshot
+  id="data-overview"
+  alt="The Data Pipeline page with source cards, the maturity level and capabilities"
+/>
 
 If you see "Unable to load data pipeline" instead, check your connection and click "Retry".
 
 ## Screens of the section
 
-| Screen | Purpose | How to open it from "Data Pipeline" |
-| --- | --- | --- |
-| [Data Explorer](/data/explorer/) | Browse, filter and edit the project's tables. | The "Explore data" button. |
-| [Event Registry](/data/events/) | The project's events: conversions, touchpoints and their parameters. | "Settings" → "Event Registry" → "Manage". |
-| [Attribution](/data/attribution/) | Attribution models and the attribution window. | "Settings" → "Attribution Engine" → "Configure". |
-| [Tag](/data/pixel/) | Installing the Palitra Tag on your site. | The "Tag" card → "Configure". |
-| [Webhooks](/data/webhooks/) | Receiving events from your systems by webhook. | The "Webhooks" card → "Set up" or "Manage". |
-| [CSV uploads](/data/uploads/) | Uploading files and the upload history. | The "CSV Upload" card → "Upload" or "Logs". |
+| Screen                            | Purpose                                                              | How to open it from "Data Pipeline"              |
+| --------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
+| [Data Explorer](/data/explorer/)  | Browse, filter and edit the project's tables.                        | The "Explore data" button.                       |
+| [Event Registry](/data/events/)   | The project's events: conversions, touchpoints and their parameters. | "Settings" → "Event Registry" → "Manage".        |
+| [Attribution](/data/attribution/) | Attribution models and the attribution window.                       | "Settings" → "Attribution Engine" → "Configure". |
+| [Tag](/data/pixel/)               | Installing the Palitra Tag on your site.                             | The "Tag" card → "Configure".                    |
+| [Webhooks](/data/webhooks/)       | Receiving events from your systems by webhook.                       | The "Webhooks" card → "Set up" or "Manage".      |
+| [CSV uploads](/data/uploads/)     | Uploading files and the upload history.                              | The "CSV Upload" card → "Upload" or "Logs".      |
 
 ## Data sources
 
 The "Data Sources" block has four cards. Each shows the source's status and a link to set it up.
 
-<Screenshot id="data-overview-sources" alt="The Data Sources block with the Connectors, Tag, Webhooks and CSV Upload cards" />
+<Screenshot
+  id="data-overview-sources"
+  alt="The Data Sources block with the Connectors, Tag, Webhooks and CSV Upload cards"
+/>
 
 **"Connectors".** A summary of the project's connectors: how many are active, such as "2 of 3
 active", or "No connectors yet". The card's status:
@@ -101,18 +107,21 @@ Palitra works it out from the connected sources — you don't set it by hand.
 
 The levels build on each other: a level counts only when the previous one is reached.
 
-| Level | What it needs | What it unlocks |
-| --- | --- | --- |
-| L1 "Ad Platforms" | A connected ad platform. | CTR, CPC, CPM, spend, bid and budget optimization. |
-| L2 "Analytics + Tag / Mobile Tracker" | The Palitra Tag, a web analytics connector or a mobile tracker. | Conversions, CPA, CR, last-click attribution. |
-| L3 "Call Tracking / E-commerce" | A call tracking connector or e-commerce data. | CPA incl. calls, AOV, cart composition, cross-device attribution. |
-| L4 "CRM / Transactions" | A CRM connector, or CRM data from a table or webhook in events. | ROAS, LTV, unit economics, multi-touch attribution. |
-| L5 "Offline / Marketplaces / Media" | External (non-connector) spend data or a marketplace connector. | MMM, adstock, saturation, cross-channel budget optimization. |
+| Level                                 | What it needs                                                   | What it unlocks                                                   |
+| ------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
+| L1 "Ad Platforms"                     | A connected ad platform.                                        | CTR, CPC, CPM, spend, bid and budget optimization.                |
+| L2 "Analytics + Tag / Mobile Tracker" | The Palitra Tag, a web analytics connector or a mobile tracker. | Conversions, CPA, CR, last-click attribution.                     |
+| L3 "Call Tracking / E-commerce"       | A call tracking connector or e-commerce data.                   | CPA incl. calls, AOV, cart composition, cross-device attribution. |
+| L4 "CRM / Transactions"               | A CRM connector, or CRM data from a table or webhook in events. | ROAS, LTV, unit economics, multi-touch attribution.               |
+| L5 "Offline / Marketplaces / Media"   | External (non-connector) spend data or a marketplace connector. | MMM, adstock, saturation, cross-channel budget optimization.      |
 
 Reached levels have a check mark, the rest a lock. The next level is marked "Next". Next to a
 level's name you see the sources that reached it.
 
-<Screenshot id="data-overview-maturity" alt="The Data Maturity Level card with the L1 to L5 scale" />
+<Screenshot
+  id="data-overview-maturity"
+  alt="The Data Maturity Level card with the L1 to L5 scale"
+/>
 
 ## Analytics capabilities
 
@@ -136,13 +145,13 @@ Which events count as conversions, and which parameters they carry, is set in th
 Until L5 is reached, a card below the capabilities tells you what to connect for the next level,
 with buttons to go there:
 
-| Next level | Buttons |
-| --- | --- |
-| L1 | "Connect platform" — the connectors section. |
-| L2 | "Configure tag" — the Tag screen; "Connect analytics" — the connectors section. |
-| L3 | "Set up webhook" — the webhooks screen; "Connect call tracking" — the connectors section. |
-| L4 | "Set up webhook" — the webhooks screen; "Connect CRM" — the connectors section. |
-| L5 | "Upload CSV" — the file upload; "Connect marketplace" — the connector catalog. |
+| Next level | Buttons                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| L1         | "Connect platform" — the connectors section.                                              |
+| L2         | "Configure tag" — the Tag screen; "Connect analytics" — the connectors section.           |
+| L3         | "Set up webhook" — the webhooks screen; "Connect call tracking" — the connectors section. |
+| L4         | "Set up webhook" — the webhooks screen; "Connect CRM" — the connectors section.           |
+| L5         | "Upload CSV" — the file upload; "Connect marketplace" — the connector catalog.            |
 
 ## Data pipeline settings
 
@@ -154,7 +163,10 @@ The "Settings" button in the top right opens the "Data Pipeline Settings" panel 
 - **"Attribution Engine"** — how many attribution models are enabled, the attribution window and
   the default model. The "Configure" button opens the [attribution settings](/data/attribution/).
 
-<Screenshot id="data-overview-settings" alt="The Data Pipeline Settings panel with the Event Registry and Attribution Engine blocks" />
+<Screenshot
+  id="data-overview-settings"
+  alt="The Data Pipeline Settings panel with the Event Registry and Attribution Engine blocks"
+/>
 
 Without the right to change the project, "Manage" and "Configure" are disabled and hovering them
 shows "You have read-only access to this project". If a summary fails to load, the block shows

@@ -53,11 +53,11 @@ fresh data on a schedule.
 
 Every project member sees the "Artifacts" section. What else you can do depends on your role:
 
-| Action | Who can |
-| --- | --- |
-| View artifacts and their versions | Every project member |
-| Restore versions, refresh data by hand | Project managers and viewers, the organization's owner and admins |
-| Rename, duplicate, publish, unpublish, delete, set auto-refresh and forms | Project managers, the organization's owner and admins |
+| Action                                                                    | Who can                                                           |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| View artifacts and their versions                                         | Every project member                                              |
+| Restore versions, refresh data by hand                                    | Project managers and viewers, the organization's owner and admins |
+| Rename, duplicate, publish, unpublish, delete, set auto-refresh and forms | Project managers, the organization's owner and admins             |
 
 ## Open the section
 
@@ -66,7 +66,10 @@ Pick the project in the sidebar and click "Artifacts". The project's artifact li
 When the agent creates or changes an artifact in chat, the conversation shows a card reading
 "Created · version …" or "Updated · version …". Click "Open" to view it without leaving the chat.
 
-<Screenshot id="artifacts-list" alt="The project's artifact list with search, filters and the Name, Updated, Publication and Data columns" />
+<Screenshot
+  id="artifacts-list"
+  alt="The project's artifact list with search, filters and the Name, Updated, Publication and Data columns"
+/>
 
 ## Create an artifact
 
@@ -111,7 +114,10 @@ You can copy the link to an open panel from the browser's address bar and send i
 it opens the same artifact for them. The browser's Back button closes the panel, and so does the
 "Close panel" cross.
 
-<Screenshot id="artifacts-panel" alt="The artifact panel: header with publication status, preview, and the Versions, Data and Forms tabs" />
+<Screenshot
+  id="artifacts-panel"
+  alt="The artifact panel: header with publication status, preview, and the Versions, Data and Forms tabs"
+/>
 
 If the preview fails to load, you see "Preview unavailable": click "Try again".
 
@@ -172,7 +178,10 @@ as you choose.
 6. With a custom domain, fill in "Path on the domain", such as `promo`.
 7. Click "Publish".
 
-<Screenshot id="artifacts-publish" alt="The Publish artifact dialog with audience, version and address choices" />
+<Screenshot
+  id="artifacts-publish"
+  alt="The Publish artifact dialog with audience, version and address choices"
+/>
 
 Publishing limits:
 
@@ -232,16 +241,19 @@ Project managers and the organization's owner and admins choose the auto-refresh
 dashboards only. The most frequent interval available depends on the plan: if an interval isn't
 available on yours, Palitra offers to change the plan.
 
-<Screenshot id="artifacts-data" alt="The Data tab with the last update time, the auto-refresh choice and the Refresh now button" />
+<Screenshot
+  id="artifacts-data"
+  alt="The Data tab with the last update time, the auto-refresh choice and the Refresh now button"
+/>
 
 Why data can go stale:
 
-| Reason | What to do |
-| --- | --- |
-| "The last refresh failed because the data query returned an error." | Ask the agent in chat to check the dashboard's query. |
-| "The last refresh took too long and was stopped." | Ask the agent to narrow the period or simplify the dashboard. |
-| "The data source was unavailable during the last refresh." | Click "Refresh now" again later. |
-| "The refreshed data is too large to store." | Ask the agent to cut down the data. |
+| Reason                                                              | What to do                                                    |
+| ------------------------------------------------------------------- | ------------------------------------------------------------- |
+| "The last refresh failed because the data query returned an error." | Ask the agent in chat to check the dashboard's query.         |
+| "The last refresh took too long and was stopped."                   | Ask the agent to narrow the period or simplify the dashboard. |
+| "The data source was unavailable during the last refresh."          | Click "Refresh now" again later.                              |
+| "The refreshed data is too large to store."                         | Ask the agent to cut down the data.                           |
 
 Errors from a manual refresh: "The data source isn't available right now.", "The data source took
 too long to respond.", "Too many refresh requests." — wait and try again.

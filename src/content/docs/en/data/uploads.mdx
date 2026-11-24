@@ -55,18 +55,21 @@ in your plan" with an "Upgrade plan" button.
 2. In "Data Sources", find the "CSV Upload" card.
 3. Click "Upload" to upload a file, or "Logs" to see the upload history.
 
-<Screenshot id="data-uploads-select-type" alt="The CSV Upload screen: data type cards and the file upload block" />
+<Screenshot
+  id="data-uploads-select-type"
+  alt="The CSV Upload screen: data type cards and the file upload block"
+/>
 
 ## Step 1. Choose the data type
 
 In "Step 1 — Data Type", choose what you are uploading:
 
-| Type | What fits | What's next |
-| --- | --- | --- |
-| "Ad metrics" | Ad platform exports: daily spend, impressions, clicks by campaign. | Mapping to `channel_daily` fields. |
-| "Touchpoints" | Offline touchpoints: calls, SMS, promo codes attributed to a channel. | Mapping to touchpoints. |
-| "Conversions" | CRM sales, call tracking logs, offline purchases, lead forms. | Mapping to project events. |
-| "Reference data" | Lookup and dimension tables: rates, seasonality calendars. | No mapping. |
+| Type             | What fits                                                             | What's next                        |
+| ---------------- | --------------------------------------------------------------------- | ---------------------------------- |
+| "Ad metrics"     | Ad platform exports: daily spend, impressions, clicks by campaign.    | Mapping to `channel_daily` fields. |
+| "Touchpoints"    | Offline touchpoints: calls, SMS, promo codes attributed to a channel. | Mapping to touchpoints.            |
+| "Conversions"    | CRM sales, call tracking logs, offline purchases, lead forms.         | Mapping to project events.         |
+| "Reference data" | Lookup and dimension tables: rates, seasonality calendars.            | No mapping.                        |
 
 ### Download a template
 
@@ -112,14 +115,17 @@ five rows.
 
 The button stays disabled while a column has an empty name or the table name has a problem:
 
-- "Table name must start with udt_ and contain only lowercase letters, digits, and underscores."
+- "Table name must start with udt\_ and contain only lowercase letters, digits, and underscores."
 - "A table with this name already exists. Choose a different name."
 
 If the file doesn't read with the chosen types, the error appears in the affected column's row,
 for example: Line 12, column “amount”: “abc” is not a number. Change the column's type and try
 again.
 
-<Screenshot id="data-uploads-schema" alt="The schema step: the Table name field, the column list with types and the five-row preview" />
+<Screenshot
+  id="data-uploads-schema"
+  alt="The schema step: the Table name field, the column list with types and the five-row preview"
+/>
 
 ## Step 4. Set up field mapping
 
@@ -143,14 +149,17 @@ When you're done, choose:
 - "Skip for now" — create the table without a mapping. You can set the mapping up later in the
   [Data Explorer](/data/explorer/).
 
-<Screenshot id="data-uploads-mapping" alt="The Field Mapping step: the column mapping editor and the Preview block" />
+<Screenshot
+  id="data-uploads-mapping"
+  alt="The Field Mapping step: the column mapping editor and the Preview block"
+/>
 
 If the mapping isn't saved, you see "The mapping could not be saved. Review the field mappings
 and try again." The table may already exist by then — fix the mapping and click the button again.
 
 ## Done: the table is created
 
-Once the table is created, you see "Table udt_… created" and a summary: the number of rows,
+Once the table is created, you see "Table udt\_… created" and a summary: the number of rows,
 columns and, with an event mapping, the events the file is mapped to.
 
 - "Open in Data Explorer" — go to the new table.
@@ -166,12 +175,12 @@ The "Logs" screen lists every CSV upload in the project, newest first. Each row 
 name, the table, how many rows were added and how many duplicates were skipped, the upload date
 and the status.
 
-| Status | Meaning |
-| --- | --- |
-| "Waiting for a table" | The file is uploaded, but no table has been created from it yet. |
-| "Processing" | The file's data is loading into the table. |
-| "Ready" | The upload is complete. |
-| "Error" | The upload failed. Tooltip: "Upload failed. Try uploading the file again." |
+| Status                | Meaning                                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| "Waiting for a table" | The file is uploaded, but no table has been created from it yet.           |
+| "Processing"          | The file's data is loading into the table.                                 |
+| "Ready"               | The upload is complete.                                                    |
+| "Error"               | The upload failed. Tooltip: "Upload failed. Try uploading the file again." |
 
 An uploaded file waits 24 hours for its table to be created. If no table is created in that time,
 the upload turns to "Error" — upload the file again.
@@ -179,7 +188,10 @@ the upload turns to "Error" — upload the file again.
 With no uploads yet, the screen says "No uploads yet". If the list doesn't load, you see "Couldn't
 load recent uploads"; click "Retry".
 
-<Screenshot id="data-uploads-logs" alt="The Logs screen with the list of CSV uploads and their statuses" />
+<Screenshot
+  id="data-uploads-logs"
+  alt="The Logs screen with the list of CSV uploads and their statuses"
+/>
 
 ## Errors in the file
 

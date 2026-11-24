@@ -115,7 +115,10 @@ incognito chat.
 Palitra creates the chat and opens it. The chat title is taken from the first message; you can
 change it.
 
-<Screenshot id="chat-new" alt="The new chat page with a greeting, the composer and example request buttons" />
+<Screenshot
+  id="chat-new"
+  alt="The new chat page with a greeting, the composer and example request buttons"
+/>
 
 If you see "Could not start the conversation. Please try again.", send the message again.
 
@@ -143,9 +146,9 @@ visible". Only the chat's author can do this, and it can't be undone.
 Click "+" ("Attach files"), drag files onto the composer or paste an image from the clipboard.
 You can attach:
 
-| Type | Formats | Size |
-| --- | --- | --- |
-| Images | PNG, JPEG, WebP, GIF | up to 10 MB |
+| Type      | Formats                             | Size        |
+| --------- | ----------------------------------- | ----------- |
+| Images    | PNG, JPEG, WebP, GIF                | up to 10 MB |
 | Documents | PDF, TXT, CSV, Markdown, DOCX, XLSX | up to 25 MB |
 
 If a file fails to upload, its chip shows the reason: "File too large", "Unsupported type" or
@@ -186,14 +189,17 @@ In an incognito chat only its author can switch it.
 Four characters in the composer open extra options. The full list is in the "Commands &
 shortcuts" reference, opened by the `/help` command.
 
-| Character | What it does |
-| --- | --- |
-| `/` | Browse skills and client commands |
-| `@` | Reference a data table as query context |
-| `#` | Ask the agent to remember this in project memory |
-| `!` | Send with organization query scope |
+| Character | What it does                                     |
+| --------- | ------------------------------------------------ |
+| `/`       | Browse skills and client commands                |
+| `@`       | Reference a data table as query context          |
+| `#`       | Ask the agent to remember this in project memory |
+| `!`       | Send with organization query scope               |
 
-<Screenshot id="chat-composer-commands" alt="The composer's command menu with the Skills and Commands sections" />
+<Screenshot
+  id="chat-composer-commands"
+  alt="The composer's command menu with the Skills and Commands sections"
+/>
 
 ### Skills and commands: `/`
 
@@ -260,7 +266,10 @@ When the agent needs to change something in an ad account and the approval mode 
 do so on its own, an action card appears in the chat. It shows the action's name and its
 parameters; sometimes the agent adds an explanation.
 
-<Screenshot id="chat-approval-card" alt="An agent action card with the Approve, Edit, Reject and Respond buttons" />
+<Screenshot
+  id="chat-approval-card"
+  alt="An agent action card with the Approve, Edit, Reject and Respond buttons"
+/>
 
 What you can do:
 
@@ -364,7 +373,10 @@ Open "Chats" in the sidebar. The page has:
 Each row shows the title, the start of the last message, the message count and the time of the
 last activity. The pin icon on the left pins or unpins the chat.
 
-<Screenshot id="chat-history" alt="The Chats page with search and the Pinned, Scheduled and Recent groups" />
+<Screenshot
+  id="chat-history"
+  alt="The Chats page with search and the Pinned, Scheduled and Recent groups"
+/>
 
 Pins are shared: a pinned chat shows under "Pinned" for every project member. Read state is
 personal.
@@ -417,7 +429,10 @@ task list.
    - "Model" — the model for this task.
 5. Click "Save".
 
-<Screenshot id="chat-scheduled-task-dialog" alt="The Create scheduled task window with the Name, Prompt and Frequency fields" />
+<Screenshot
+  id="chat-scheduled-task-dialog"
+  alt="The Create scheduled task window with the Name, Prompt and Frequency fields"
+/>
 
 An empty required field shows "This field is required". If the model list says "Couldn’t load
 models — the task will use the default model.", the task still saves.
@@ -439,14 +454,14 @@ waiting for approval. Click a run to open its chat. With no runs yet you'll see 
 
 ## Errors and messages
 
-| Message | What to do |
-| --- | --- |
-| "Live connection lost" | Click "Reconnect". |
-| "Couldn't load this conversation" | Check your connection and click "Retry". |
-| "Couldn't send your message. Please try again." | Send the message again. |
-| "Something went wrong while responding. Please try again." | Send the request again. |
-| "Couldn't load chats" | Click "Retry" on the "Chats" page. |
-| "Couldn't delete the chat yet. Try again in a moment." | Try deleting again later. |
+| Message                                                    | What to do                               |
+| ---------------------------------------------------------- | ---------------------------------------- |
+| "Live connection lost"                                     | Click "Reconnect".                       |
+| "Couldn't load this conversation"                          | Check your connection and click "Retry". |
+| "Couldn't send your message. Please try again."            | Send the message again.                  |
+| "Something went wrong while responding. Please try again." | Send the request again.                  |
+| "Couldn't load chats"                                      | Click "Retry" on the "Chats" page.       |
+| "Couldn't delete the chat yet. Try again in a moment."     | Try deleting again later.                |
 
 ## Related articles
 

@@ -71,7 +71,10 @@ The full key is shown only right after it is generated. Once you leave the scree
 keeps only the start of the key followed by an ellipsis. If the key is lost, generate a new one
 (see below).
 
-<Screenshot id="data-webhooks-empty" alt="The Webhooks & API screen before a key exists: the No ingest key yet block and the Generate API key button" />
+<Screenshot
+  id="data-webhooks-empty"
+  alt="The Webhooks & API screen before a key exists: the No ingest key yet block and the Generate API key button"
+/>
 
 ## Set up the external system: webhook
 
@@ -90,28 +93,31 @@ The example from the "Payload Example" block:
   "event_name": "purchase",
   "timestamp": "2026-05-21T10:00:00Z",
   "user_id": "user_482",
-  "value": 12500.00,
+  "value": 12500.0,
   "currency": "RUB",
   "transaction_id": "ORD-4821"
 }
 ```
 
-<Screenshot id="data-webhooks-endpoint" alt="The Webhook tab: the webhook URL, the ingest API key, and the Regenerate key and Send test event buttons" />
+<Screenshot
+  id="data-webhooks-endpoint"
+  alt="The Webhook tab: the webhook URL, the ingest API key, and the Regenerate key and Send test event buttons"
+/>
 
 ### Event fields
 
 Only one field is required: `event_name`, the event name (up to 128 characters). The rest are
 optional:
 
-| Field | What it is |
-| --- | --- |
-| `timestamp` | The event time in ISO 8601. |
-| `user_id` | The user's ID in your system. |
-| `palitra_id`, `session_id` | The visitor and session IDs from the [Palitra Tag](/data/pixel/), if you have them. |
-| `value`, `currency` | An amount (0 or more) and a three-letter currency code, such as `RUB`. |
-| `transaction_id`, `lead_id` | An order or lead number. |
-| `items` | The products in the event. |
-| `properties` | Any additional parameters. |
+| Field                       | What it is                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `timestamp`                 | The event time in ISO 8601.                                                         |
+| `user_id`                   | The user's ID in your system.                                                       |
+| `palitra_id`, `session_id`  | The visitor and session IDs from the [Palitra Tag](/data/pixel/), if you have them. |
+| `value`, `currency`         | An amount (0 or more) and a three-letter currency code, such as `RUB`.              |
+| `transaction_id`, `lead_id` | An order or lead number.                                                            |
+| `items`                     | The products in the event.                                                          |
+| `properties`                | Any additional parameters.                                                          |
 
 Palitra rejects fields that are neither in this list nor in the example: a request with an
 unknown field is refused. Put extra data inside `properties`.
@@ -130,7 +136,12 @@ On the "Batch API" tab, in the "Batch API Endpoint" block:
 ```json
 {
   "events": [
-    { "event_name": "purchase", "timestamp": "2026-05-21T10:00:00Z", "user_id": "user_482", "value": 12500 },
+    {
+      "event_name": "purchase",
+      "timestamp": "2026-05-21T10:00:00Z",
+      "user_id": "user_482",
+      "value": 12500
+    },
     { "event_name": "form_submit", "timestamp": "2026-05-21T10:01:00Z", "user_id": "user_1093" }
   ]
 }
@@ -153,11 +164,11 @@ The "Recent Events" block on the "Webhook" tab shows recently received events, f
 webhook and the Batch API. Its columns are "Event", "Time", "User", "Revenue" and "Status". Click
 "Refresh" to load new rows.
 
-| Event status | Meaning |
-| --- | --- |
-| "Received" | The event was accepted and waits to be processed. |
-| "Processed" | The event was processed. |
-| "Failed" | Processing the event failed. |
+| Event status | Meaning                                           |
+| ------------ | ------------------------------------------------- |
+| "Received"   | The event was accepted and waits to be processed. |
+| "Processed"  | The event was processed.                          |
+| "Failed"     | Processing the event failed.                      |
 
 With no events yet, the block says "No webhook events yet.".
 
@@ -165,12 +176,12 @@ With no events yet, the block says "No webhook events yet.".
 
 The status in the top right corner of the screen refreshes by itself every 30 seconds.
 
-| Status | Meaning |
-| --- | --- |
-| "Receiving" | The last event arrived within the past 15 minutes. |
-| "Failing" | Events arrive, but more than half of those in the last 24 hours failed. |
-| "Idle" | Events arrived before, but none in the past 15 minutes. |
-| "Not receiving" | No events yet. |
+| Status          | Meaning                                                                 |
+| --------------- | ----------------------------------------------------------------------- |
+| "Receiving"     | The last event arrived within the past 15 minutes.                      |
+| "Failing"       | Events arrive, but more than half of those in the last 24 hours failed. |
+| "Idle"          | Events arrived before, but none in the past 15 minutes.                 |
+| "Not receiving" | No events yet.                                                          |
 
 With "Failing", look in "Recent Events" for events with the "Failed" status and check their
 format against the field table above.

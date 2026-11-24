@@ -43,7 +43,10 @@ the note "You have read-only access to this project", and can open and download 
 2. Click the gear icon next to the project name ("Project settings").
 3. Go to the "Instructions & context" tab.
 
-<Screenshot id="project-settings-instructions" alt="The Instructions & context tab with the instructions field and the Context section" />
+<Screenshot
+  id="project-settings-instructions"
+  alt="The Instructions & context tab with the instructions field and the Context section"
+/>
 
 ## Write instructions
 
@@ -85,7 +88,10 @@ After the upload Palitra extracts the file's text, and the file's row reads "Ext
 Once the text is ready, the row shows its size in tokens. The agent reads text only: scans
 without a text layer won't work.
 
-<Screenshot id="project-settings-instructions-context" alt="The Context section with a list of files and notes and the usage bar" />
+<Screenshot
+  id="project-settings-instructions-context"
+  alt="The Context section with a list of files and notes and the usage bar"
+/>
 
 ## Add a note
 
@@ -113,9 +119,9 @@ The item's menu (the "…" icon on its row) has:
 Once the context holds at least one item, a bar above the list shows "… of … tokens", with the
 mode below it:
 
-| Mode | Meaning |
-| --- | --- |
-| "Fully included in every prompt" | The whole context goes to the agent with every answer. |
+| Mode                                                       | Meaning                                                                     |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------- |
+| "Fully included in every prompt"                           | The whole context goes to the agent with every answer.                      |
 | "Too large to include — the agent reads files when needed" | The context is too large to send whole: the agent opens the files it needs. |
 
 A project's context holds up to 100 items, and its total size is capped by the token limit on

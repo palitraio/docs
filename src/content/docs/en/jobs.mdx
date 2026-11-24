@@ -59,39 +59,42 @@ When the agent starts a background job in chat, its message shows a card with th
 Click the card to open "Jobs" with that job shown above the list (see "Open a job from chat"
 below).
 
-<Screenshot id="jobs-list" alt="The Jobs section with the table of background jobs, the status filter and the Clear finished button" />
+<Screenshot
+  id="jobs-list"
+  alt="The Jobs section with the table of background jobs, the status filter and the Clear finished button"
+/>
 
 ## What the table shows
 
 Jobs are listed newest first. The columns:
 
-| Column | Contents |
-| --- | --- |
-| "Type" | The kind of job, as a system name such as `etl_sync` (see the table below). |
-| "Connector" | The connector the job belongs to, or "—". |
-| "Status" | The current status; a failed job has an icon with the reason next to it. |
-| "Progress" | A bar and a percentage, when the job reports them. |
-| "Started" | When the job started, such as "5 minutes ago"; hover for the exact time. |
-| "Duration" | How long the job ran; for a running job it keeps counting. |
-| "Retries" | How many times the job was retried, such as "×2". |
-| "Actions" | The "…" menu with the job's actions. |
+| Column      | Contents                                                                    |
+| ----------- | --------------------------------------------------------------------------- |
+| "Type"      | The kind of job, as a system name such as `etl_sync` (see the table below). |
+| "Connector" | The connector the job belongs to, or "—".                                   |
+| "Status"    | The current status; a failed job has an icon with the reason next to it.    |
+| "Progress"  | A bar and a percentage, when the job reports them.                          |
+| "Started"   | When the job started, such as "5 minutes ago"; hover for the exact time.    |
+| "Duration"  | How long the job ran; for a running job it keeps counting.                  |
+| "Retries"   | How many times the job was retried, such as "×2".                           |
+| "Actions"   | The "…" menu with the job's actions.                                        |
 
 Statuses update on their own; there's no need to reload the page. Below the table are the page
 number and the "Previous" and "Next" buttons.
 
 Job types you may see in the "Type" column:
 
-| Type | What it is |
-| --- | --- |
-| `etl_sync` | A connector sync: loading data from an ad account or an analytics service. |
-| `csv_ingestion` | Processing an uploaded CSV file. |
-| `webhook_batch_ingest` | Taking in a batch of data that arrived through a webhook. |
-| `attribution_recompute` | Recomputing attribution. |
-| `connector_reprocess` | Rebuilding events from a connector's already loaded data after its event mapping is saved. |
-| `tool_run` | A background call of a connector tool that the agent started from chat. |
-| `artifact_refresh` | An on-demand refresh of a dashboard artifact. |
-| `reconciliation_sync` | A data reconciliation from older Palitra versions. No new ones are created. |
-| `workflow_…` | A step of a [workflow](/workflows/). |
+| Type                    | What it is                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `etl_sync`              | A connector sync: loading data from an ad account or an analytics service.                 |
+| `csv_ingestion`         | Processing an uploaded CSV file.                                                           |
+| `webhook_batch_ingest`  | Taking in a batch of data that arrived through a webhook.                                  |
+| `attribution_recompute` | Recomputing attribution.                                                                   |
+| `connector_reprocess`   | Rebuilding events from a connector's already loaded data after its event mapping is saved. |
+| `tool_run`              | A background call of a connector tool that the agent started from chat.                    |
+| `artifact_refresh`      | An on-demand refresh of a dashboard artifact.                                              |
+| `reconciliation_sync`   | A data reconciliation from older Palitra versions. No new ones are created.                |
+| `workflow_…`            | A step of a [workflow](/workflows/).                                                       |
 
 ## Filter jobs by status
 
@@ -102,15 +105,15 @@ The filter resets when you switch to another project.
 
 ## Job statuses
 
-| Status | Meaning |
-| --- | --- |
-| "Pending" | The job is queued and hasn't started yet. |
-| "Running" | The job is in progress. |
-| "Cancelling…" | A cancel was requested; the job stops at its next safe point. |
-| "Completed" | The job finished successfully. |
-| "Failed" | The job failed. The reason is in the tooltip of the icon next to the status. |
-| "Cancelled" | The job was cancelled. |
-| "Postponed" | The platform's API quota stopped the sync; it carries on later. |
+| Status            | Meaning                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------- |
+| "Pending"         | The job is queued and hasn't started yet.                                                   |
+| "Running"         | The job is in progress.                                                                     |
+| "Cancelling…"     | A cancel was requested; the job stops at its next safe point.                               |
+| "Completed"       | The job finished successfully.                                                              |
+| "Failed"          | The job failed. The reason is in the tooltip of the icon next to the status.                |
+| "Cancelled"       | The job was cancelled.                                                                      |
+| "Postponed"       | The platform's API quota stopped the sync; it carries on later.                             |
 | "Outcome unknown" | A background tool call may have changed data on the platform, but its result wasn't stored. |
 
 **"Postponed".** The clock icon's tooltip says: "The platform's API quota ran out. The next sync
@@ -126,17 +129,17 @@ run it again.
 Hover over the red icon next to the "Failed" status. The tooltip has two lines: what happened and
 what to do. Common reasons:
 
-| What happened | What to do |
-| --- | --- |
-| "The connector's authorization has expired." | "Reconnect the credential in the connector settings." |
-| "The account has no access to the requested data." | "Ask an account owner to grant access, then retry." |
-| "The connector is disabled, so the sync did not start." | "Re-enable the connector before retrying." |
-| "Another sync of this connector was running, so this one did not start." | "Wait for that sync to finish." |
-| "The platform kept returning a temporary error, and the retries ran out." | "Retry the job." |
-| "The platform refused the request." | "This error cannot be retried — open a support ticket." |
-| "The connector's saved event mapping is no longer valid." | "Open the connector's event mapping and save it again." |
-| "The job ran past its time limit." | "Retry it, or narrow what it was asked to do." |
-| "The tool is blocked for this project." | "Allow it in the connector's tool permissions." |
+| What happened                                                             | What to do                                              |
+| ------------------------------------------------------------------------- | ------------------------------------------------------- |
+| "The connector's authorization has expired."                              | "Reconnect the credential in the connector settings."   |
+| "The account has no access to the requested data."                        | "Ask an account owner to grant access, then retry."     |
+| "The connector is disabled, so the sync did not start."                   | "Re-enable the connector before retrying."              |
+| "Another sync of this connector was running, so this one did not start."  | "Wait for that sync to finish."                         |
+| "The platform kept returning a temporary error, and the retries ran out." | "Retry the job."                                        |
+| "The platform refused the request."                                       | "This error cannot be retried — open a support ticket." |
+| "The connector's saved event mapping is no longer valid."                 | "Open the connector's event mapping and save it again." |
+| "The job ran past its time limit."                                        | "Retry it, or narrow what it was asked to do."          |
+| "The tool is blocked for this project."                                   | "Allow it in the connector's tool permissions."         |
 
 The error text may carry a detail such as "Platform code: …" or "Table: …". The full, untrimmed
 error text is shown on the job's card when you open it from chat.
@@ -154,7 +157,10 @@ When the agent starts a background job, chat shows a card with the job type and 
 The card shows the job even when it isn't on the list's current page or doesn't match the
 selected filter. If the job was deleted, the card says "Job not found".
 
-<Screenshot id="jobs-focused-card" alt="A job's card above the list with the Connector, Started and Finished fields and the error text" />
+<Screenshot
+  id="jobs-focused-card"
+  alt="A job's card above the list with the Connector, Started and Finished fields and the error text"
+/>
 
 ## Retry a job
 
@@ -221,7 +227,10 @@ To delete many old jobs at once:
 Palitra reports how many jobs were deleted, such as "12 jobs deleted". Running and pending jobs
 are never deleted. Only people who can manage jobs see the "Clear finished" button.
 
-<Screenshot id="jobs-clear-finished" alt="The Clear finished jobs dialog with status and age options" />
+<Screenshot
+  id="jobs-clear-finished"
+  alt="The Clear finished jobs dialog with status and age options"
+/>
 
 ## If something doesn't load
 

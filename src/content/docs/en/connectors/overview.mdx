@@ -81,7 +81,10 @@ Pick the project in the sidebar and click "Connectors". The section has three ta
 On the right of the header is a "Data Level: L…" badge. It shows how complete the project's data
 is; click it to go to [Data](/data/overview/).
 
-<Screenshot id="connectors-overview-list" alt="The Connectors tab with cards of connected connectors" />
+<Screenshot
+  id="connectors-overview-list"
+  alt="The Connectors tab with cards of connected connectors"
+/>
 
 ## Connect a connector
 
@@ -100,7 +103,10 @@ on every plan: on a plan without them, the card shows a plan badge and "Connect"
 How to connect specific services is covered in separate articles:
 [Yandex Direct](/connectors/yandex-direct/) and [Yandex Metrika](/connectors/yandex-metrika/).
 
-<Screenshot id="connectors-overview-marketplace" alt="The Marketplace tab with search, categories and service cards" />
+<Screenshot
+  id="connectors-overview-marketplace"
+  alt="The Marketplace tab with search, categories and service cards"
+/>
 
 ## Wizard steps
 
@@ -110,18 +116,21 @@ completed. "Back to marketplace" returns you to the catalog.
 
 Which steps you see depends on the type of service:
 
-| Step | When it appears |
-| --- | --- |
-| "Auth" | Always. |
-| "Settings" | When the service needs settings at connect time. |
+| Step             | When it appears                                                                                            |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| "Auth"           | Always.                                                                                                    |
+| "Settings"       | When the service needs settings at connect time.                                                           |
 | "Select account" | When the credential reaches several accounts (ad platforms, analytics, mobile trackers and call tracking). |
-| "Permissions" | For ad platforms, analytics, mobile trackers and research services. |
-| "Guardrails" | For ad platforms. |
-| "Auto-tagging" | For ad platforms. |
-| "Review" | Always. |
-| "Event mapping" | For analytics and mobile trackers — after connecting, as the last step. |
+| "Permissions"    | For ad platforms, analytics, mobile trackers and research services.                                        |
+| "Guardrails"     | For ad platforms.                                                                                          |
+| "Auto-tagging"   | For ad platforms.                                                                                          |
+| "Review"         | Always.                                                                                                    |
+| "Event mapping"  | For analytics and mobile trackers — after connecting, as the last step.                                    |
 
-<Screenshot id="connectors-overview-wizard" alt="The connector wizard: step indicator and the Auth step" />
+<Screenshot
+  id="connectors-overview-wizard"
+  alt="The connector wizard: step indicator and the Auth step"
+/>
 
 ### Auth
 
@@ -237,15 +246,15 @@ The same messages appear on the connector's page.
 
 Common messages:
 
-| Message | What to do |
-| --- | --- |
-| "Sign-in has expired." | Reconnect the credential on the "Credentials" tab and sign in again. |
-| "Access was revoked in the vendor's cabinet." | Reconnect the connector with a valid key or authorization. |
-| "The connector has no access to this account." | Check the account's rights in the service and reconnect the connector. |
-| "The last sync failed." | Palitra retries on its own. If it keeps failing, start a sync by hand or contact support. |
-| "The vendor's API limit is used up for now." | Nothing to do: the sync resumes once the limit renews. |
-| "The connection check failed." | Palitra checks the connection again later. If the problem stays, reconnect the connector. |
-| "Some ads could not be tagged with the Palitra link." | Tag those ads by hand or try again later. |
+| Message                                               | What to do                                                                                |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| "Sign-in has expired."                                | Reconnect the credential on the "Credentials" tab and sign in again.                      |
+| "Access was revoked in the vendor's cabinet."         | Reconnect the connector with a valid key or authorization.                                |
+| "The connector has no access to this account."        | Check the account's rights in the service and reconnect the connector.                    |
+| "The last sync failed."                               | Palitra retries on its own. If it keeps failing, start a sync by hand or contact support. |
+| "The vendor's API limit is used up for now."          | Nothing to do: the sync resumes once the limit renews.                                    |
+| "The connection check failed."                        | Palitra checks the connection again later. If the problem stays, reconnect the connector. |
+| "Some ads could not be tagged with the Palitra link." | Tag those ads by hand or try again later.                                                 |
 
 ## Sync by hand
 
@@ -300,7 +309,10 @@ The "Credentials" tab lists the OAuth tokens and API keys saved for the project 
 organization. One credential can power several connectors of the same service: for example,
 access to Yandex can serve both Direct and Metrika.
 
-<Screenshot id="connectors-overview-credentials" alt="The Credentials tab with the table of saved tokens and keys" />
+<Screenshot
+  id="connectors-overview-credentials"
+  alt="The Credentials tab with the table of saved tokens and keys"
+/>
 
 Table columns:
 

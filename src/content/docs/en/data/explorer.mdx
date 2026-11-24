@@ -58,7 +58,10 @@ admins, can change data:
 The first table in the list opens. The selected table and the sort order are kept in the page
 address, so you can send a colleague a link to the open table.
 
-<Screenshot id="data-explorer" alt="The Data Explorer: the table list on the left and the selected table's rows on the right" />
+<Screenshot
+  id="data-explorer"
+  alt="The Data Explorer: the table list on the left and the selected table's rows on the right"
+/>
 
 If the project has no tables yet, you see "No data yet" and an "Upload data" button that opens
 the [CSV upload](/data/uploads/).
@@ -67,12 +70,12 @@ the [CSV upload](/data/uploads/).
 
 The tables in the left panel are grouped by layer:
 
-| Layer | What it holds |
-| --- | --- |
-| "Raw" | Raw data as the source sent it: a connector or an uploaded file. |
-| "Event" | The project's events. |
-| "Aggregate" | Precomputed summary tables, such as spend per channel per day. |
-| "Reference" | Reference tables. |
+| Layer       | What it holds                                                    |
+| ----------- | ---------------------------------------------------------------- |
+| "Raw"       | Raw data as the source sent it: a connector or an uploaded file. |
+| "Event"     | The project's events.                                            |
+| "Aggregate" | Precomputed summary tables, such as spend per channel per day.   |
+| "Reference" | Reference tables.                                                |
 
 Each group shows how many tables it has, and it can be collapsed. Under a table's name you see
 its approximate row count. An upload icon next to the name means you created the table — by
@@ -94,7 +97,10 @@ Above the rows there is a "Schema & Freshness" bar. On its right:
 Click "Schema & Freshness" to expand the column list: "Column", "Type" and "Nullable" (whether
 the value may be empty).
 
-<Screenshot id="data-explorer-schema" alt="The expanded Schema & Freshness bar with the table's column list" />
+<Screenshot
+  id="data-explorer-schema"
+  alt="The expanded Schema & Freshness bar with the table's column list"
+/>
 
 ## Sort and page through rows
 
@@ -112,17 +118,20 @@ the value may be empty).
 
 The conditions depend on the column type:
 
-| Column type | Conditions |
-| --- | --- |
-| Text | "equals", "contains", "starts with", "is empty", "is not empty" |
-| Number | "equals", "not equals", `>`, `<`, "≥", "≤", "between" |
-| Date, date and time | "on", "before", "after", "between", "is empty" |
-| Boolean | "is" — "true" or "false" |
+| Column type         | Conditions                                                      |
+| ------------------- | --------------------------------------------------------------- |
+| Text                | "equals", "contains", "starts with", "is empty", "is not empty" |
+| Number              | "equals", "not equals", `>`, `<`, "≥", "≤", "between"           |
+| Date, date and time | "on", "before", "after", "between", "is empty"                  |
+| Boolean             | "is" — "true" or "false"                                        |
 
 Columns holding lists or JSON can't be filtered. To remove every filter, click "Clear all".
 Changing filters or the sort takes the table back to the first page.
 
-<Screenshot id="data-explorer-filters" alt="The filter bar with a condition on a column and the Add filter button" />
+<Screenshot
+  id="data-explorer-filters"
+  alt="The filter bar with a condition on a column and the Add filter button"
+/>
 
 ## Open a whole row
 
@@ -147,7 +156,10 @@ Changes aren't saved right away: edited cells, new and deleted rows are highligh
 with counters appears at the bottom. To apply the changes, click "Save" and confirm "Save
 changes?". To drop them, click "Discard" and confirm "Discard changes?".
 
-<Screenshot id="data-explorer-pending" alt="A table with unsaved changes and the Save / Discard bar at the bottom" />
+<Screenshot
+  id="data-explorer-pending"
+  alt="A table with unsaved changes and the Save / Discard bar at the bottom"
+/>
 
 A reference table's key column can't be changed in existing rows — you can only set it in a new
 row.
@@ -209,11 +221,14 @@ You can create your own table from scratch and add data later — row by row or 
    field are kept on the event as a JSON object. When off, they are dropped.
 7. Click "Create".
 
-<Screenshot id="data-explorer-create-table" alt="The Create table dialog with the name, data type and column fields" />
+<Screenshot
+  id="data-explorer-create-table"
+  alt="The Create table dialog with the name, data type and column fields"
+/>
 
 Errors when creating:
 
-- "Name must match udt_ followed by lowercase letters, digits, and underscores."
+- "Name must match udt\_ followed by lowercase letters, digits, and underscores."
 - "A table with this name already exists."
 - "Could not create the table. Check the name and columns and try again."
 - "The table was created, but the field mapping could not be saved. Check the mapping and try

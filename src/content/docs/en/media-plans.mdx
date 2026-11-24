@@ -79,7 +79,10 @@ plan picker in [organization billing](/organization/billing/).
 1. Pick the project in the project list at the top of the sidebar.
 2. Click "Media Plans".
 
-<Screenshot id="media-plans-list" alt="The Media Plans section: plans by month on the left and the selected plan on the right" />
+<Screenshot
+  id="media-plans-list"
+  alt="The Media Plans section: plans by month on the left and the selected plan on the right"
+/>
 
 If the project has no plans yet, you see "No media plans yet" with two buttons: "New plan" and
 "Upload plan". You can also upload the first media plan in the project setup wizard — see
@@ -90,11 +93,11 @@ If the project has no plans yet, you see "No media plans yet" with two buttons: 
 Every media plan has a month, and a project holds only one plan per month. Palitra sets the
 plan's status itself, from its month and the project's time zone:
 
-| Status | Meaning |
-| --- | --- |
-| "Active" | The plan for the current month. This is the plan the agent sees. |
-| "Upcoming" | A plan for a later month. It becomes active when its month starts. |
-| "Past" | A plan for a month that is over. Its rows can't change; the plan can only be deleted. |
+| Status     | Meaning                                                                               |
+| ---------- | ------------------------------------------------------------------------------------- |
+| "Active"   | The plan for the current month. This is the plan the agent sees.                      |
+| "Upcoming" | A plan for a later month. It becomes active when its month starts.                    |
+| "Past"     | A plan for a month that is over. Its rows can't change; the plan can only be deleted. |
 
 There is nothing to switch on: on the first day of a month the upcoming plan becomes active and
 the active one becomes past.
@@ -126,7 +129,10 @@ nearest upcoming plan is shown; without that, the latest past plan.
 "Create plan" is available once a month is picked and the table has at least one row. Every row
 needs a channel name. "Cancel" closes the editor without saving.
 
-<Screenshot id="media-plans-new" alt="The New media plan editor with the Period field and the Channels & Budgets table" />
+<Screenshot
+  id="media-plans-new"
+  alt="The New media plan editor with the Period field and the Channels & Budgets table"
+/>
 
 ### If the month already has a plan
 
@@ -166,17 +172,17 @@ Upload errors:
 
 One row is one channel. The columns:
 
-| Column | What to enter |
-| --- | --- |
-| "Channel" | The channel's name, such as "Yandex.Direct — search". |
-| "Connector" | The project's ad-platform connector the channel belongs to, or "Unlinked". |
-| "Budget" | Planned spend for the month in the project's currency. |
-| "Volume" → "Conversions" | Planned number of conversions. |
-| "Volume" → "CPA" | Planned cost per conversion. |
-| "Revenue" → "GMV" | Planned revenue. |
-| "Revenue" → "ROAS" | Planned return on ad spend: revenue divided by budget. |
-| "Revenue" → "ACoS" | Planned ad spend as a share of revenue, in percent. |
-| "AOV" | Calculated: revenue divided by conversions. Not entered by hand. |
+| Column                   | What to enter                                                              |
+| ------------------------ | -------------------------------------------------------------------------- |
+| "Channel"                | The channel's name, such as "Yandex.Direct — search".                      |
+| "Connector"              | The project's ad-platform connector the channel belongs to, or "Unlinked". |
+| "Budget"                 | Planned spend for the month in the project's currency.                     |
+| "Volume" → "Conversions" | Planned number of conversions.                                             |
+| "Volume" → "CPA"         | Planned cost per conversion.                                               |
+| "Revenue" → "GMV"        | Planned revenue.                                                           |
+| "Revenue" → "ROAS"       | Planned return on ad spend: revenue divided by budget.                     |
+| "Revenue" → "ACoS"       | Planned ad spend as a share of revenue, in percent.                        |
+| "AOV"                    | Calculated: revenue divided by conversions. Not entered by hand.           |
 
 Palitra stores three numbers — budget, conversions and revenue — and calculates the other
 columns from them. So entering one value recalculates others:
@@ -221,7 +227,10 @@ Active and upcoming plans are edited right in the table on the right.
 Above the table are the plan's "Total budget", the "Created" date and, for a plan uploaded from a
 file, "Source file".
 
-<Screenshot id="media-plans-detail" alt="An open media plan: status, total budget and the channel table with the Discard and Save buttons" />
+<Screenshot
+  id="media-plans-detail"
+  alt="An open media plan: status, total budget and the channel table with the Discard and Save buttons"
+/>
 
 A saved plan's month can't be changed on this page. To move a plan to another month, ask the
 agent in chat or create the plan for that month again.

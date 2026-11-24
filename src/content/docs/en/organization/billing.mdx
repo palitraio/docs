@@ -54,14 +54,14 @@ add-ons and configure AI model keys.
 
 The owner and admins see the tab, with different rights:
 
-| Action | Owner | Admin |
-| --- | --- | --- |
-| View the plan, usage and invoices | yes | yes |
-| Change the plan, cancel and resume the subscription | yes | no |
-| Buy and turn off add-ons | yes | no |
-| Add and update the payment method | yes | no |
-| Provider keys, spending limit and custom models in "AI model keys" | yes | yes |
-| AI billing mode and utility model | yes | no |
+| Action                                                             | Owner | Admin |
+| ------------------------------------------------------------------ | ----- | ----- |
+| View the plan, usage and invoices                                  | yes   | yes   |
+| Change the plan, cancel and resume the subscription                | yes   | no    |
+| Buy and turn off add-ons                                           | yes   | no    |
+| Add and update the payment method                                  | yes   | no    |
+| Provider keys, spending limit and custom models in "AI model keys" | yes   | yes   |
+| AI billing mode and utility model                                  | yes   | no    |
 
 Admins see the "Change plan" and "Manage add-ons" buttons but can't pick a plan or an add-on.
 The "Change plan" dialog tells them: "Only the organization owner can change the plan or payment
@@ -75,19 +75,22 @@ method. Find the owner on the Members tab."
 The "Upgrade plan" and "Buy add-on" buttons in limit hints elsewhere in Palitra lead here too,
 opening the right dialog straight away.
 
-<Screenshot id="organization-billing" alt="The Billing tab with the current plan, usage cards and payment method" />
+<Screenshot
+  id="organization-billing"
+  alt="The Billing tab with the current plan, usage cards and payment method"
+/>
 
 ## Subscription status
 
 At the top of the tab Palitra shows a banner when the subscription needs attention:
 
-| Banner | What it means and what to do |
-| --- | --- |
-| "Start your free trial" | Click "Add card to start". Nothing is charged. |
-| "… days left in your trial" | The trial is running; below is the AI budget spent. |
-| "Trial AI budget used up" | No AI; everything else works until the trial ends. |
-| "Your trial has ended" | Click "Choose a plan" to keep using Palitra. |
-| "Payment failed" | The last payment didn't go through. Click "Update payment method". |
+| Banner                      | What it means and what to do                                       |
+| --------------------------- | ------------------------------------------------------------------ |
+| "Start your free trial"     | Click "Add card to start". Nothing is charged.                     |
+| "… days left in your trial" | The trial is running; below is the AI budget spent.                |
+| "Trial AI budget used up"   | No AI; everything else works until the trial ends.                 |
+| "Your trial has ended"      | Click "Choose a plan" to keep using Palitra.                       |
+| "Payment failed"            | The last payment didn't go through. Click "Update payment method". |
 
 While the subscription is active and paid, there is no banner. Adding a card during your first
 sign-in is covered in [First steps](/getting-started/first-steps/).
@@ -144,7 +147,10 @@ Only the owner can change the plan.
 
 Changes are prorated against your current billing period.
 
-<Screenshot id="organization-billing-change-plan" alt="The Change plan dialog with the billing interval switch and the plan list" />
+<Screenshot
+  id="organization-billing-change-plan"
+  alt="The Change plan dialog with the billing interval switch and the plan list"
+/>
 
 What can get in the way:
 
@@ -221,7 +227,10 @@ To get the PDF, click "Download" in the invoice's row. The invoice opens in a ne
 - "This invoice's PDF is still generating. Try again in a moment."
 - "Your browser blocked the invoice tab. Allow pop-ups for this site and try again."
 
-<Screenshot id="organization-billing-invoices" alt="The Invoices section with the invoice list and Download buttons" />
+<Screenshot
+  id="organization-billing-invoices"
+  alt="The Invoices section with the invoice list and Download buttons"
+/>
 
 ## AI model keys
 
@@ -241,7 +250,10 @@ the organization accesses and pays for AI models.
 - "Utility model" — with your own keys: the model for background tasks such as SQL generation,
   chat titles and context compaction. Only the owner can change it.
 
-<Screenshot id="organization-billing-ai-keys" alt="The AI model keys dialog with the billing mode choice" />
+<Screenshot
+  id="organization-billing-ai-keys"
+  alt="The AI model keys dialog with the billing mode choice"
+/>
 
 If the provider stops accepting a key, it gets the "Invalid key" status: replace it with a valid
 one.

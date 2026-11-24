@@ -36,7 +36,10 @@ statistics on what the tag has sent so far.
 The "Tag" card already shows the tag's status — "Receiving data", "Idle" or "Not configured" —
 and the number of events today or the time of the last event.
 
-<Screenshot id="data-pixel-overview" alt="The Palitra Tag screen: status, event and user counters, and the Installation block" />
+<Screenshot
+  id="data-pixel-overview"
+  alt="The Palitra Tag screen: status, event and user counters, and the Installation block"
+/>
 
 ## Install the tag on your site
 
@@ -51,14 +54,19 @@ addresses of your Palitra installation. It looks like this:
 
 ```html
 <script>
-  (function(w,d,s){ /* loads the tag asynchronously */ })(window,document,'palitra');
-  palitra('init', '<project token>', { endpoint: '<event ingest address>' });
+  (function (w, d, s) {
+    /* loads the tag asynchronously */
+  })(window, document, "palitra");
+  palitra("init", "<project token>", { endpoint: "<event ingest address>" });
 </script>
 ```
 
 The tag sends page views (`page_view`) by itself — nothing else is needed for that.
 
-<Screenshot id="data-pixel-install" alt="The Installation block with the base snippet and the Copy button" />
+<Screenshot
+  id="data-pixel-install"
+  alt="The Installation block with the base snippet and the Copy button"
+/>
 
 ## Pass user logins
 
@@ -66,7 +74,7 @@ Step 2 on the screen is marked "Optional". Call `identify` after a user logs in 
 pass their ID from your system:
 
 ```js
-palitra('identify', currentUser.id);
+palitra("identify", currentUser.id);
 ```
 
 This links the visitor's anonymous sessions to a real user, for example for CRM matching.
@@ -77,11 +85,11 @@ Step 3, also "Optional". To send a conversion or another event, call `event` wit
 and its parameters:
 
 ```js
-palitra('event', 'purchase', {
+palitra("event", "purchase", {
   value: 5900,
-  currency: 'RUB',
-  transaction_id: 'ORD-123',
-  items: [{ id: 'SKU-1', price: 5900, quantity: 1 }]
+  currency: "RUB",
+  transaction_id: "ORD-123",
+  items: [{ id: "SKU-1", price: 5900, quantity: 1 }],
 });
 ```
 
@@ -94,7 +102,7 @@ Step 4, "Optional". Web analytics IDs are linked to the Palitra visitor automati
 connect the matching [connector](/connectors/overview/). For any other external ID, call `link`:
 
 ```js
-palitra('link', 'id_type', 'id_value');
+palitra("link", "id_type", "id_value");
 ```
 
 The ID type uses lowercase Latin letters, digits and underscores and starts with a letter, such as
@@ -105,11 +113,11 @@ The ID type uses lowercase Latin letters, digits and underscores and starts with
 After installing, open any page of your site and return to the "Palitra Tag" screen. The status in
 the top right corner refreshes by itself every 30 seconds.
 
-| Status | Meaning |
-| --- | --- |
-| "Receiving data" | The last event arrived within the past 15 minutes. |
-| "Idle" | Events arrived before, but none in the past 15 minutes. |
-| "Not receiving" | The tag hasn't sent a single event yet. |
+| Status           | Meaning                                                 |
+| ---------------- | ------------------------------------------------------- |
+| "Receiving data" | The last event arrived within the past 15 minutes.      |
+| "Idle"           | Events arrived before, but none in the past 15 minutes. |
+| "Not receiving"  | The tag hasn't sent a single event yet.                 |
 
 Under the status are four counters: "Events today", "Total events", "Identified users" and
 "Anonymous users". The bottom of the screen shows the last event: "Last event received: …" or "No
@@ -122,14 +130,14 @@ on that page inside `<head>` and that the change to the site is published.
 
 The "What the tag collects" block lists the data the tag sends to Palitra:
 
-| Field | What it is |
-| --- | --- |
-| `palitra_id` | A persistent visitor ID. |
-| `session_id` | A session ID used to group events into visits. |
-| `client_user_id` | The user ID from your system, after an `identify` call. |
-| "Traffic source" | The Palitra Linker, UTM parameters or the referrer. |
-| "Events" | `page_view` automatically, plus your events sent with `event`. |
-| `linked_ids` | Analytics system IDs: from connectors and passed with `link`. |
+| Field            | What it is                                                     |
+| ---------------- | -------------------------------------------------------------- |
+| `palitra_id`     | A persistent visitor ID.                                       |
+| `session_id`     | A session ID used to group events into visits.                 |
+| `client_user_id` | The user ID from your system, after an `identify` call.        |
+| "Traffic source" | The Palitra Linker, UTM parameters or the referrer.            |
+| "Events"         | `page_view` automatically, plus your events sent with `event`. |
+| `linked_ids`     | Analytics system IDs: from connectors and passed with `link`.  |
 
 The Palitra Linker is a parameter in ad links. How a connector adds it is described under
 "Auto-tagging" in the [Yandex Direct](/connectors/yandex-direct/) article.

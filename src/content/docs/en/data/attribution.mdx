@@ -54,7 +54,10 @@ The "Attribution Engine" block shows the current state at a glance: "N of 8 mode
 line such as "30 day window · Default: Last Click". Without edit rights, the "Configure" button is
 disabled and its tooltip says "You have read-only access to this project".
 
-<Screenshot id="data-attribution-overview" alt="The Attribution Settings screen with the General, Attribution Models and Dynamic Thresholds blocks" />
+<Screenshot
+  id="data-attribution-overview"
+  alt="The Attribution Settings screen with the General, Attribution Models and Dynamic Thresholds blocks"
+/>
 
 The screen has the "General", "Attribution Models", "Model Parameters" (shown when Time Decay or
 Position Based is enabled) and "Dynamic Thresholds" blocks. Nothing is applied until you click
@@ -91,25 +94,31 @@ Without a mobile tracker the slider is not shown.
 The event list holds only events marked as conversions in the project. To add an event to it, mark
 it as a conversion on the [events](/data/events/) screen.
 
-<Screenshot id="data-attribution-general" alt="The General block: the Attribution window slider and the default model and conversion event lists" />
+<Screenshot
+  id="data-attribution-general"
+  alt="The General block: the Attribution window slider and the default model and conversion event lists"
+/>
 
 ## Enable or disable models
 
 The "Attribution Models" block lists all eight Palitra models. Tick the ones to compute, untick
 the rest and click "Save changes".
 
-| Model | Type | Data level needed |
-| --- | --- | --- |
-| Last Click, First Click, Linear, Time Decay, Position Based | "Rule-based (L2+)" | L2 |
-| Markov Chains, Shapley Value | "Statistical (L3+)" | L3 and a conversion threshold |
-| Data Driven | "ML (L4+)" | L4 and a conversion threshold |
+| Model                                                       | Type                | Data level needed             |
+| ----------------------------------------------------------- | ------------------- | ----------------------------- |
+| Last Click, First Click, Linear, Time Decay, Position Based | "Rule-based (L2+)"  | L2                            |
+| Markov Chains, Shapley Value                                | "Statistical (L3+)" | L3 and a conversion threshold |
+| Data Driven                                                 | "ML (L4+)"          | L4 and a conversion threshold |
 
 By default only Last Click is enabled, and it is also the default model.
 
 You can't disable the default model: its checkbox is disabled and it says "Default model — choose
 another default before disabling this one". Pick another default model first, then untick it.
 
-<Screenshot id="data-attribution-models" alt="The attribution model list: available models with checkboxes and locked ones with a level badge" />
+<Screenshot
+  id="data-attribution-models"
+  alt="The attribution model list: available models with checkboxes and locked ones with a level badge"
+/>
 
 ### Why a model is unavailable
 
@@ -134,9 +143,9 @@ The "Dynamic Thresholds" block shows how many conversions Markov Chains, Shapley
 Driven need. The threshold depends on the number of channels in the project: more channels need
 more conversions.
 
-| Models | Threshold |
-| --- | --- |
-| "Markov / Shapley" | at least 200 conversions or 50 per channel, whichever is higher |
+| Models             | Threshold                                                        |
+| ------------------ | ---------------------------------------------------------------- |
+| "Markov / Shapley" | at least 200 conversions or 50 per channel, whichever is higher  |
 | "Data-Driven (ML)" | at least 500 conversions or 100 per channel, whichever is higher |
 
 Channels and conversions are counted over the last 90 days. "Current conversions (90d)" is shown
@@ -173,7 +182,10 @@ the settings can't be saved:
 - "Weights must be whole numbers" — drop the decimals.
 - "Weights cannot be negative" — replace the negative number.
 
-<Screenshot id="data-attribution-parameters" alt="The Model Parameters block: Time Decay half-life and the three Position-Based weight fields" />
+<Screenshot
+  id="data-attribution-parameters"
+  alt="The Model Parameters block: Time Decay half-life and the three Position-Based weight fields"
+/>
 
 ## Reset the settings
 

@@ -30,7 +30,10 @@ can add, check and delete domains.
 2. Click the gear icon next to the project name ("Project settings").
 3. Go to the "Domains" tab.
 
-<Screenshot id="project-settings-domains" alt="The Domains tab in project settings with the list of connected domains" />
+<Screenshot
+  id="project-settings-domains"
+  alt="The Domains tab in project settings with the list of connected domains"
+/>
 
 If you see "Custom domains aren't available" instead of the list, the feature is off on your
 Palitra installation: artifacts are published on the Palitra address only.
@@ -44,7 +47,10 @@ Palitra installation: artifacts are published on the Palitra address only.
 
 The domain appears in the list as "Pending", with its DNS records table open below it.
 
-<Screenshot id="project-settings-domains-add" alt="The Add a custom domain dialog with the Hostname field" />
+<Screenshot
+  id="project-settings-domains-add"
+  alt="The Add a custom domain dialog with the Hostname field"
+/>
 
 If the domain is already connected in Palitra, you get an error saying so. If the hostname is
 malformed, Palitra asks you to check it and try again.
@@ -57,18 +63,21 @@ with buttons to copy the name and the value.
 
 Palitra asks for:
 
-| Type | Purpose |
-| --- | --- |
-| `TXT` named `_palitra-verify.<your domain>` | Proves the domain is yours. |
-| `CNAME` to the Palitra address | Points a subdomain (such as `reports.example.com`) at Palitra. |
-| `A` to the Palitra addresses | Used instead of `CNAME` when you connect an apex domain (`example.com`). |
+| Type                                        | Purpose                                                                  |
+| ------------------------------------------- | ------------------------------------------------------------------------ |
+| `TXT` named `_palitra-verify.<your domain>` | Proves the domain is yours.                                              |
+| `CNAME` to the Palitra address              | Points a subdomain (such as `reports.example.com`) at Palitra.           |
+| `A` to the Palitra addresses                | Used instead of `CNAME` when you connect an apex domain (`example.com`). |
 
 Copy the values from the table, not from this article: they differ for every domain.
 
 If the table says "A records could not be listed right now. The table below may be incomplete.",
 click "Retry".
 
-<Screenshot id="project-settings-domains-records" alt="A domain's DNS records table with Type, Name and Value columns" />
+<Screenshot
+  id="project-settings-domains-records"
+  alt="A domain's DNS records table with Type, Name and Value columns"
+/>
 
 ## Check the domain
 
@@ -83,11 +92,11 @@ domain keeps its status.
 
 ## Statuses and errors
 
-| Status | Meaning |
-| --- | --- |
+| Status    | Meaning                                                   |
+| --------- | --------------------------------------------------------- |
 | "Pending" | The domain is added but its records are not verified yet. |
-| "Active" | The domain works and artifacts can be published on it. |
-| "Broken" | The check failed or the certificate couldn't be issued. |
+| "Active"  | The domain works and artifacts can be published on it.    |
+| "Broken"  | The check failed or the certificate couldn't be issued.   |
 
 Under a "Broken" domain Palitra gives the reason:
 

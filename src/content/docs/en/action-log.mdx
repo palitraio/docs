@@ -125,11 +125,11 @@ under the list.
 
 Above the list are three filters. They can be combined.
 
-| Filter | Values |
-| --- | --- |
+| Filter         | Values                                                                               |
+| -------------- | ------------------------------------------------------------------------------------ |
 | "All outcomes" | "Positive", "Negative", "Neutral", "Confounded", "Evaluating", "Effect not measured" |
-| "All sources" | "Chat", "Workflow", "External changes" |
-| "All modes" | "Direct", "Experiment" |
+| "All sources"  | "Chat", "Workflow", "External changes"                                               |
+| "All modes"    | "Direct", "Experiment"                                                               |
 
 To clear a filter, pick "All outcomes", "All sources" or "All modes" in it again. If nothing
 matches, the log shows "No actions match your filters".
@@ -147,7 +147,10 @@ log for that campaign.
 
 Click a card or a table row and the "Action details" panel opens on the right.
 
-<Screenshot id="action-log-details" alt="The Action details panel with the Result section and the Before and After metrics table" />
+<Screenshot
+  id="action-log-details"
+  alt="The Action details panel with the Result section and the Before and After metrics table"
+/>
 
 The top of the panel shows the action's name, the campaign, the changed object, the connector,
 the date and the source. An action from chat has an "Open conversation" link to the chat where
@@ -166,10 +169,10 @@ Below that, depending on the record:
 
 ## Apply mode
 
-| Mode | Meaning |
-| --- | --- |
-| "Direct" | The change was applied in the ad account straight away. |
-| "Experiment" | The change runs as an experiment on the ad platform. |
+| Mode         | Meaning                                                 |
+| ------------ | ------------------------------------------------------- |
+| "Direct"     | The change was applied in the ad account straight away. |
+| "Experiment" | The change runs as an experiment on the ad platform.    |
 
 An experiment's status shows in the technical details: "Draft", "Running", "Concluded" or
 "Abandoned".
@@ -192,14 +195,14 @@ The "Result" section shows:
 The verdicts in the record details and the values of the "All outcomes" filter are worded a
 little differently:
 
-| Verdict in the details | Filter value | Meaning |
-| --- | --- | --- |
-| "Improved" | "Positive" | The primary metric moved in the right direction. |
-| "Worsened" | "Negative" | The primary metric moved in the wrong direction. |
-| "No notable effect" | "Neutral" | The primary metric barely moved. |
-| "Inconclusive" | "Confounded" | Other changes or anomalies hit the object during the observation window, so this action's effect can't be isolated. |
-| "Evaluating" | "Evaluating" | The observation window is still running. |
-| "Effect not measured" | "Effect not measured" | The effect of this change isn't measured. |
+| Verdict in the details | Filter value          | Meaning                                                                                                             |
+| ---------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| "Improved"             | "Positive"            | The primary metric moved in the right direction.                                                                    |
+| "Worsened"             | "Negative"            | The primary metric moved in the wrong direction.                                                                    |
+| "No notable effect"    | "Neutral"             | The primary metric barely moved.                                                                                    |
+| "Inconclusive"         | "Confounded"          | Other changes or anomalies hit the object during the observation window, so this action's effect can't be isolated. |
+| "Evaluating"           | "Evaluating"          | The observation window is still running.                                                                            |
+| "Effect not measured"  | "Effect not measured" | The effect of this change isn't measured.                                                                           |
 
 "Effect not measured" is set right away when there is nothing to compare with: for example, the
 project has no accumulated statistics yet, or the platform made the change automatically.

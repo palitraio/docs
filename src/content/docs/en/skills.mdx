@@ -76,17 +76,20 @@ everyone can create or change skills — see "Who can do what" below.
 The skill list with "Search skills..." is on the left, the selected skill's card on the right.
 The first skill in the list is selected when the section opens.
 
-<Screenshot id="skills-list" alt="The Skills section: built-in, organization and project skills, and the selected skill's card" />
+<Screenshot
+  id="skills-list"
+  alt="The Skills section: built-in, organization and project skills, and the selected skill's card"
+/>
 
 ## Built-in, organization and project skills
 
 The list has three groups:
 
-| Group | Label on the card | Where it applies |
-| --- | --- | --- |
-| "Built-in skills" | "SYSTEM" | Ship with Palitra and exist in every project. They can't be changed. |
-| "Organization skills" | "ORG" | Shared by every project in the organization. |
-| "Project skills" | "PROJECT" | This project only. |
+| Group                 | Label on the card | Where it applies                                                     |
+| --------------------- | ----------------- | -------------------------------------------------------------------- |
+| "Built-in skills"     | "SYSTEM"          | Ship with Palitra and exist in every project. They can't be changed. |
+| "Organization skills" | "ORG"             | Shared by every project in the organization.                         |
+| "Project skills"      | "PROJECT"         | This project only.                                                   |
 
 When skills in different groups share a name, the agent uses the project skill first, then the
 organization skill, then the built-in one. A skill hidden by an enabled skill of the same name in
@@ -95,17 +98,17 @@ doesn't use it.
 
 Built-in skills:
 
-| Skill | What it does |
-| --- | --- |
-| `anomaly-detection` | Finds unusual jumps in spend, clicks, CTR, CPC, conversions and CPA and explains their likely causes. |
-| `report-weekly` | Builds a weekly cross-channel summary with charts and a downloadable report. |
-| `budget-pacing` | Compares actual spend with the active media plan and flags channels spending faster or slower than planned. |
-| `optimize-campaigns` | Reviews campaign performance and proposes bid and budget changes. |
-| `optimize-keywords` | Reviews keywords and recommends bid, match-type and negative-keyword changes. |
-| `analyze-search-queries` | Mines search queries for new keywords and negatives. |
-| `audit-ad-quality` | Checks ads for broken links, missing extensions, spelling errors and landing-page mismatch. |
-| `event-setup` | Sets up the project's event registry and the connectors' event mapping: studies the data, proposes a plan and applies it once you agree. |
-| `skill-creator` | Creates or changes a skill right in chat. |
+| Skill                    | What it does                                                                                                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `anomaly-detection`      | Finds unusual jumps in spend, clicks, CTR, CPC, conversions and CPA and explains their likely causes.                                    |
+| `report-weekly`          | Builds a weekly cross-channel summary with charts and a downloadable report.                                                             |
+| `budget-pacing`          | Compares actual spend with the active media plan and flags channels spending faster or slower than planned.                              |
+| `optimize-campaigns`     | Reviews campaign performance and proposes bid and budget changes.                                                                        |
+| `optimize-keywords`      | Reviews keywords and recommends bid, match-type and negative-keyword changes.                                                            |
+| `analyze-search-queries` | Mines search queries for new keywords and negatives.                                                                                     |
+| `audit-ad-quality`       | Checks ads for broken links, missing extensions, spelling errors and landing-page mismatch.                                              |
+| `event-setup`            | Sets up the project's event registry and the connectors' event mapping: studies the data, proposes a plan and applies it once you agree. |
+| `skill-creator`          | Creates or changes a skill right in chat.                                                                                                |
 
 ## How the agent uses skills in chat
 
@@ -135,7 +138,10 @@ Skills are also used in [workflows](/workflows/).
 
 A new chat opens with the skill call, with your arguments, as its first message.
 
-<Screenshot id="skills-try-in-chat" alt="The Try in chat dialog with the skill's argument fields and the Start chat button" />
+<Screenshot
+  id="skills-try-in-chat"
+  alt="The Try in chat dialog with the skill's argument fields and the Start chat button"
+/>
 
 ## What the skill card shows
 
@@ -150,7 +156,10 @@ A new chat opens with the skill call, with your arguments, as its first message.
 - "Resources" — attached files, grouped into "Scripts", "References" and "Assets". Click a file
   to preview it.
 
-<Screenshot id="skills-detail" alt="A skill's card with the Enable skill switch, arguments, prompt and resources" />
+<Screenshot
+  id="skills-detail"
+  alt="A skill's card with the Enable skill switch, arguments, prompt and resources"
+/>
 
 ## Enable or disable a skill
 
@@ -182,7 +191,10 @@ package" are inactive; clicking them shows "Custom skills aren't included in you
 8. Click "Create". The button stays inactive while the name breaks the rules, the instructions
    are empty or an argument name is invalid.
 
-<Screenshot id="skills-form" alt="The Create skill dialog with scope, name, description, arguments and the instructions editor" />
+<Screenshot
+  id="skills-form"
+  alt="The Create skill dialog with scope, name, description, arguments and the instructions editor"
+/>
 
 ### Arguments
 
@@ -291,14 +303,14 @@ scope, or the package is too large, you see "Could not import skill".
 
 ## Who can do what
 
-| Action | Who |
-| --- | --- |
-| View skills, "Try in chat" | Every project member |
-| Export a package | Every project member (not for built-in skills) |
-| Create, change, enable and delete project skills, "Duplicate" | Project managers, the organization's owner and admins |
-| Create, change, enable and delete organization skills | The organization's owner and admins |
-| Enable and disable built-in skills | The organization's owner and admins |
-| "Promote to organization" | A project manager who is also the organization's owner or admin |
+| Action                                                        | Who                                                             |
+| ------------------------------------------------------------- | --------------------------------------------------------------- |
+| View skills, "Try in chat"                                    | Every project member                                            |
+| Export a package                                              | Every project member (not for built-in skills)                  |
+| Create, change, enable and delete project skills, "Duplicate" | Project managers, the organization's owner and admins           |
+| Create, change, enable and delete organization skills         | The organization's owner and admins                             |
+| Enable and disable built-in skills                            | The organization's owner and admins                             |
+| "Promote to organization"                                     | A project manager who is also the organization's owner or admin |
 
 ## If something doesn't load
 

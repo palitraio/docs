@@ -68,16 +68,19 @@ event" is disabled while the license is restricted or suspended.
 If the button is disabled and shows "You have read-only access to this project", you don't have
 the right to change the project. The "Back to Data Pipeline" link returns to the data overview.
 
-<Screenshot id="data-events" alt="The Event Registry: the event table with Event name, Display name and Role columns" />
+<Screenshot
+  id="data-events"
+  alt="The Event Registry: the event table with Event name, Display name and Role columns"
+/>
 
 ## What the registry shows
 
-| Column | Meaning |
-| --- | --- |
-| "#" | The event's place in the funnel. |
-| "Event name" | The technical name the event arrives under, such as `purchase`. |
-| "Display name" | A readable name for people and for the AI. |
-| "Role" | "Conversion", "Touchpoint" or "—" when the event is neither. |
+| Column         | Meaning                                                         |
+| -------------- | --------------------------------------------------------------- |
+| "#"            | The event's place in the funnel.                                |
+| "Event name"   | The technical name the event arrives under, such as `purchase`. |
+| "Display name" | A readable name for people and for the AI.                      |
+| "Role"         | "Conversion", "Touchpoint" or "—" when the event is neither.    |
 
 If there are no events yet, you see "No events yet" with a hint to apply a template or create the
 first event.
@@ -95,7 +98,10 @@ Events already in the registry are skipped. Palitra reports the result: "Applied
 created, M skipped". Template events count as standard — their number shows in the data pipeline
 settings.
 
-<Screenshot id="data-events-templates" alt="The Event Templates dialog with template cards and their events" />
+<Screenshot
+  id="data-events-templates"
+  alt="The Event Templates dialog with template cards and their events"
+/>
 
 ## Add an event by hand
 
@@ -122,7 +128,10 @@ settings.
 
 The new event goes to the end of the funnel.
 
-<Screenshot id="data-events-form" alt="The Add event dialog with the name, display name, role and parameter fields" />
+<Screenshot
+  id="data-events-form"
+  alt="The Add event dialog with the name, display name, role and parameter fields"
+/>
 
 Form errors:
 
@@ -165,7 +174,10 @@ how many times and since when it arrived.
 The block shows the most frequent events, up to 100. If there are more, you see "Showing first N
 events — list is truncated" at the bottom.
 
-<Screenshot id="data-events-unregistered" alt="The unregistered events block with Add to registry and Ignore buttons" />
+<Screenshot
+  id="data-events-unregistered"
+  alt="The unregistered events block with Add to registry and Ignore buttons"
+/>
 
 ## Delete an event
 
@@ -192,7 +204,10 @@ Mapping isn't set up on the registry screen but where the source is connected:
   conversions, touchpoints or ad metrics;
 - during a [CSV upload](/data/uploads/).
 
-<Screenshot id="data-events-mapping" alt="The mapping editor: source events and the project event chosen for each" />
+<Screenshot
+  id="data-events-mapping"
+  alt="The mapping editor: source events and the project event chosen for each"
+/>
 
 How the editor is laid out:
 
@@ -219,6 +234,7 @@ How the editor is laid out:
    An event rule with the same target field as a common rule replaces it and is marked "replaces
    the rule for all events". "Field settings" let you set "Fallback sources", a "Multiplier", a
    "Date format" and a "Time zone".
+
 6. **"Preview".** Shows what the mapping makes of a few real records. Nothing is saved.
 
 In the connector wizard, a hint above the editor says what happens to events: "While nothing is

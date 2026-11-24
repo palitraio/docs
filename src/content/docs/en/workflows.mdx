@@ -108,7 +108,10 @@ The number of runs per month is also capped by the plan; see
 The section has two tabs: "Workflows", the project's workflows, and "Run history", the latest
 runs of all the project's workflows.
 
-<Screenshot id="workflows-list" alt="The Workflows section with the project's workflow list and the Run history tab" />
+<Screenshot
+  id="workflows-list"
+  alt="The Workflows section with the project's workflow list and the Run history tab"
+/>
 
 ## The workflow list
 
@@ -123,12 +126,12 @@ The table has four columns:
 
 The colored dot before the name shows the workflow's state:
 
-| Color | Meaning |
-| --- | --- |
-| Red | The last run failed. |
-| Yellow | The last run is awaiting approval. |
-| Green | The workflow is enabled, has a trigger other than "Manual", and its last run went fine. |
-| Gray | Anything else: the workflow is disabled, runs only manually, or has never run. |
+| Color  | Meaning                                                                                 |
+| ------ | --------------------------------------------------------------------------------------- |
+| Red    | The last run failed.                                                                    |
+| Yellow | The last run is awaiting approval.                                                      |
+| Green  | The workflow is enabled, has a trigger other than "Manual", and its last run went fine. |
+| Gray   | Anything else: the workflow is disabled, runs only manually, or has never run.          |
 
 The "Actions" menu has:
 
@@ -157,7 +160,10 @@ A project without workflows shows "No workflows yet" instead of the table.
 A new workflow appears in the list only after its first save. If you leave the editor without
 saving, nothing is created.
 
-<Screenshot id="workflows-editor" alt="The workflow editor: the Nodes panel on the left, steps on the canvas, and the Save and Run buttons" />
+<Screenshot
+  id="workflows-editor"
+  alt="The workflow editor: the Nodes panel on the left, steps on the canvas, and the Save and Run buttons"
+/>
 
 ## The editor: steps and canvas
 
@@ -172,16 +178,16 @@ There are several ways to add a step:
 
 The "Nodes" panel groups the nodes:
 
-| Group | Nodes |
-| --- | --- |
-| "Triggers" | "Schedule", "Manual", "Event", "Webhook", "Another Workflow" |
-| "AI" | "Skill", "Agent Call", "Image Generation" |
-| "Connectors" | "Data Source", "Connector Action", "Write Data" |
+| Group                 | Nodes                                                                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| "Triggers"            | "Schedule", "Manual", "Event", "Webhook", "Another Workflow"                                                                        |
+| "AI"                  | "Skill", "Agent Call", "Image Generation"                                                                                           |
+| "Connectors"          | "Data Source", "Connector Action", "Write Data"                                                                                     |
 | "Data Transformation" | "Set", "Filter", "Limit", "Remove Duplicates", "Split Out", "Aggregate", "Summarize", "Rename Keys", "Sort", "Merge", "Date & Time" |
-| "Flow" | "Condition", "Switch", "Compare", "Loop", "Delay", "Sub-Workflow", "Stop & Error" |
-| "Core" | "HTTP Request", "Script", "Export File" |
-| "Human Review" | "Notification", "Approval" |
-| "Documentation" | "Sticky note" |
+| "Flow"                | "Condition", "Switch", "Compare", "Loop", "Delay", "Sub-Workflow", "Stop & Error"                                                   |
+| "Core"                | "HTTP Request", "Script", "Export File"                                                                                             |
+| "Human Review"        | "Notification", "Approval"                                                                                                          |
+| "Documentation"       | "Sticky note"                                                                                                                       |
 
 Right-click a step for its menu: "Execute Step", "Execute from here", "Configure", "Rename",
 "Deactivate" (or "Activate"), "Copy", "Duplicate", "Tidy up workflow" and "Delete". The
@@ -194,15 +200,15 @@ approved.
 
 Keyboard shortcuts (for people who can edit the workflow):
 
-| Keys | Action |
-| --- | --- |
+| Keys            | Action                  |
+| --------------- | ----------------------- |
 | `Ctrl+C` / `⌘C` | Copy the selected steps |
-| `Ctrl+V` / `⌘V` | Paste |
-| `Ctrl+D` / `⌘D` | Duplicate |
-| `Ctrl+A` / `⌘A` | Select all |
-| `Shift+Alt+T` | Tidy up workflow |
-| `Tab` | Add a node |
-| `Shift+S` | Add a sticky note |
+| `Ctrl+V` / `⌘V` | Paste                   |
+| `Ctrl+D` / `⌘D` | Duplicate               |
+| `Ctrl+A` / `⌘A` | Select all              |
+| `Shift+Alt+T`   | Tidy up workflow        |
+| `Tab`           | Add a node              |
+| `Shift+S`       | Add a sticky note       |
 
 ## Configure a step
 
@@ -227,7 +233,10 @@ previous step and what it returned. To test a step without running the whole wor
 "Execute step". If the previous steps have no data yet, Palitra offers "Execute previous nodes"
 or entering mock data by hand ("or set mock data"). Mock data is JSON.
 
-<Screenshot id="workflows-node-config" alt="A step's settings dialog with the Parameters and Settings tabs and the Input and Output panels" />
+<Screenshot
+  id="workflows-node-config"
+  alt="A step's settings dialog with the Parameters and Settings tabs and the Input and Output panels"
+/>
 
 Members who can't edit the workflow see this dialog read-only.
 
@@ -237,12 +246,12 @@ The trigger is the workflow's first step and decides when the workflow runs. A w
 be saved without one. A workflow may have several triggers, but each run starts from one of
 them.
 
-| Trigger | Runs the workflow |
-| --- | --- |
-| "Manual" | When you click "Run". It has no settings. A workflow can have only one. |
-| "Schedule" | Set with an interval or a cron expression; see [Schedule](#schedule). |
-| "Event" | When the chosen event happens in the project. |
-| "Webhook" | When an outside system calls the webhook's address. |
+| Trigger            | Runs the workflow                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
+| "Manual"           | When you click "Run". It has no settings. A workflow can have only one.                           |
+| "Schedule"         | Set with an interval or a cron expression; see [Schedule](#schedule).                             |
+| "Event"            | When the chosen event happens in the project.                                                     |
+| "Webhook"          | When an outside system calls the webhook's address.                                               |
 | "Another Workflow" | When another workflow calls this one through a "Sub-Workflow" step. A workflow can have only one. |
 
 "Event" and "Webhook" triggers fire only while the workflow is enabled. A manual run
@@ -397,7 +406,10 @@ The "Run history" tab lists the latest 20 runs of all the project's workflows, w
 
 Runs of a deleted workflow stay in the history marked "(deleted workflow)" and still open.
 
-<Screenshot id="workflows-history" alt="The Run history tab with Date, Time, Workflow and Status columns" />
+<Screenshot
+  id="workflows-history"
+  alt="The Run history tab with Date, Time, Workflow and Status columns"
+/>
 
 ## The run page
 
@@ -418,20 +430,23 @@ the right are two tabs:
 
 For a deleted workflow, undecided actions aren't shown: they can no longer be decided.
 
-<Screenshot id="workflows-run" alt="A run page: the step timeline on the left and the Output and Notifications tabs on the right" />
+<Screenshot
+  id="workflows-run"
+  alt="A run page: the step timeline on the left and the Output and Notifications tabs on the right"
+/>
 
 ## Statuses
 
 Run status:
 
-| Status | Meaning |
-| --- | --- |
-| "Running" | The run is in progress. |
-| "Awaiting approval" | The run stopped at an "Approval" step and is waiting for a decision. |
-| "Approved" | Every action of the approval has been decided and the run is continuing. |
-| "Completed" | The run finished without errors. |
-| "Failed" | The run stopped on an error. |
-| "Cancelled" | The run was cancelled. |
+| Status              | Meaning                                                                  |
+| ------------------- | ------------------------------------------------------------------------ |
+| "Running"           | The run is in progress.                                                  |
+| "Awaiting approval" | The run stopped at an "Approval" step and is waiting for a decision.     |
+| "Approved"          | Every action of the approval has been decided and the run is continuing. |
+| "Completed"         | The run finished without errors.                                         |
+| "Failed"            | The run stopped on an error.                                             |
+| "Cancelled"         | The run was cancelled.                                                   |
 
 Step status in the timeline and the logs panel: "Pending", "Running", "Success", "Failed" or
 "Skipped". "Skipped" marks steps the run didn't reach, such as a condition branch that wasn't
