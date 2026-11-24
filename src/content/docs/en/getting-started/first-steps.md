@@ -66,7 +66,10 @@ In the cloud version of Palitra:
 1. Click "Add card" and enter your card details.
 2. When "Trial active — you're all set." appears, click "Continue".
 
-If you have a promo code, click "I have a promo code" and enter it.
+If you have a promo code, click "I have a promo code" and enter it. A promo code with a
+first-month discount replaces the trial: the step shows "Add a card and pay the first month at a
+N% discount". Add a card, click "Pay the first month", choose a plan and confirm the payment. See
+[Billing](/organization/billing/#promo-code-with-a-first-month-discount) for details.
 
 If Palitra is installed on your company's servers, the plan comes from the license and no card
 is needed. The step is titled "Your plan is active" and shows "… is active — no card needed.".

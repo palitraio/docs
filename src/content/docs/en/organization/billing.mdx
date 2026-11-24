@@ -44,6 +44,10 @@ sources:
   - palitra-frontend/components/billing/addon-card.tsx
   - palitra-frontend/components/billing/limit-exceeded-modal.tsx
   - palitra-backend/src/modules/billing/domain/ports/project_count_port.py
+  - palitra-backend/src/modules/billing/application/services/first_month_checkout.py
+  - palitra-backend/src/modules/billing/application/services/promo_redemption_service.py
+  - palitra-backend/src/modules/billing/domain/services/first_month_discount.py
+  - palitra-frontend/components/billing/promo-code-form.en.messages.json
 ---
 
 import Screenshot from "@/components/Screenshot.astro";
@@ -162,6 +166,29 @@ What can get in the way:
   turn off add-ons and try again.
 - "You're already on this plan." — you picked the current plan.
 - "Enterprise plans aren't self-serve — contact sales at" — for Enterprise, write to sales.
+
+## Promo code with a first-month discount
+
+A Palitra manager can issue a promo code for a discount on the first month, for example 50%.
+It is the alternative to the free week: either a week free, or a discount on the first month.
+
+- Enter the promo code before a trial starts, in the promo code field on this tab or at first
+  sign-in (see [First steps](/getting-started/first-steps/)). If you have already had a trial,
+  you see "The discount is only available before the trial starts".
+- After you enter the code, the top of the tab shows "N% off your first month" with the date
+  the discount is valid until. This discount comes without a free trial: adding a card does not
+  start one.
+- Click "Pay for the first month", choose a plan and confirm. Next to the price you see
+  "… — first month": that is what is charged now. Add-ons that are already enabled are charged
+  at full price.
+- The discount applies to monthly billing only. Annual billing is marked "The discount doesn't
+  apply to annual billing": if you choose it, you pay the full price and the discount is lost.
+- From the second month the card is charged the plan's full price.
+- The first month's invoice lists the discount as a separate line.
+- One promo code per organization: after a discount code you cannot enter a free-days code, and
+  the other way round.
+- If the code expired or was revoked while you were confirming, nothing is charged: you see
+  "The price has changed. Check the new amount and confirm again." with the new amount.
 
 ## Cancel or resume the subscription
 
