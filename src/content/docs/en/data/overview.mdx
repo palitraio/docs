@@ -1,0 +1,170 @@
+---
+title: Data overview
+description: The Data section — which sources feed the project, the data maturity level, the analytics capabilities it unlocks and where to go next.
+editions: [saas, byoc]
+sources:
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/page.tsx
+  - palitra-frontend/app/[locale]/(app)/projects/[projectId]/data/data-overview.en.messages.json
+  - palitra-frontend/components/layout/AppSidebar.tsx
+  - palitra-frontend/components/layout/app-sidebar.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/data-sources-grid.tsx
+  - palitra-frontend/components/data-pipeline/overview/data-sources-grid.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/maturity-level-card.tsx
+  - palitra-frontend/components/data-pipeline/overview/maturity-level-card.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/capabilities-grid.tsx
+  - palitra-frontend/components/data-pipeline/overview/capabilities-grid.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/unlock-cta-card.tsx
+  - palitra-frontend/components/data-pipeline/overview/unlock-cta-card.en.messages.json
+  - palitra-frontend/components/data-pipeline/overview/settings-sheet.tsx
+  - palitra-frontend/components/data-pipeline/overview/settings-sheet.en.messages.json
+  - palitra-frontend/lib/data-pipeline/unlock-requirement-catalog.ts
+  - palitra-frontend/lib/auth/roles.ts
+  - palitra-backend/src/modules/data_layer/domain/services/data_level_calculator.py
+---
+
+import Screenshot from "@/components/Screenshot.astro";
+
+The Data section shows where the project's data comes from and what Palitra can do with it. Its
+main page, "Data Pipeline", gathers every source of the project, the data maturity level and the
+analytics capabilities that level unlocks. From here you reach the other screens of the section:
+the data tables, the event registry, attribution, the Tag, webhooks and CSV uploads.
+
+Every project member sees the page. Project managers, and the organization's owner and admins,
+can change the event and attribution settings. For other members the settings buttons are
+disabled with the hint "You have read-only access to this project".
+
+## Open the section
+
+1. Pick the project in the project list in the sidebar.
+2. Click "Data" in the sidebar.
+
+The "Data Pipeline" page opens.
+
+<Screenshot id="data-overview" alt="The Data Pipeline page with source cards, the maturity level and capabilities" />
+
+If you see "Unable to load data pipeline" instead, check your connection and click "Retry".
+
+## Screens of the section
+
+| Screen | Purpose | How to open it from "Data Pipeline" |
+| --- | --- | --- |
+| [Data Explorer](/data/explorer/) | Browse, filter and edit the project's tables. | The "Explore data" button. |
+| [Event Registry](/data/events/) | The project's events: conversions, touchpoints and their parameters. | "Settings" → "Event Registry" → "Manage". |
+| [Attribution](/data/attribution/) | Attribution models and the attribution window. | "Settings" → "Attribution Engine" → "Configure". |
+| [Tag](/data/pixel/) | Installing the Palitra Tag on your site. | The "Tag" card → "Configure". |
+| [Webhooks](/data/webhooks/) | Receiving events from your systems by webhook. | The "Webhooks" card → "Set up" or "Manage". |
+| [CSV uploads](/data/uploads/) | Uploading files and the upload history. | The "CSV Upload" card → "Upload" or "Logs". |
+
+## Data sources
+
+The "Data Sources" block has four cards. Each shows the source's status and a link to set it up.
+
+<Screenshot id="data-overview-sources" alt="The Data Sources block with the Connectors, Tag, Webhooks and CSV Upload cards" />
+
+**"Connectors".** A summary of the project's connectors: how many are active, such as "2 of 3
+active", or "No connectors yet". The card's status:
+
+- "Receiving data" — at least one connector is working or syncing;
+- "Paused" — there are connectors, but none is working right now: for example, they are
+  disabled, paused or their sync ended with an error;
+- "Not configured" — there are no connectors.
+
+The "Manage connectors" link opens the [connectors](/connectors/overview/) section.
+
+**"Tag".** The state of the Palitra Tag on your site:
+
+- "Receiving data" — below the status you see how many events arrived today;
+- "Idle" — the Tag is installed but no events are coming in right now; below the status is the
+  time of the last event: "Last event …";
+- "Not configured" — no events arrive from the Tag; the hint says "Install the Palitra Tag to
+  track on-site events".
+
+The "Configure" link opens the [Tag](/data/pixel/) screen.
+
+**"Webhooks".** The same statuses as the Tag, plus "Failing": below it you see the number of
+failures in the last 24 hours. If webhooks aren't set up, the card says "Generate an API key to
+start receiving webhook events." and offers a "Set up" link; once they are set up the link reads
+"Manage". See [webhooks](/data/webhooks/) for details.
+
+**"CSV Upload".** Uploading offline spend, CRM exports and other files. "Upload" opens the file
+upload, "Logs" the upload history. See [CSV uploads](/data/uploads/) for details.
+
+If a card's status fails to load, it shows "Couldn't load status". If the connector list fails
+to load, you see "Couldn't load connectors" with a "Retry" button.
+
+## Data maturity level
+
+The "Data Maturity Level" card shows how fully the project's data describes the customer
+journey. There are five levels, L1 to L5; the current one is shown to the right of the title.
+Palitra works it out from the connected sources — you don't set it by hand.
+
+The levels build on each other: a level counts only when the previous one is reached.
+
+| Level | What it needs | What it unlocks |
+| --- | --- | --- |
+| L1 "Ad Platforms" | A connected ad platform. | CTR, CPC, CPM, spend, bid and budget optimization. |
+| L2 "Analytics + Tag / Mobile Tracker" | The Palitra Tag, a web analytics connector or a mobile tracker. | Conversions, CPA, CR, last-click attribution. |
+| L3 "Call Tracking / E-commerce" | A call tracking connector or e-commerce data. | CPA incl. calls, AOV, cart composition, cross-device attribution. |
+| L4 "CRM / Transactions" | A CRM connector, or CRM data from a table or webhook in events. | ROAS, LTV, unit economics, multi-touch attribution. |
+| L5 "Offline / Marketplaces / Media" | External (non-connector) spend data or a marketplace connector. | MMM, adstock, saturation, cross-channel budget optimization. |
+
+Reached levels have a check mark, the rest a lock. The next level is marked "Next". Next to a
+level's name you see the sources that reached it.
+
+<Screenshot id="data-overview-maturity" alt="The Data Maturity Level card with the L1 to L5 scale" />
+
+## Analytics capabilities
+
+The "Analytics Capabilities" card lists the analytics features and shows which are available at
+the current level. Available ones have a check mark; unavailable ones a lock and a badge with the
+level that unlocks them.
+
+Some capabilities need specific events as well as the level. They then carry an icon with a
+hint, for example:
+
+- "ROAS" — "Needs: events with value > 0";
+- "Lead funnel" — "Needs: ≥2 conversion events at different funnel positions";
+- "Product analytics" — "Needs: events with items[]";
+- "CPI analysis" — "Needs: mobile tracker connected".
+
+Which events count as conversions, and which parameters they carry, is set in the
+[event registry](/data/events/).
+
+## Unlock the next level
+
+Until L5 is reached, a card below the capabilities tells you what to connect for the next level,
+with buttons to go there:
+
+| Next level | Buttons |
+| --- | --- |
+| L1 | "Connect platform" — the connectors section. |
+| L2 | "Configure tag" — the Tag screen; "Connect analytics" — the connectors section. |
+| L3 | "Set up webhook" — the webhooks screen; "Connect call tracking" — the connectors section. |
+| L4 | "Set up webhook" — the webhooks screen; "Connect CRM" — the connectors section. |
+| L5 | "Upload CSV" — the file upload; "Connect marketplace" — the connector catalog. |
+
+## Data pipeline settings
+
+The "Settings" button in the top right opens the "Data Pipeline Settings" panel with two blocks:
+
+- **"Event Registry"** — how many events the project has ("12 events", for example) and how many
+  of them are conversions and standard. The "Manage" button opens the
+  [event registry](/data/events/).
+- **"Attribution Engine"** — how many attribution models are enabled, the attribution window and
+  the default model. The "Configure" button opens the [attribution settings](/data/attribution/).
+
+<Screenshot id="data-overview-settings" alt="The Data Pipeline Settings panel with the Event Registry and Attribution Engine blocks" />
+
+Without the right to change the project, "Manage" and "Configure" are disabled and hovering them
+shows "You have read-only access to this project". If a summary fails to load, the block shows
+"Failed to load" and a "Retry" link.
+
+## Related articles
+
+- [Data Explorer](/data/explorer/)
+- [Event Registry](/data/events/)
+- [Attribution](/data/attribution/)
+- [Tag](/data/pixel/)
+- [Webhooks](/data/webhooks/)
+- [CSV uploads](/data/uploads/)
+- [Connectors](/connectors/overview/)
