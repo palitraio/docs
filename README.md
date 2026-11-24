@@ -32,11 +32,19 @@ pnpm preview
 
 `scripts/check-site.sh <locale>` checks a built `dist/`: 404 page present, no `en/` or `ru/`
 directories or prefixed links, cross-domain links only in hreflang alternates and the
-language switch, a single-language Pagefind index, `<html lang>` on every page.
+language switch (none at all while the other locale is unpublished), dead internal links, `robots.txt`, a single-language Pagefind index, `<html lang>` on every page.
 
 `pnpm check:content` fails when a Russian article has no English twin (or the reverse), or
 when `editions` / `sources` frontmatter is missing or invalid.
 
 ## Publish
 
-Merging to `main` publishes the site. The publish workflows are added separately.
+Merging to `main` publishes both sites:
+
+- Russian, docs.ru.palitra.io: `.github/workflows/deploy-ru.yml` runs on push to `main`, builds
+  with `./scripts/build-ru.sh` and syncs `dist/` to the `palitra-ru` bucket under `docs/` on
+  cloud.ru Object Storage.
+- English, docs.palitra.io: Vercel's git integration builds `./scripts/build-en.sh` (see
+  `vercel.json`) and serves `dist/`.
+
+Pull requests run `.github/workflows/ci.yml` (tests, typecheck, both builds).

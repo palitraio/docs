@@ -6,8 +6,14 @@ cd "$(dirname "$0")/.."
 
 locale="${1:-}"
 case "$locale" in
-ru) other_domain="https://docs.palitra.io" ;;
-en) other_domain="https://docs.ru.palitra.io" ;;
+ru)
+  other_domain="https://docs.palitra.io"
+  own_origin="https://docs.ru.palitra.io"
+  ;;
+en)
+  other_domain="https://docs.ru.palitra.io"
+  own_origin="https://docs.palitra.io"
+  ;;
 *)
   echo "usage: check-site.sh ru|en" >&2
   exit 2
@@ -28,6 +34,16 @@ if grep -rqE 'href="/(en|ru)/' dist --include='*.html'; then
   fail "a locale-prefixed link survived the build"
 fi
 
+other_published=$(node --input-type=module -e '
+import { LOCALES, otherLocale } from "./src/locales.mjs";
+console.log(LOCALES[otherLocale(process.argv[1])].published);
+' "$locale")
+if [ "$other_published" = false ]; then
+  if grep -rq "$other_domain" dist; then
+    fail "dist/ mentions $other_domain although that locale is unpublished"
+  fi
+fi
+
 # Astro minifies each page to one line, so count occurrences rather than filter lines. Each
 # link to the other domain must sit in an hreflang alternate or in the language switch.
 while IFS= read -r page; do
@@ -38,6 +54,15 @@ while IFS= read -r page; do
     fail "$page links to $other_domain outside hreflang and the language switch"
   fi
 done < <(find dist -name '*.html')
+
+node scripts/check-links.mjs dist || fail "dead internal link(s) in dist/"
+
+[ -f dist/favicon.svg ] || fail "dist/favicon.svg missing"
+[ -f dist/robots.txt ] || fail "dist/robots.txt missing"
+grep -qx 'User-agent: \*' dist/robots.txt || fail "robots.txt lacks 'User-agent: *'"
+grep -qx 'Allow: /' dist/robots.txt || fail "robots.txt lacks 'Allow: /'"
+grep -qx "Sitemap: ${own_origin}/sitemap-index.xml" dist/robots.txt ||
+  fail "robots.txt Sitemap line is not ${own_origin}/sitemap-index.xml"
 
 pagefind_languages=$(node -e '
 const entry = JSON.parse(require("node:fs").readFileSync("dist/pagefind/pagefind-entry.json", "utf8"));

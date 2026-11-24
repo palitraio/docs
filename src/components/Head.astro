@@ -3,11 +3,14 @@ import Default from "@astrojs/starlight/components/Head.astro";
 import { LOCALES } from "@/locales.mjs";
 
 const { pathname } = Astro.url;
-const alternates = [
-  { hreflang: "ru", href: new URL(pathname, LOCALES.ru.origin).href },
-  { hreflang: "en", href: new URL(pathname, LOCALES.en.origin).href },
-  { hreflang: "x-default", href: new URL(pathname, LOCALES.en.origin).href },
-];
+const bothPublished = LOCALES.ru.published && LOCALES.en.published;
+const alternates = bothPublished
+  ? [
+      { hreflang: "ru", href: new URL(pathname, LOCALES.ru.origin).href },
+      { hreflang: "en", href: new URL(pathname, LOCALES.en.origin).href },
+      { hreflang: "x-default", href: new URL(pathname, LOCALES.en.origin).href },
+    ]
+  : [];
 ---
 
 <Default><slot /></Default>

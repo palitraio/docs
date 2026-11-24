@@ -1,9 +1,14 @@
+/**
+ * Per-locale site settings. `published` is true once the locale's domain answers: only then do
+ * the other locale's builds show the language switch and hreflang alternates for it.
+ */
 export const LOCALES = {
   en: {
     lang: "en",
     label: "English",
     origin: "https://docs.palitra.io",
     title: "Palitra Docs",
+    published: false,
     sidebar: { gettingStarted: "Getting started", connectors: "Connectors" },
   },
   ru: {
@@ -11,6 +16,7 @@ export const LOCALES = {
     label: "Русский",
     origin: "https://docs.ru.palitra.io",
     title: "Палитра · Документация",
+    published: true,
     sidebar: { gettingStarted: "Начало работы", connectors: "Коннекторы" },
   },
 };
@@ -36,4 +42,38 @@ export function resolveLocale(value = "en") {
  */
 export function otherLocale(locale) {
   return locale === "en" ? "ru" : "en";
+}
+
+/**
+ * Sidebar structure shared by all locales: a group names its label by key in each locale's
+ * `sidebar` labels, a plain string is a top-level article slug.
+ */
+export const SIDEBAR = [
+  {
+    labelKey: "gettingStarted",
+    items: [
+      "getting-started/first-steps",
+      "getting-started/owner-admin",
+      "getting-started/manager",
+    ],
+  },
+  { labelKey: "connectors", items: ["connectors/yandex-direct", "connectors/yandex-metrika"] },
+  "faq",
+];
+
+/**
+ * Builds the Starlight sidebar for one locale.
+ *
+ * @param {Record<string, string>} labels Group labels of the locale.
+ * @returns {Array<string | {label: string, items: string[]}>}
+ */
+export function sidebarFor(labels) {
+  return SIDEBAR.map((entry) =>
+    typeof entry === "string" ? entry : { label: labels[entry.labelKey], items: entry.items },
+  );
+}
+
+/** @returns {string[]} Every article slug the sidebar lists. */
+export function sidebarSlugs() {
+  return SIDEBAR.flatMap((entry) => (typeof entry === "string" ? [entry] : entry.items));
 }

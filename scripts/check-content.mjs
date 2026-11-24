@@ -1,11 +1,23 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import matter from "gray-matter";
 
+import { sidebarSlugs as configuredSidebarSlugs } from "../src/locales.mjs";
+
 const EDITIONS = ["saas", "byoc"];
 const ARTICLE = /\.mdx?$/;
+const REPOS = [
+  "palitra-frontend",
+  "palitra-backend",
+  "palitra-tag",
+  "deploy",
+  "license-server",
+  "landing-page",
+  "docs-internal",
+];
+const UNLISTED_IN_SIDEBAR = new Set(["index", "404"]);
 
 function listArticles(dir) {
   const found = [];
@@ -30,7 +42,21 @@ function sourceProblem(source) {
   return null;
 }
 
-function frontmatterErrors(docsDir, path) {
+function sourceErrors(rootDir, path, source) {
+  const repo = source.split("/")[0];
+  if (!REPOS.includes(repo)) {
+    return [
+      `${path}: sources entry "${source}" must start with a known repo (${REPOS.join(", ")})`,
+    ];
+  }
+  const siblingDir = join(rootDir, "..", repo);
+  if (existsSync(siblingDir) && !existsSync(join(rootDir, "..", source))) {
+    return [`${path}: sources entry "${source}" does not exist in ${siblingDir}`];
+  }
+  return [];
+}
+
+function frontmatterErrors(rootDir, docsDir, path) {
   const { data } = matter(readFileSync(join(docsDir, path), "utf8"));
   const errors = [];
   const { editions, sources } = data;
@@ -47,7 +73,36 @@ function frontmatterErrors(docsDir, path) {
     for (const source of sources) {
       const problem = sourceProblem(source);
       if (problem) errors.push(`${path}: sources entry "${source}" ${problem}`);
+      else errors.push(...sourceErrors(rootDir, path, source));
     }
+  }
+  return errors;
+}
+
+function editionsOf(docsDir, path) {
+  const { editions } = matter(readFileSync(join(docsDir, path), "utf8")).data;
+  return Array.isArray(editions) ? [...editions].sort().join(",") : "";
+}
+
+function structureErrors(docsDir, byLocale, slugsInSidebar) {
+  const errors = [];
+  const slugs = new Set(byLocale.en.map((path) => stem(path.slice("en/".length))));
+  const ruByStem = new Map(byLocale.ru.map((path) => [stem(path.slice("ru/".length)), path]));
+  for (const slug of [...slugs].sort()) {
+    if (slug.split("/").some((segment) => segment.includes("."))) {
+      errors.push(`slug segment contains a dot: ${slug}`);
+    }
+    if (!UNLISTED_IN_SIDEBAR.has(slug) && !slugsInSidebar.includes(slug)) {
+      errors.push(`not in sidebar: ${slug}`);
+    }
+    const ruPath = ruByStem.get(slug);
+    const enPath = byLocale.en.find((path) => stem(path.slice("en/".length)) === slug);
+    if (ruPath && editionsOf(docsDir, ruPath) !== editionsOf(docsDir, enPath)) {
+      errors.push(`editions differ between twins: ${slug}`);
+    }
+  }
+  for (const slug of slugsInSidebar) {
+    if (!slugs.has(slug)) errors.push(`sidebar slug without article: ${slug}`);
   }
   return errors;
 }
@@ -57,12 +112,15 @@ function frontmatterErrors(docsDir, path) {
  *
  * Russian articles live in `ru/`, English in `en/`. Every `ru/<path>` needs an `en/<path>`
  * twin and vice versa; `.md` and `.mdx` count as the same stem. Frontmatter `editions` and
- * `sources` must be present and valid.
+ * `sources` must be present and valid; twins share `editions`; every article is in the sidebar
+ * and every sidebar slug has an article; slugs contain no dots. Sources must start with a known
+ * repo and, when that repo sits next to this one, must exist there.
  *
  * @param {string} rootDir Repository root.
+ * @param {{sidebarSlugs?: string[]}} [options] Sidebar slugs; defaults to the site configuration.
  * @returns {string[]} Error messages; empty when the content is valid.
  */
-export function checkContent(rootDir) {
+export function checkContent(rootDir, { sidebarSlugs = configuredSidebarSlugs() } = {}) {
   const docsDir = join(rootDir, "src/content/docs");
   const articles = listArticles(docsDir);
   const byLocale = { ru: [], en: [] };
@@ -86,8 +144,9 @@ export function checkContent(rootDir) {
     if (!stems.ru.has(stem(path.slice("en/".length)))) errors.push(`missing ru: ${path}`);
   }
   for (const path of articles) {
-    errors.push(...frontmatterErrors(docsDir, path));
+    errors.push(...frontmatterErrors(rootDir, docsDir, path));
   }
+  errors.push(...structureErrors(docsDir, byLocale, sidebarSlugs));
   return errors;
 }
 
