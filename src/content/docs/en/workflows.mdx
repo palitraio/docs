@@ -35,6 +35,9 @@ sources:
   - palitra-frontend/components/workflow-editor/config-panels/listen-panel.en.messages.json
   - palitra-frontend/components/workflow-editor/config-panels/mock-editor.en.messages.json
   - palitra-frontend/components/workflow-editor/config-forms/ScheduleTriggerForm.tsx
+  - palitra-frontend/lib/scheduling/cron-presets.ts
+  - palitra-frontend/lib/workflow/save-error.ts
+  - palitra-backend/src/modules/workflow_engine/infrastructure/composition.py
   - palitra-frontend/components/workflow-editor/config-forms/EventTriggerForm.tsx
   - palitra-frontend/components/workflow-editor/config-forms/WebhookTriggerForm.tsx
   - palitra-frontend/components/workflow-editor/config-forms/SubWorkflowTriggerForm.tsx
@@ -249,7 +252,7 @@ them.
 | Trigger            | Runs the workflow                                                                                 |
 | ------------------ | ------------------------------------------------------------------------------------------------- |
 | "Manual"           | When you click "Run". It has no settings. A workflow can have only one.                           |
-| "Schedule"         | Set with an interval or a cron expression; see [Schedule](#schedule).                             |
+| "Schedule"         | Set with a frequency or a cron expression; see [Schedule](#schedule).                             |
 | "Event"            | When the chosen event happens in the project.                                                     |
 | "Webhook"          | When an outside system calls the webhook's address.                                               |
 | "Another Workflow" | When another workflow calls this one through a "Sub-Workflow" step. A workflow can have only one. |
@@ -259,10 +262,18 @@ works on a disabled workflow too.
 
 ### Schedule
 
-Set one or more rules ("+ Add rule"). In each rule choose the "Trigger Interval" ("Seconds",
-"Minutes", "Hours", "Days", "Weeks", "Months") and enter a number in "Every". For any other
-schedule choose "Custom (Cron)" and enter a "Cron Expression", such as
-`0 9 * * 1-5`.
+Under "Frequency" pick "Hourly", "Daily", "Weekly", "Monthly" or "Custom (cron)". Daily,
+weekly (on Mondays) and monthly (on the 1st) runs happen at 9:00. Below the field you see the
+resulting cron expression, such as "Cron “0 9 \* \* 1”".
+
+For "Custom (cron)" enter a "Cron Expression" with five fields: minute, hour, day of month,
+month, day of week. For example, `0 9 * * 1-5` runs on weekdays at 9:00. An empty field shows
+"Enter a cron expression or pick a frequency.", and an expression that doesn't parse shows
+"Not a valid cron expression. Use five fields, e.g. “0 9 \* \* 1”."
+
+Schedules run in the project's time zone, shown under the form: "Runs in the project's time
+zone: …". If you change the time zone in the [project's general settings](/project-settings/general/),
+the workflow schedules move to the new zone on their own.
 
 ### Event
 
@@ -356,6 +367,9 @@ offending step or connection is highlighted on the canvas. Common messages:
 - "A connection points to a node that no longer exists — delete it and reconnect."
 - "Reserved webhook path": change the webhook's "Path".
 - "Choose a supported event type for the Event trigger."
+- "A Schedule trigger has no schedule. Open the node and pick a frequency." and "A Schedule
+  trigger has a cron expression the scheduler cannot use. Open the node and fix it." Open the
+  "Schedule" node and pick a frequency or fix the expression.
 - Messages about "Another Workflow" and sub-workflows, such as "This would create a sub-workflow
   cycle — a workflow can't call itself directly or indirectly."
 
@@ -475,9 +489,9 @@ while the Palitra license is read-only or suspended.
 2. Choose "Delete".
 3. In the "Delete “name”?" dialog, click "Delete".
 
-The dialog warns: "This permanently deletes the workflow and its run history. Scheduled and
-event triggers stop immediately. This action cannot be undone." When it's done, you see
-"Workflow deleted".
+The dialog warns: "The workflow is deleted and its scheduled and event triggers stop
+immediately. Its past runs stay in run history, marked “(deleted workflow)”. This action cannot
+be undone." When it's done, you see "Workflow deleted".
 
 ## Related articles
 

@@ -20,9 +20,10 @@ sources:
 
 import Screenshot from "@/components/Screenshot.astro";
 
-The Palitra Tag is a small JavaScript snippet you put on your website. It gives each visitor a
-persistent ID, captures the traffic source (the Palitra Linker, UTM parameters or the referrer),
-sends page views on its own and lets you send your own events, such as purchases. That is how
+The Palitra Tag is a small JavaScript snippet you put on your website. It sends page views on
+its own, lets you send your own events, such as purchases, and sends with them the traffic
+source (the Palitra Linker, UTM parameters or the referring site) and the visitor's analytics
+IDs. That is how
 Palitra links on-site visits and conversions to ad spend.
 
 Every project member can open the "Palitra Tag" screen. It holds the code to install and
@@ -98,7 +99,7 @@ registry.
 
 ## Link IDs from other analytics systems
 
-Step 4, "Optional". Web analytics IDs are linked to the Palitra visitor automatically when you
+Step 4, "Optional". Web analytics IDs are linked to the visitor automatically when you
 connect the matching [connector](/connectors/overview/). For any other external ID, call `link`:
 
 ```js
@@ -130,14 +131,16 @@ on that page inside `<head>` and that the change to the site is published.
 
 The "What the tag collects" block lists the data the tag sends to Palitra:
 
-| Field            | What it is                                                     |
-| ---------------- | -------------------------------------------------------------- |
-| `palitra_id`     | A persistent visitor ID.                                       |
-| `session_id`     | A session ID used to group events into visits.                 |
-| `client_user_id` | The user ID from your system, after an `identify` call.        |
-| "Traffic source" | The Palitra Linker, UTM parameters or the referrer.            |
-| "Events"         | `page_view` automatically, plus your events sent with `event`. |
-| `linked_ids`     | Analytics system IDs: from connectors and passed with `link`.  |
+| Field            | What it is                                                                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| "Page"           | The page URL and referrer, with every event.                                                                                               |
+| "Traffic source" | The Palitra Linker, UTM parameters or the referring site. Kept in `sessionStorage` until the tab is closed.                                |
+| "Events"         | `page_view` automatically, including in-app navigation in an SPA, plus your events sent with `event`.                                      |
+| `user_id`        | The user ID from your system, after an `identify` call. Kept in `localStorage`.                                                            |
+| `linked_ids`     | Analytics system IDs: read from their cookies or `localStorage` (for connected connectors) and passed with `link`. Kept in `localStorage`. |
+
+The tag sets no cookies. It keeps its data in the site's `localStorage` and `sessionStorage` and
+reads analytics IDs from existing cookies.
 
 The Palitra Linker is a parameter in ad links. How a connector adds it is described under
 "Auto-tagging" in the [Yandex Direct](/connectors/yandex-direct/) article.
