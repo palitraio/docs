@@ -13,7 +13,8 @@ const LOCALES = {
 };
 
 function article({ title = "Яндекс Директ", editions = "[saas, byoc]", body }) {
-  return `---\ntitle: ${title}\ndescription: d\neditions: ${editions}\nsources:\n  - palitra-backend/x.py\n---\n\n${body}\n`;
+  const frontmatter = `title: ${title}\ndescription: d\neditions: ${editions}\n`;
+  return `---\n${frontmatter}sources:\n  - palitra-backend/x.py\n---\n\n${body}\n`;
 }
 
 function makeDocs(files) {

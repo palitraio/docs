@@ -170,7 +170,8 @@ export function buildHelpIndex(contentDir, version, locales = LOCALES) {
     const localeDir = join(contentDir, locale);
     if (!existsSync(localeDir)) {
       throw new Error(
-        `published locale "${locale}" has no content directory ${localeDir}; add its articles or set published: false`,
+        `published locale "${locale}" has no content directory ${localeDir}; ` +
+          "add its articles or set published: false",
       );
     }
     for (const article of listArticles(localeDir)) {
