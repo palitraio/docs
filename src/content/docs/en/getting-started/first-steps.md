@@ -66,6 +66,10 @@ In the cloud version of Palitra:
 1. Click "Add card" and enter your card details.
 2. When "Trial active — you're all set." appears, click "Continue".
 
+The card is never charged automatically — not when you add it, and not when the trial ends. To
+verify it, a 1 RUB hold is placed on the card and released right away. You pay only once you
+choose a plan yourself.
+
 If you have a promo code, click "I have a promo code" and enter it. A promo code with a
 first-month discount replaces the trial: the step shows "Add a card and pay the first month at a
 N% discount". Add a card, click "Pay the first month", choose a plan and confirm the payment. See
