@@ -141,3 +141,8 @@ open the authorization page in a new tab, or allow pop-ups for Palitra.
 
 **"This account is already connected in this project."** You cannot connect the same account to
 a project twice. Open the existing connector, or delete it and connect again.
+
+**"This Yandex sign-in was issued without access to Direct."** The Yandex credential was saved
+while connecting another Yandex connector, such as Metrika, and access to Direct was not
+requested then. Click "Allow access" and confirm it in the Yandex pop-up: Palitra updates the
+same credential, and the other Yandex connectors keep working.
