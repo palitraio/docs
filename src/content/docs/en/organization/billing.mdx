@@ -120,10 +120,11 @@ Below the plan are cards with usage for the current period:
 - "Workflow runs this month" — how many times [workflows](/workflows/) ran. If the plan doesn't
   include workflows, the card reads "Not included". "Details" opens the "Workflow runs" dialog
   broken down "By day" and "By project".
-- "Token usage this month" — AI spend. With platform credits, the caption shows how much the
+- "Token usage this period" — AI spend. With platform credits, the caption shows how much the
   plan includes. If the organization pays for AI with its own keys, the card reads "Own keys"
   and "Using your own AI keys". "Details" opens token usage by day for the same period as the
-  card, with the "Projects", "Models" and "Users" tabs. Spend is attributed to whoever started
+  card, with the "Projects", "Models", "Users" and "Months" tabs. "Months" adds up tokens and cost
+  by calendar month. Spend is attributed to whoever started
   the work: the author of a chat message, the creator of a scheduled task or monitor, the
   person who ran a workflow by hand (for a scheduled or webhook run, the workflow's creator).
   "System" is calls no one started by hand. "Not recorded" is spend recorded before Palitra
@@ -265,7 +266,7 @@ To get the PDF, click "Download" in the invoice's row. The invoice opens in a ne
 
 ## AI model keys
 
-The "Token usage this month" card has an "AI model keys" button. It opens the settings for how
+The "Token usage this period" card has an "AI model keys" button. It opens the settings for how
 the organization accesses and pays for AI models.
 
 - "Billing mode" — "Platform credits" (AI is paid for with Palitra credits, no keys needed) or
