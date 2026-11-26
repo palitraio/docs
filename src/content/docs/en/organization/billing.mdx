@@ -122,8 +122,12 @@ Below the plan are cards with usage for the current period:
   broken down "By day" and "By project".
 - "Token usage this month" — AI spend. With platform credits, the caption shows how much the
   plan includes. If the organization pays for AI with its own keys, the card reads "Own keys"
-  and "Using your own AI keys". "Details" opens token usage by day with the "Projects" and
-  "Models" tabs.
+  and "Using your own AI keys". "Details" opens token usage by day for the same period as the
+  card, with the "Projects", "Models" and "Users" tabs. Spend is attributed to whoever started
+  the work: the author of a chat message, the creator of a scheduled task or monitor, the
+  person who ran a workflow by hand (for a scheduled or webhook run, the workflow's creator).
+  "System" is calls no one started by hand. "Not recorded" is spend recorded before Palitra
+  began tracking users.
 - "Wordstat units this month" — if the plan includes them. The caption says when the counter
   renews.
 
