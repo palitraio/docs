@@ -78,7 +78,18 @@ export const SIDEBAR = [
   "artifacts",
   {
     labelKey: "connectors",
-    items: ["connectors/overview", "connectors/yandex-direct", "connectors/yandex-metrika"],
+    items: [
+      "connectors/overview",
+      "connectors/yandex-direct",
+      "connectors/vk-ads",
+      "connectors/yandex-metrika",
+      "connectors/yandex-appmetrica",
+      "connectors/appsflyer",
+      "connectors/adjust",
+      "connectors/calltouch",
+      "connectors/uis",
+      "connectors/yandex-wordstat",
+    ],
   },
   {
     labelKey: "data",
