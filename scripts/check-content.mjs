@@ -12,6 +12,7 @@ const REPOS = [
   "palitra-frontend",
   "palitra-backend",
   "palitra-tag",
+  "palitra-desktop",
   "deploy",
   "license-server",
   "landing-page",
