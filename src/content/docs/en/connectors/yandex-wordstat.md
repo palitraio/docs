@@ -45,6 +45,10 @@ sources:
   - palitra-frontend/components/connectors/connected-connector-card.en.messages.json
   - palitra-frontend/components/connectors/connector-key-line.en.messages.json
   - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.en.messages.json
   - palitra-frontend/components/billing/usage-card.tsx
   - palitra-frontend/components/billing/usage-card.en.messages.json
 ---
@@ -173,9 +177,17 @@ to the field for your own key by itself — paste a Yandex Cloud key.
 **"Yandex Wordstat is already connected in this project…"** A connector on Palitra's key, or
 one with the same key, already exists in the project. Open it, or delete it to connect again.
 
-**"Sign-in has expired." on the connector card.** Yandex no longer accepts your key — for
-example, the key was deleted in Yandex Cloud. Issue a new key, delete the connector and connect
-it again with the new key.
+**"Yandex no longer accepts the connector's API key." on the connector card.** For example, the
+key was deleted in Yandex Cloud. The hint under the message: "On your own key, issue a new one
+in the Yandex Cloud console and replace it: choose “Configure” in the connector's menu, click
+“Connect a different account” on the “Auth” step, paste the new API key and click “Save” on the
+“Review” step. On Palitra's key, contact support."
+
+On your own key, if the credential's status is "Invalid — needs Reconnect", you can also paste the
+new key on the "Credentials" tab of "Connectors": click the three dots on the Wordstat credential's
+row, choose "Reconnect", paste the new key and click "Save key". See the [connectors
+overview](/connectors/overview/#reconnect-a-credential). A connector on Palitra's key has no
+credential in that list.
 
 **The agent says the Wordstat limit on Palitra's key is used up.** The message says how many
 units are used and when the limit renews. Wait for the renewal, change plan, or connect the

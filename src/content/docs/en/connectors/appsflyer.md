@@ -48,7 +48,12 @@ sources:
   - palitra-frontend/components/connectors/connectors-tabs.en.messages.json
   - palitra-frontend/components/connectors/connected-connector-card.en.messages.json
   - palitra-frontend/components/connectors/connector-issues-list.tsx
+  - palitra-frontend/components/connectors/connector-issue-icon.tsx
   - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.en.messages.json
   - palitra-frontend/components/connectors/use-connector-copy.en.messages.json
   - palitra-frontend/components/data-pipeline/attribution/attribution-windows.en.messages.json
 ---
@@ -226,10 +231,17 @@ account that owns the app.
 **"This app is already connected in this project as "…"."** One app cannot be connected to a
 project twice. Open the existing connector with "Open the existing connector".
 
-**"Sign-in has expired."** AppsFlyer no longer accepts the token: for example, it was reissued,
-or its owner lost admin rights. Open the connector's settings and paste a new API V2 token on
-the "Auth" step. If the step shows the "Existing credentials" list, click "Connect a different
-account" first. Then click "Save" on the "Review" step.
+**"AppsFlyer no longer accepts the connector's API V2 token."** For example, the token was
+reissued, or its owner lost admin rights. The hint under the message: "Issue a new token in
+AppsFlyer and replace it: choose “Configure” in the connector's menu, click “Connect a different
+account” on the “Auth” step, paste the new API V2 token and click “Save” on the “Review” step."
+
+If the credential's status is "Invalid — needs Reconnect", you can also replace the key on the
+"Credentials" tab of "Connectors": click the three dots on the AppsFlyer credential's row, choose
+"Reconnect", paste the new API V2 token and click "Save key". This replaces the key in every
+connector on that credential. See the [connectors
+overview](/connectors/overview/#reconnect-a-credential). If you use the S2S and OneLink tokens,
+paste them in the dialog too, or they are removed.
 
 **"The connector has no access to this account."** The token no longer sees the connector's
 app. In the connector's settings, use the token of the AppsFlyer account that owns the app.

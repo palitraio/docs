@@ -31,6 +31,9 @@ sources:
   - palitra-frontend/components/connectors/catalog-connector-card.ru.messages.json
   - palitra-frontend/components/connectors/credentials-list.tsx
   - palitra-frontend/components/connectors/credentials-list.ru.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.ru.messages.json
+  - palitra-frontend/components/connector-setup/steps/credential-key-fields.tsx
   - palitra-frontend/components/connectors/revoke-credential-dialog.tsx
   - palitra-frontend/components/connectors/revoke-credential-dialog.ru.messages.json
   - palitra-frontend/components/connectors/disconnect-actions-dialog.ru.messages.json
@@ -51,6 +54,7 @@ sources:
   - palitra-frontend/components/connector-setup/steps/select-account-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/connector-settings-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/tool-permissions-step.ru.messages.json
+  - palitra-frontend/components/connector-setup/steps/guardrails-step.tsx
   - palitra-frontend/components/connector-setup/steps/guardrails-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/auto-tagging-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/event-mapping-step.ru.messages.json
@@ -59,6 +63,9 @@ sources:
   - palitra-frontend/lib/stores/connector-wizard-store.ts
   - palitra-frontend/lib/auth/roles.ts
   - palitra-backend/src/modules/connector_registry/api/connector_router.py
+  - palitra-backend/src/modules/connector_registry/application/services/credential_service.py
+  - palitra-backend/src/modules/connector_registry/application/services/credential_key_check.py
+  - palitra-backend/src/connectors/vk/vk_ads/manifest.yaml
   - palitra-backend/src/connectors/yandex/yandex_direct/manifest.yaml
   - palitra-backend/src/connectors/yandex/yandex_metrika/manifest.yaml
 ---
@@ -198,10 +205,13 @@ import Screenshot from "@/components/Screenshot.astro";
 
 ### Ограничения
 
-Пределы для действий агента в рекламном кабинете: «Лимиты изменений», «Границы бюджета»,
-«Деструктивные действия», «Минимальный порог данных» и «Максимальная доля приостановленных».
-Если поле не заполнить, действует значение по умолчанию. Подробно поля разобраны в статье
-[Яндекс Директ](/connectors/yandex-direct/).
+Пределы для действий агента в рекламном кабинете. Мастер показывает только те ограничения,
+которые соблюдает коннектор, поэтому набор полей у сервисов разный. Всего групп шесть: «Лимиты
+изменений», «Границы бюджета», «Потолки ставок», «Деструктивные действия», «Минимальный порог
+данных» и «Максимальная доля приостановленных». Если поле не заполнить, действует значение по
+умолчанию. Какие поля есть у каждого сервиса, описано в статьях
+[Яндекс Директ](/connectors/yandex-direct/#ограничения) и
+[VK Реклама](/connectors/vk-ads/#ограничения).
 
 ### Автотегирование
 
@@ -264,13 +274,17 @@ import Screenshot from "@/components/Screenshot.astro";
 
 | Сообщение                                                | Что делать                                                                                                        |
 | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| «Срок авторизации истёк.»                                | Переподключите учётные данные на вкладке «Учётные данные» и авторизуйтесь заново.                                 |
+| «Срок авторизации истёк.»                                | [Переподключите учётные данные](#переподключить-учётные-данные) на вкладке «Учётные данные».                      |
 | «Доступ отозван в кабинете сервиса.»                     | Переподключите коннектор с действующим ключом или авторизацией.                                                   |
 | «У коннектора нет доступа к этому аккаунту.»             | Проверьте права аккаунта в сервисе и переподключите коннектор.                                                    |
 | «Последняя синхронизация завершилась ошибкой.»           | Палитра повторит попытку сама. Если ошибка повторяется, запустите синхронизацию вручную или напишите в поддержку. |
 | «Лимит запросов к API сервиса пока исчерпан.»            | Ничего делать не нужно: синхронизация продолжится, когда лимит обновится.                                         |
 | «Проверка подключения не прошла.»                        | Палитра проверит подключение позже. Если проблема не уходит, переподключите коннектор.                            |
 | «Часть объявлений не удалось разметить ссылкой Палитры.» | Разметьте эти объявления вручную или попробуйте позже.                                                            |
+
+У сервисов с API-ключом — Adjust, AppsFlyer, CallTouch, UIS и Яндекс Вордстата — сообщение об
+истёкшем доступе своё и называет ключ: например, «Adjust больше не принимает API-токен
+коннектора.» Как заменить ключ, написано в подсказке под сообщением и в статье о сервисе.
 
 ## Синхронизировать вручную
 
@@ -343,9 +357,39 @@ import Screenshot from "@/components/Screenshot.astro";
 
 ### Переподключить учётные данные
 
-Если статус «Недействителен — нужен Reconnect» — например, истёк срок авторизации, — нажмите
-на три точки в строке и выберите «Reconnect». Пройдите авторизацию во всплывающем окне. После
-успеха Палитра покажет «Учётные данные успешно переподключены».
+Если статус «Недействителен — нужен Reconnect» — например, истёк срок авторизации или сервис
+перестал принимать ключ, — нажмите на три точки в строке и выберите «Reconnect». Что будет
+дальше, зависит от того, как подключены учётные данные:
+
+- **Вход через OAuth** (Яндекс, VK). Пройдите авторизацию во всплывающем окне.
+- **API-ключ или токен** (Adjust, AppsFlyer, CallTouch, UIS, Яндекс Вордстат на своём ключе).
+  Откроется окно «Новый ключ …». Вставьте новый ключ того же аккаунта и нажмите «Сохранить
+  ключ». Коннекторы на этих учётных данных начнут работать с ним со следующей синхронизации
+  или вызова инструмента. Если у сервиса есть необязательные токены, окно предупредит: «Новые
+  ключи заменят все сохранённые: заполните и необязательные токены, которыми пользуетесь, иначе
+  они будут удалены.»
+- **Собственный API-клиент.** Под «Reconnect» в меню — подсказка вместо действия: Палитра сама
+  перевыпускает такие учётные данные. Если клиент удалён или его secret изменился, подключите
+  коннектор заново с новыми client ID и secret.
+- **MCP-сервер.** Под «Reconnect» в меню — подсказка «MCP-серверы переподключаются на странице
+  коннектора.»
+
+После успеха Палитра покажет «Учётные данные успешно переподключены».
+
+Новый ключ Палитра перед сохранением проверяет в сервисе так же, как при подключении. Если
+проверка не прошла, ключ не сохраняется («Сохранённый ключ не изменился.»), а окно объясняет
+причину:
+
+- «… не принял ключ: он неверный или отозван.» — проверьте ключ и вставьте его ещё раз;
+- «… принял ключ, но с ним нет доступа к приложению или сайту, с которыми работают коннекторы
+  этих учётных данных.» — вставьте ключ пользователя, у которого есть доступ;
+- «Не удалось проверить ключ в … прямо сейчас.» — попробуйте через несколько минут;
+- «Этот ключ от другого аккаунта …» — вставьте ключ того же аккаунта или подключите другой
+  аккаунт как новый коннектор.
+
+Если на учётных данных нет включённых коннекторов, а сервису для проверки нужны настройки
+коннектора (так у CallTouch, которому нужен ID сайта), ключ сохраняется без проверки. Его
+проверят, когда на этих учётных данных подключат коннектор.
 
 ### Отозвать учётные данные
 

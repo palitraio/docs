@@ -31,6 +31,9 @@ sources:
   - palitra-frontend/components/connectors/catalog-connector-card.en.messages.json
   - palitra-frontend/components/connectors/credentials-list.tsx
   - palitra-frontend/components/connectors/credentials-list.en.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/credential-key-fields.tsx
   - palitra-frontend/components/connectors/revoke-credential-dialog.tsx
   - palitra-frontend/components/connectors/revoke-credential-dialog.en.messages.json
   - palitra-frontend/components/connectors/disconnect-actions-dialog.en.messages.json
@@ -51,6 +54,7 @@ sources:
   - palitra-frontend/components/connector-setup/steps/select-account-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/connector-settings-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/tool-permissions-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/guardrails-step.tsx
   - palitra-frontend/components/connector-setup/steps/guardrails-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/auto-tagging-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/event-mapping-step.en.messages.json
@@ -59,6 +63,9 @@ sources:
   - palitra-frontend/lib/stores/connector-wizard-store.ts
   - palitra-frontend/lib/auth/roles.ts
   - palitra-backend/src/modules/connector_registry/api/connector_router.py
+  - palitra-backend/src/modules/connector_registry/application/services/credential_service.py
+  - palitra-backend/src/modules/connector_registry/application/services/credential_key_check.py
+  - palitra-backend/src/connectors/vk/vk_ads/manifest.yaml
   - palitra-backend/src/connectors/yandex/yandex_direct/manifest.yaml
   - palitra-backend/src/connectors/yandex/yandex_metrika/manifest.yaml
 ---
@@ -92,7 +99,7 @@ is; click it to go to [Data](/data/overview/).
 
 1. Open the "Marketplace" tab.
 2. Find the service: type its name into "Search connectors" or pick a category — "All", "Ad
-   Platform", "Analytics", "Mobile Tracker", "Call Tracking", "Marketplaces", "CRM" or "Other".
+   platform", "Analytics", "Mobile tracker", "Call tracking", "Marketplaces", "CRM" or "Other".
    "Available only" hides services that are still on the way.
 3. Click "Connect" on the service's card. If the project already has this connector, the button
    reads "Connect another": that is how you connect a second account of the same service.
@@ -193,9 +200,12 @@ agent's actions is covered in [Getting started as a manager](/getting-started/ma
 
 ### Guardrails
 
-Limits on what the agent can do in the ad account: "Change limits", "Budget bounds", "Destructive
-actions", "Minimum data threshold" and "Maximum paused ratio". Leave a field empty to keep the
-default. The fields are covered in detail in [Yandex Direct](/connectors/yandex-direct/).
+Limits on what the agent can do in the ad account. The wizard shows only the guardrails the
+connector enforces, so the fields differ between services. There are six groups in all: "Change
+limits", "Budget bounds", "Bid caps", "Destructive actions", "Minimum data threshold" and
+"Maximum paused ratio". Leave a field empty to keep the default. Which fields each service has is
+covered in [Yandex Direct](/connectors/yandex-direct/#guardrails) and
+[VK Ads](/connectors/vk-ads/#guardrails).
 
 ### Auto-tagging
 
@@ -256,13 +266,18 @@ Common messages:
 
 | Message                                               | What to do                                                                                |
 | ----------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| "Sign-in has expired."                                | Reconnect the credential on the "Credentials" tab and sign in again.                      |
+| "Sign-in has expired."                                | [Reconnect the credential](#reconnect-a-credential) on the "Credentials" tab.             |
 | "Access was revoked in the vendor's cabinet."         | Reconnect the connector with a valid key or authorization.                                |
 | "The connector has no access to this account."        | Check the account's rights in the service and reconnect the connector.                    |
 | "The last sync failed."                               | Palitra retries on its own. If it keeps failing, start a sync by hand or contact support. |
 | "The vendor's API limit is used up for now."          | Nothing to do: the sync resumes once the limit renews.                                    |
 | "The connection check failed."                        | Palitra checks the connection again later. If the problem stays, reconnect the connector. |
 | "Some ads could not be tagged with the Palitra link." | Tag those ads by hand or try again later.                                                 |
+
+Services with an API key — Adjust, AppsFlyer, CallTouch, UIS and Yandex Wordstat — have their own
+message for expired access that names the key: for example, "Adjust no longer accepts the
+connector's API token." How to replace the key is in the hint under the message and in the
+service's article.
 
 ## Sync by hand
 
@@ -332,9 +347,37 @@ Table columns:
 
 ### Reconnect a credential
 
-If the status is "Invalid — needs Reconnect" — for instance, sign-in has expired — click the three
-dots on the row and choose "Reconnect". Complete the authorization in the popup. On success
-Palitra shows "Reconnected successfully".
+If the status is "Invalid — needs Reconnect" — for instance, sign-in has expired or the service
+stopped accepting the key — click the three dots on the row and choose "Reconnect". What happens
+next depends on how the credential was connected:
+
+- **OAuth sign-in** (Yandex, VK). Complete the authorization in the popup.
+- **An API key or token** (Adjust, AppsFlyer, CallTouch, UIS, Yandex Wordstat on your own key).
+  A "New key for …" dialog opens. Paste a new key for the same account and click "Save key". The
+  connectors on this credential use it from their next sync or tool call. If the service has
+  optional tokens, the dialog warns: "The keys you save replace all the stored ones: fill in the
+  optional tokens you use, or they are removed."
+- **Your own API client.** Under "Reconnect" the menu shows a hint instead of an action: Palitra
+  re-issues such a credential by itself. If the client was deleted or its secret changed,
+  connect again with the new client ID and secret.
+- **An MCP server.** Under "Reconnect" the menu shows the hint "Reconnect MCP servers from the
+  connector's page."
+
+On success Palitra shows "Reconnected successfully".
+
+Before saving a new key, Palitra checks it with the service the same way as when connecting. If
+the check fails, the key is not saved ("The stored key was not changed.") and the dialog says why:
+
+- "… rejected this key: it is wrong or revoked." — check the key and paste it again;
+- "… accepted the key, but it does not reach the app or site this credential's connectors read."
+  — use the key of a user with access to it;
+- "Couldn't check the key with … right now." — try again in a few minutes;
+- "This key belongs to another … account." — paste the key of the same account, or connect the
+  other account as a new connector.
+
+If no enabled connector runs on the credential and the service needs a connector's settings for
+the check (as CallTouch needs the site ID), the key is saved unchecked. It is checked when a
+connector is connected on this credential.
 
 ### Revoke a credential
 

@@ -23,6 +23,7 @@ sources:
   - palitra-frontend/components/connector-setup/wizard.en.messages.json
   - palitra-frontend/components/connector-setup/steps/auth-step.tsx
   - palitra-frontend/components/connector-setup/steps/auth-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/credential-key-fields.tsx
   - palitra-frontend/components/connector-setup/steps/auth-step-reuse-picker.en.messages.json
   - palitra-frontend/components/connector-setup/steps/connector-settings-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/connector-settings-edit.en.messages.json
@@ -34,6 +35,10 @@ sources:
   - palitra-frontend/components/connectors/connected-connector-card.en.messages.json
   - palitra-frontend/components/connectors/connector-issue-icon.tsx
   - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.en.messages.json
   - palitra-frontend/components/connectors/use-connector-copy.en.messages.json
   - palitra-frontend/components/connectors/use-setting-copy.en.messages.json
 ---
@@ -63,9 +68,10 @@ CallTouch is connected from the Connectors section (the setup wizard after sign-
 offer it).
 
 1. In the sidebar, open "Connectors" and go to the "Marketplace" tab. CallTouch is in the "Call
-   Tracking" category.
+   tracking" category.
 2. On the "CallTouch" card, click "Connect". The "Connect CallTouch" page opens.
-3. **"Auth".** Paste the token into the "API token" field. If a CallTouch token is already
+3. **"Auth".** Paste the token into the "API token" field. The hint under the field reads: "The
+   API token from Integrations → API in your CallTouch cabinet." If a CallTouch token is already
    saved in Palitra, you can pick it from the "Existing credentials" list. Tick "Save at
    organization level" if you need the same token in other projects.
 4. **"Settings".** Fill in:
@@ -166,10 +172,16 @@ project. Click "Open the connected connector", or delete it and connect again.
 If something is wrong with the connector, an icon appears on its card in the "Connectors"
 section. Hover over it to see what happened and what to do.
 
-**"Sign-in has expired."** CallTouch no longer accepts the token — for example, it was
-reissued. On the connector card, click the three dots and choose "Configure". On the "Auth"
-step, click "Connect a different account", paste the current token into the "API token" field,
-then click "Save" on the "Review" step.
+**"CallTouch no longer accepts the connector's API token."** For example, the token was
+reissued. The hint under the message: "Copy the current token from CallTouch and replace it:
+choose “Configure” in the connector's menu, click “Connect a different account” on the “Auth”
+step, paste the new API token and click “Save” on the “Review” step."
+
+If the credential's status is "Invalid — needs Reconnect", you can also replace the key on the
+"Credentials" tab of "Connectors": click the three dots on the CallTouch credential's row, choose
+"Reconnect", paste the current API token and click "Save key". This replaces the key in every
+connector on that credential. See the [connectors
+overview](/connectors/overview/#reconnect-a-credential).
 
 **"The connector has no access to this account."** The token's login lost access to the site,
 API data transfer was switched off, or the site was deactivated. Fix it in your CallTouch

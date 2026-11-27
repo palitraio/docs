@@ -10,6 +10,7 @@ sources:
   - palitra-backend/src/connectors/vk/vk_ads/transformer.py
   - palitra-backend/src/connectors/vk/vk_ads/error_mapping.py
   - palitra-backend/src/connectors/vk/vk_ads/_guardrails.py
+  - palitra-backend/src/connectors/vk/vk_ads/tools/transfer_funds.py
   - palitra-backend/src/connectors/vk/vk_ads/tagger.py
   - palitra-backend/src/connectors/vk/vk_ads/_utm_linker.py
   - palitra-backend/src/connectors/vk/vk_ads/tools/_generic.py
@@ -140,22 +141,28 @@ the guardrails. Deletion is off by default.
 **Archiving.** "Archive lead forms" and "Archive surveys" work only if "Allow archiving" is on.
 Archiving is off by default.
 
+**Fund transfers.** "Transfer funds between agency and client" moves money from the agency
+cabinet to a client cabinet or back. The tool works only if "Allow fund transfers" is on in the
+guardrails; transfers are off by default. The tool's default permission is "Needs Approval", and
+you can change it on the "Permissions" step.
+
 ## Guardrails
 
 The "Guardrails" step sets safety limits for the agent's actions. By default no numeric limits
-are set, and deletion and archiving are off.
+are set, and deletion, archiving and fund transfers are off.
 
 - "Change limits" — "Max budget change per action" and "Max bid change per action" for
   campaigns and ad groups. The change is measured from the current value in the cabinet, and
   several changes to the same item within 24 hours add up.
 - "Budget bounds" — the minimum and maximum daily budget. With a maximum daily budget set, the
   agent cannot remove the daily budget limit.
-- "Destructive actions" — "Allow archiving" and "Allow deletion".
+- "Bid caps" — "Maximum bid": the agent will not set a bid above this value, including when it
+  creates a campaign or an ad group.
+- "Destructive actions" — "Allow archiving", "Allow deletion" and "Allow fund transfers". The
+  hint under the last one: "A transfer moves money between the agency cabinet and client
+  cabinets."
 - "Minimum data threshold" — the agent will not change the budget or bid of a campaign or ad
   group that has too little data.
-
-The "Max bid modifier change per action" field and the "Maximum paused ratio" section do not
-apply to VK Ads.
 
 ## Auto-tagging
 

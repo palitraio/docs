@@ -48,7 +48,12 @@ sources:
   - palitra-frontend/components/connectors/connectors-tabs.ru.messages.json
   - palitra-frontend/components/connectors/connected-connector-card.ru.messages.json
   - palitra-frontend/components/connectors/connector-issues-list.tsx
+  - palitra-frontend/components/connectors/connector-issue-icon.tsx
   - palitra-frontend/components/connectors/connector-issue-icon.ru.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.ru.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.ru.messages.json
   - palitra-frontend/components/connectors/use-connector-copy.ru.messages.json
   - palitra-frontend/components/data-pipeline/attribution/attribution-windows.ru.messages.json
 ---
@@ -232,11 +237,18 @@ AppsFlyer отозвал.
 **«Это приложение уже подключено в проекте как «…».»** Одно приложение нельзя подключить в
 проект дважды. Откройте уже подключённый коннектор кнопкой «Открыть подключённый коннектор».
 
-**«Срок авторизации истёк.»** AppsFlyer перестал принимать токен — например, его перевыпустили
-или у его владельца больше нет прав администратора. Откройте настройки коннектора и на шаге
-«Авторизация» вставьте новый токен API V2. Если на шаге показан список «Существующие учётные
-данные», сначала нажмите «Подключить другой аккаунт». Затем на шаге «Проверка» нажмите
-«Сохранить».
+**«AppsFlyer больше не принимает токен API V2 коннектора.»** Например, токен перевыпустили или
+у его владельца больше нет прав администратора. Подсказка под сообщением: «Выпустите новый токен
+в AppsFlyer и замените его: в меню коннектора выберите «Настроить», на шаге «Авторизация»
+нажмите «Подключить другой аккаунт», вставьте новый токен API V2 и на шаге «Проверка» нажмите
+«Сохранить».»
+
+Если у учётных данных статус «Недействителен — нужен Reconnect», ключ можно заменить и на вкладке
+«Учётные данные» раздела «Коннекторы»: в строке учётных данных AppsFlyer нажмите на три точки,
+выберите «Reconnect», вставьте новый токен API V2 и нажмите «Сохранить ключ». Так ключ заменится во
+всех коннекторах на этих учётных данных. Подробнее — в [обзоре
+коннекторов](/connectors/overview/#переподключить-учётные-данные). Если вы пользуетесь токенами S2S
+и OneLink, вставьте в окне и их, иначе они будут удалены.
 
 **«У коннектора нет доступа к этому аккаунту.»** Токен больше не видит приложение коннектора.
 Укажите в настройках коннектора токен того аккаунта AppsFlyer, которому принадлежит
