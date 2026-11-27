@@ -71,6 +71,7 @@ export const SIDEBAR = [
       "getting-started/first-steps",
       "getting-started/owner-admin",
       "getting-started/manager",
+      "getting-started/desktop-app",
     ],
   },
   "chat",
