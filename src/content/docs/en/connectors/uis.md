@@ -39,6 +39,11 @@ sources:
   - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
   - palitra-frontend/components/connectors/use-connector-copy.en.messages.json
   - palitra-frontend/components/connectors/use-setting-copy.en.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/credential-key-fields.tsx
 ---
 
 The UIS connector (formerly CoMagic) loads calls, requests, chats and deals from one UIS site
@@ -54,11 +59,12 @@ in with OAuth. Connect UIS from the "Connectors" section.
 ## Connect from the Connectors section
 
 1. In the sidebar, open "Connectors" and go to the "Marketplace" tab. UIS is in the "Call
-   Tracking" category.
+   tracking" category.
 2. On the "UIS" card, click "Connect". The "Connect UIS" page opens.
 3. **"Auth".** First allow Palitra's address in the UIS cabinet, as described below. Then
-   paste the key into the "API token" field. The hint under the field reads: "The API token
-   from the API settings of your UIS cabinet." If a UIS key is already saved in Palitra, you can
+   paste the key into the "API key" field. The hint under the field reads: "A UIS user's API key
+   from Account → User management in your UIS cabinet." The key has its user's rights and sees
+   only that user's sites. If a UIS key is already saved in Palitra, you can
    pick the existing credentials. Tick "Save at organization level" if you need the same key
    in other projects.
 4. Click "Continue". Palitra asks UIS for the sites this key can see.
@@ -68,7 +74,8 @@ in with OAuth. Connect UIS from the "Connectors" section.
    checks access.
 
 If UIS returns no sites, the wizard shows a "Settings" step with a "Site ID" field instead of
-the list.
+the list. The hint under the field: "The numeric site ID in your UIS cabinet. The key reads only
+the sites its user can see: for another site, connect the key of a user who sees it."
 
 The site cannot be changed after connecting. To load another site, connect UIS again with
 "Connect another" and pick that site.
@@ -134,8 +141,14 @@ If the UIS key has expired, been blocked or been reissued:
 1. On the connector card, click the three dots and choose "Configure". The "UIS settings" page
    opens.
 2. On the "Auth" step, click "Connect a different account" and paste the new key into the "API
-   token" field.
+   key" field.
 3. Go to the "Review" step and click "Save".
+
+If UIS has already stopped accepting the key and the credential's status is "Invalid — needs
+Reconnect", you can also replace the key on the "Credentials" tab of "Connectors": click the
+three dots on the UIS credential's row, choose "Reconnect", paste the new key and click "Save
+key". This replaces the key in every connector on that credential. Palitra checks the key with
+UIS before saving it. See the [connectors overview](/connectors/overview/#reconnect-a-credential).
 
 ## Common problems
 
@@ -169,6 +182,10 @@ another site from the list. If every site is gone, the wizard returns you to the
 with "The UIS key no longer reaches any account". Check the key's access in your UIS cabinet or
 enter another key.
 
+**"UIS could not read this site with this key. …"** Appears on the "Settings" step when you
+entered the site ID yourself. Check the site ID and that the user the key belongs to can see the
+site, or connect the key of a user who sees it.
+
 **"This account is already connected in this project."** This site is already connected. Click
 "Open the existing connector" or pick another site.
 
@@ -177,10 +194,15 @@ enter another key.
 If something is wrong with the connector, an icon appears on its card in the "Connectors"
 section. Hover over it to see what happened and what to do.
 
-**"Sign-in has expired."** UIS refused the key or Palitra's address: the key is wrong, expired
-or blocked, Palitra's address is not on the allowed list, or the UIS account is disabled. Check
-the allowed addresses in the UIS cabinet. If the key is the cause,
-[replace it](#replace-the-key).
+**"UIS refuses Palitra's requests: its address is not on the allowed list."** Palitra's address
+was removed from the allowed list in the UIS cabinet. The hint under the message: "Add Palitra's
+address in the UIS cabinet: Administrator → Account → Security rules and settings → API. The
+address is shown in the connector settings on the "Auth" step. Then choose "Sync now" in the
+connector card's menu — no need to reconnect the connector."
+
+**"UIS no longer accepts the connector's API key."** The key is wrong, expired or blocked, or the
+UIS account is disabled. [Replace the key](#replace-the-key) — the hint under the message
+suggests the same route through "Configure". If the account is disabled, contact UIS support.
 
 **"The connector has no access to this account."** The user the key belongs to has no rights to
 reports or no longer sees the chosen site. Grant the rights in the UIS cabinet or

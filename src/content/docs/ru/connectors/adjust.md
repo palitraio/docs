@@ -42,6 +42,10 @@ sources:
   - palitra-frontend/components/connectors/connector-channel-badge.ru.messages.json
   - palitra-frontend/components/connectors/connector-issue-icon.tsx
   - palitra-frontend/components/connectors/connector-issue-icon.ru.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.ru.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.ru.messages.json
   - palitra-frontend/components/connectors/disconnect-actions-dialog.ru.messages.json
   - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/[connectorId]/page.tsx
   - palitra-frontend/components/connector-setup/wizard.ru.messages.json
@@ -268,9 +272,17 @@ definition изменилась — скопируйте её в Adjust зано
 **«Adjust не принял токен. Скопируйте его заново в Account settings → My profile → API
 Token.»** Токен вставлен с ошибкой или больше не действует. Скопируйте его заново.
 
-**«Срок авторизации истёк.»** Adjust перестал принимать API-токен. Откройте настройки
-коннектора, на шаге «Авторизация» нажмите «Подключить другой аккаунт», вставьте актуальный
-API-токен и сохраните на шаге «Проверка».
+**«Adjust больше не принимает API-токен коннектора.»** Подсказка под сообщением: «Выпустите
+новый токен в Adjust и замените его: в меню коннектора выберите «Настроить», на шаге
+«Авторизация» нажмите «Подключить другой аккаунт», вставьте новый API-токен и на шаге
+«Проверка» нажмите «Сохранить».»
+
+Если у учётных данных статус «Недействителен — нужен Reconnect», ключ можно заменить и на вкладке
+«Учётные данные» раздела «Коннекторы»: в строке учётных данных Adjust нажмите на три точки, выберите
+«Reconnect», вставьте новый API-токен и нажмите «Сохранить ключ». Так ключ заменится во всех
+коннекторах на этих учётных данных. Подробнее — в [обзоре
+коннекторов](/connectors/overview/#переподключить-учётные-данные). Если вы пользуетесь S2S-токеном,
+вставьте в окне и его, иначе он будет удалён.
 
 **«У пользователя этого токена нет доступа к приложению — попросите администратора Adjust
 выдать доступ.»** или **«У коннектора нет доступа к этому аккаунту.»** Пользователь, чей токен

@@ -21,6 +21,7 @@ sources:
   - palitra-frontend/components/connector-setup/steps/select-account-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/tool-permissions-step.tsx
   - palitra-frontend/components/connector-setup/steps/tool-permissions-step.ru.messages.json
+  - palitra-frontend/components/connector-setup/steps/guardrails-step.tsx
   - palitra-frontend/components/connector-setup/steps/guardrails-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/auto-tagging-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/review-step.ru.messages.json
@@ -103,6 +104,8 @@ sources:
 - «Лимиты изменений» — насколько одно действие может менять бюджет, ставку и корректировку
   ставки;
 - «Границы бюджета» — минимальный и максимальный дневной бюджет;
+- «Потолки ставок» — «Максимальная ставка» и «Максимальная корректировка ставки»: агент не
+  поставит ставку или корректировку ставки выше этих значений. По умолчанию потолки не заданы;
 - «Деструктивные действия» — «Разрешить архивирование» и «Разрешить удаление»;
 - «Минимальный порог данных» — агент не будет менять сущности, по которым мало данных;
 - «Максимальная доля приостановленных» — агент не остановит больше этой доли активных

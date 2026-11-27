@@ -45,6 +45,10 @@ sources:
   - palitra-frontend/components/connectors/connected-connector-card.ru.messages.json
   - palitra-frontend/components/connectors/connector-key-line.ru.messages.json
   - palitra-frontend/components/connectors/connector-issue-icon.ru.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.ru.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.ru.messages.json
   - palitra-frontend/components/billing/usage-card.tsx
   - palitra-frontend/components/billing/usage-card.ru.messages.json
 ---
@@ -174,9 +178,17 @@ Yandex Cloud и попробуйте ещё раз.»** Назначьте ро�
 **«Яндекс Вордстат уже подключён в этом проекте…»** Коннектор на ключе Палитры или с этим же
 ключом уже есть в проекте. Откройте его или удалите, чтобы подключить заново.
 
-**«Срок авторизации истёк.» на карточке коннектора.** Яндекс перестал принимать ваш ключ —
-например, ключ удалили в Yandex Cloud. Выпустите новый ключ, удалите коннектор и подключите его
-заново с новым ключом.
+**«Яндекс больше не принимает API-ключ коннектора.» на карточке коннектора.** Например, ключ
+удалили в Yandex Cloud. Подсказка под сообщением: «На своём ключе выпустите новый в консоли
+Yandex Cloud и замените его: в меню коннектора выберите «Настроить», на шаге «Авторизация»
+нажмите «Подключить другой аккаунт», вставьте новый API-ключ и на шаге «Проверка» нажмите
+«Сохранить». На ключе Палитры напишите в поддержку.»
+
+Если на своём ключе у учётных данных статус «Недействителен — нужен Reconnect», новый ключ можно
+вставить и на вкладке «Учётные данные» раздела «Коннекторы»: в строке учётных данных Вордстата
+нажмите на три точки, выберите «Reconnect», вставьте новый ключ и нажмите «Сохранить ключ».
+Подробнее — в [обзоре коннекторов](/connectors/overview/#переподключить-учётные-данные). У
+коннектора на ключе Палитры учётных данных в этом списке нет.
 
 **Агент сообщает, что лимит Вордстата на ключе Палитры исчерпан.** В сообщении указано, сколько
 единиц использовано и когда лимит обновится. Дождитесь обновления, смените тариф или подключите

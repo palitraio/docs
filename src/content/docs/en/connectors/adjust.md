@@ -42,6 +42,10 @@ sources:
   - palitra-frontend/components/connectors/connector-channel-badge.en.messages.json
   - palitra-frontend/components/connectors/connector-issue-icon.tsx
   - palitra-frontend/components/connectors/connector-issue-icon.en.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.en.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.en.messages.json
   - palitra-frontend/components/connectors/disconnect-actions-dialog.en.messages.json
   - palitra-frontend/app/[locale]/(app)/projects/[projectId]/connectors/[connectorId]/page.tsx
   - palitra-frontend/components/connector-setup/wizard.en.messages.json
@@ -77,7 +81,7 @@ The setup wizard after sign-up does not offer Adjust: connect it from the Connec
 
 ## Connect from the Connectors section
 
-1. In the sidebar, open "Connectors", go to the "Marketplace" tab and pick the "Mobile Tracker"
+1. In the sidebar, open "Connectors", go to the "Marketplace" tab and pick the "Mobile tracker"
    category.
 2. On the "Adjust" card, click "Connect". The "Connect Adjust" page opens.
 3. **"Auth".** Paste the tokens from your Adjust dashboard:
@@ -263,9 +267,16 @@ connector's page, with the links "Open the Push panel" and "Open the cloud stora
 **"Adjust did not accept the token. Copy it again from Account settings → My profile → API
 Token."** The token was pasted wrong or no longer works. Copy it again.
 
-**"Sign-in has expired."** Adjust stopped accepting the API token. Open the connector's
-settings, click "Connect a different account" on the "Auth" step, paste a valid API token and
-save on the "Review" step.
+**"Adjust no longer accepts the connector's API token."** The hint under the message: "Issue a
+new token in Adjust and replace it: choose “Configure” in the connector's menu, click “Connect a
+different account” on the “Auth” step, paste the new API token and click “Save” on the “Review”
+step."
+
+If the credential's status is "Invalid — needs Reconnect", you can also replace the key on the
+"Credentials" tab of "Connectors": click the three dots on the Adjust credential's row, choose
+"Reconnect", paste the new API token and click "Save key". This replaces the key in every connector
+on that credential. See the [connectors overview](/connectors/overview/#reconnect-a-credential). If
+you use the S2S token, paste it in the dialog too, or it is removed.
 
 **"The token's user has no access to this app: ask an Adjust administrator to grant it."** or
 **"The connector has no access to this account."** The user whose token you pasted cannot see

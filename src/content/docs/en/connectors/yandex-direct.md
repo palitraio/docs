@@ -21,6 +21,7 @@ sources:
   - palitra-frontend/components/connector-setup/steps/select-account-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/tool-permissions-step.tsx
   - palitra-frontend/components/connector-setup/steps/tool-permissions-step.en.messages.json
+  - palitra-frontend/components/connector-setup/steps/guardrails-step.tsx
   - palitra-frontend/components/connector-setup/steps/guardrails-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/auto-tagging-step.en.messages.json
   - palitra-frontend/components/connector-setup/steps/review-step.en.messages.json
@@ -99,6 +100,8 @@ The "Guardrails" step sets safety limits for the agent's actions:
 
 - "Change limits" — how much one action can change a budget, a bid or a bid adjustment;
 - "Budget bounds" — the minimum and maximum daily budget;
+- "Bid caps" — "Maximum bid" and "Maximum bid modifier": the agent will not set a bid or a bid
+  adjustment above these values. No caps are set by default;
 - "Destructive actions" — "Allow archiving" and "Allow deletion";
 - "Minimum data threshold" — the agent will not change items that have too little data;
 - "Maximum paused ratio" — the agent will not pause more than this share of active campaigns,

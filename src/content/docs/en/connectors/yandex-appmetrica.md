@@ -79,10 +79,13 @@ If you are going through the setup wizard after signing up:
 The connector is set up with default settings and no event mapping. You can change them later in
 the "Connectors" section.
 
+If your plan doesn't include mobile trackers, the AppMetrica card in the wizard also shows
+"Available on Pro", and its "Connect" button is disabled.
+
 ## Connect from the Connectors section
 
 1. In the sidebar, open "Connectors" and go to the "Marketplace" tab. AppMetrica is in the
-   "Mobile Tracker" category.
+   "Mobile tracker" category.
 2. On the "AppMetrica" card, click "Connect". The "Connect AppMetrica" page opens.
 3. **"Auth".** Click "Connect with OAuth" and sign in to Yandex in the pop-up window. If access
    to Yandex is already saved in Palitra, for example for Direct or Metrika, you can pick the

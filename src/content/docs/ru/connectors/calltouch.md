@@ -23,6 +23,7 @@ sources:
   - palitra-frontend/components/connector-setup/wizard.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/auth-step.tsx
   - palitra-frontend/components/connector-setup/steps/auth-step.ru.messages.json
+  - palitra-frontend/components/connector-setup/steps/credential-key-fields.tsx
   - palitra-frontend/components/connector-setup/steps/auth-step-reuse-picker.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/connector-settings-step.ru.messages.json
   - palitra-frontend/components/connector-setup/steps/connector-settings-edit.ru.messages.json
@@ -34,6 +35,10 @@ sources:
   - palitra-frontend/components/connectors/connected-connector-card.ru.messages.json
   - palitra-frontend/components/connectors/connector-issue-icon.tsx
   - palitra-frontend/components/connectors/connector-issue-icon.ru.messages.json
+  - palitra-frontend/components/connectors/credentials-list.tsx
+  - palitra-frontend/components/connectors/credentials-list.ru.messages.json
+  - palitra-frontend/components/connectors/rotate-key-dialog.tsx
+  - palitra-frontend/components/connectors/rotate-key-dialog.ru.messages.json
   - palitra-frontend/components/connectors/use-connector-copy.ru.messages.json
   - palitra-frontend/components/connectors/use-setting-copy.ru.messages.json
 ---
@@ -66,7 +71,8 @@ CallTouch подключается из раздела «Коннекторы» 
 1. В боковой панели откройте «Коннекторы» и перейдите на вкладку «Маркетплейс». CallTouch есть
    в категории «Коллтрекинг».
 2. На карточке «CallTouch» нажмите «Подключить». Откроется страница «Подключение CallTouch».
-3. **«Авторизация».** Вставьте токен в поле «API-токен». Если токен CallTouch уже сохранён в
+3. **«Авторизация».** Вставьте токен в поле «API-токен». Подсказка под полем: «API-токен из
+   раздела «Интеграции → API» в кабинете CallTouch.» Если токен CallTouch уже сохранён в
    Палитре, его можно выбрать в списке «Существующие учётные данные». Отметьте «Сохранить на
    уровне организации», если тот же токен понадобится в других проектах.
 4. **«Параметры».** Укажите:
@@ -165,10 +171,16 @@ API» в кабинете CallTouch.
 Если с коннектором что-то не так, на его карточке в разделе «Коннекторы» появляется значок.
 Наведите на него, чтобы увидеть, что случилось и что делать.
 
-**«Срок авторизации истёк.»** CallTouch больше не принимает токен — например, его перевыпустили.
-На карточке коннектора нажмите на три точки и выберите «Настроить». На шаге «Авторизация»
-нажмите «Подключить другой аккаунт», вставьте действующий токен в поле «API-токен», затем на
-шаге «Проверка» нажмите «Сохранить».
+**«CallTouch больше не принимает API-токен коннектора.»** Например, токен перевыпустили.
+Подсказка под сообщением: «Скопируйте действующий токен в CallTouch и замените его: в меню
+коннектора выберите «Настроить», на шаге «Авторизация» нажмите «Подключить другой аккаунт»,
+вставьте новый API-токен и на шаге «Проверка» нажмите «Сохранить».»
+
+Если у учётных данных статус «Недействителен — нужен Reconnect», ключ можно заменить и на вкладке
+«Учётные данные» раздела «Коннекторы»: в строке учётных данных CallTouch нажмите на три точки,
+выберите «Reconnect», вставьте действующий API-токен и нажмите «Сохранить ключ». Так ключ заменится
+во всех коннекторах на этих учётных данных. Подробнее — в [обзоре
+коннекторов](/connectors/overview/#переподключить-учётные-данные).
 
 **«У коннектора нет доступа к этому аккаунту.»** У логина токена пропал доступ к сайту,
 передачу данных по API выключили или сайт деактивировали. Исправьте это в кабинете CallTouch.
